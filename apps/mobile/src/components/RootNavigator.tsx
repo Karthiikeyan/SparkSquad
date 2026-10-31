@@ -39,6 +39,21 @@ export function RootNavigator() {
             options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }}
           />
           <Stack.Screen name="notifications" />
+          <Stack.Screen name="squad/[id]/index" />
+          <Stack.Screen name="squad/[id]/leaderboard" />
+          <Stack.Screen name="squad/[id]/plan/index" />
+          <Stack.Screen name="squad/[id]/plan/day/[n]" />
+          <Stack.Screen name="squad/[id]/members" />
+          <Stack.Screen name="squad/[id]/requests" />
+          <Stack.Screen name="squad/[id]/invite" />
+          <Stack.Screen name="squad/[id]/settings" />
+          <Stack.Screen
+            name="squad/[id]/share"
+            options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }}
+          />
+          <Stack.Screen name="squad/[id]/history/[challengeId]" />
+          <Stack.Screen name="checkins/[id]" />
+          <Stack.Screen name="user/[id]" />
           <Stack.Screen name="join/index" />
           <Stack.Screen name="invite/[code]" />
           <Stack.Screen name="squad/[id]/preview" />

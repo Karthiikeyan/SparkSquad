@@ -20,7 +20,9 @@ function notifications(): NotificationsModule | null {
 /** Where a tapped notification (push or local) should open. */
 export function routeForNotification(data: Record<string, unknown> | undefined): string {
   const type = typeof data?.type === 'string' ? data.type : '';
+  const squadId = typeof data?.squadId === 'string' ? data.squadId : '';
   if (type === 'inbox') return '/notifications';
+  if (type === 'digest' && squadId) return `/squad/${squadId}`;
   return '/today';
 }
 

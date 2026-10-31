@@ -54,6 +54,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-secure-store',
     'expo-sqlite',
     'expo-apple-authentication',
+    'expo-sharing',
+    [
+      'expo-media-library',
+      {
+        savePhotosPermission: 'SparkSquad saves share cards you make to your photos.',
+        photosPermission: 'SparkSquad saves share cards you make to your photos.',
+        isAccessMediaLocationEnabled: false,
+      },
+    ],
     [
       'expo-image-picker',
       {

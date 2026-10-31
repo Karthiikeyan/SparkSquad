@@ -54,10 +54,17 @@ export function notificationText(n: NotificationDTO): string {
   }
 }
 
-/** Where tapping a notification goes. Squad screens arrive in Phase 6; Today is the fallback. */
+/** Where tapping a notification goes in the app. */
 export function notificationRoute(n: NotificationDTO): string {
+  const squadId = str(n.payload, 'squadId');
+  const challengeId = str(n.payload, 'challengeId');
   if (n.kind === 'badge') return '/you';
-  return '/today';
+  if (!squadId) return '/today';
+  if (n.kind === 'join_request') return `/squad/${squadId}/requests`;
+  if (n.kind === 'challenge_ended' && challengeId)
+    return `/squad/${squadId}/history/${challengeId}`;
+  if (n.kind === 'freeze_used') return '/today';
+  return `/squad/${squadId}`;
 }
 
 export function groupByDay(

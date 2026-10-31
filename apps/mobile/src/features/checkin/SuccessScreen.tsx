@@ -150,6 +150,17 @@ export function CheckinSuccessScreen() {
           </Text>
         ) : null}
       </View>
+      {card ? (
+        <Button
+          label={t('success.share')}
+          variant="secondary"
+          onPress={() =>
+            router.replace({ pathname: '/squad/[id]/share', params: { id: card.squad.id } })
+          }
+          style={styles.share}
+          testID="success-share"
+        />
+      ) : null}
       <Button
         label={t('success.back')}
         onPress={() => (router.canGoBack() ? router.back() : router.replace('/today'))}
@@ -161,6 +172,7 @@ export function CheckinSuccessScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 16 },
+  share: { marginBottom: 10 },
   body: { flex: 1, alignItems: 'center', gap: 14 },
   ring: { width: SIZE, height: SIZE, marginBottom: 12 },
   ringCenter: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },

@@ -113,7 +113,9 @@ export function TodayScreen() {
               }));
             }}
             onCheckIn={(date) => openCheckin(card, date)}
-            onOpenSquad={() => router.navigate('/squads')}
+            onOpenSquad={() =>
+              router.push({ pathname: '/squad/[id]', params: { id: card.squad.id } })
+            }
           />
         ))}
       </View>

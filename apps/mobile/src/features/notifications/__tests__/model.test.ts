@@ -36,6 +36,17 @@ describe('inbox copy', () => {
     ).toBe('A streak freeze kept your 12-day streak in DSA 60');
     expect(notificationRoute(n({ kind: 'badge' }))).toBe('/you');
     expect(notificationRoute(n({}))).toBe('/today');
+    expect(notificationRoute(n({ kind: 'join_request', payload: { squadId: 'S1' } }))).toBe(
+      '/squad/S1/requests',
+    );
+    expect(
+      notificationRoute(
+        n({ kind: 'challenge_ended', payload: { squadId: 'S1', challengeId: 'C1' } }),
+      ),
+    ).toBe('/squad/S1/history/C1');
+    expect(notificationRoute(n({ kind: 'announcement', payload: { squadId: 'S1' } }))).toBe(
+      '/squad/S1',
+    );
   });
 
   it('groups by the user’s local day', () => {

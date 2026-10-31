@@ -3,7 +3,8 @@ import { t } from '../../i18n';
 import { colors, fonts } from '../../theme/tokens';
 import { Text } from './Text';
 
-export type DayState = 'done' | 'missed' | 'today' | 'future' | 'rest';
+/** past = before the synced range (unknown), shown neutral without a dot. */
+export type DayState = 'done' | 'missed' | 'today' | 'future' | 'rest' | 'past';
 
 export interface StripDay {
   n: number;
@@ -16,10 +17,12 @@ export interface DayStripProps {
   days: readonly StripDay[];
   selected?: number;
   onSelect?: (n: number) => void;
+  /** Pad with empty slots so a short last week keeps tile widths. */
+  columns?: number;
 }
 
 /** 7-day strip: done = green dot, missed = grey dot (never red), today = accent fill, rest = dashed. */
-export function DayStrip({ days, selected, onSelect }: DayStripProps) {
+export function DayStrip({ days, selected, onSelect, columns }: DayStripProps) {
   return (
     <View style={styles.row} accessibilityRole="tablist" accessibilityLabel={t('dayStrip.label')}>
       {days.map((d) => {
@@ -27,7 +30,7 @@ export function DayStrip({ days, selected, onSelect }: DayStripProps) {
         const isSelected = selected === undefined ? today : selected === d.n;
         const fg = today
           ? colors.onAccent
-          : d.state === 'future' || d.state === 'rest'
+          : d.state === 'future' || d.state === 'rest' || d.state === 'past'
             ? colors.label3
             : colors.label;
         const dot =
@@ -64,11 +67,15 @@ export function DayStrip({ days, selected, onSelect }: DayStripProps) {
           </Pressable>
         );
       })}
+      {Array.from({ length: Math.max(0, (columns ?? 0) - days.length) }, (_, i) => (
+        <View key={`pad-${i}`} style={styles.pad} />
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  pad: { flex: 1 },
   row: { flexDirection: 'row', gap: 6 },
   tile: {
     flex: 1,

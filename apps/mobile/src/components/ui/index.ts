@@ -4,6 +4,7 @@ export { BottomSheet } from './BottomSheet';
 export { Button, type ButtonProps } from './Button';
 export { Card } from './Card';
 export { Checkbox } from './Checkbox';
+export { CountRing } from './CountRing';
 export { ChipToggle } from './ChipToggle';
 export { DayStrip, type DayState, type StripDay } from './DayStrip';
 export { GroupedList, GroupFooter, ListRow, SectionLabel } from './GroupedList';
