@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #000000; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden; padding: 52px 16px 34px">
+
+  <div style="display: flex; align-items: center; height: 44px">
+    <a href="Profile.dc.html" style="display: flex; align-items: center; gap: 2px; font-size: 17px; margin-left: -6px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>You</a>
+  </div>
+  <h1 style="margin: 4px 0 16px; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 34px; font-weight: 700; line-height: 40px; letter-spacing: -0.5px">Settings</h1>
+
+  <h2 style="margin: 0 16px 6px; font-size: 13px; font-weight: 500; color: #A1A1A8">AI plan builder</h2>
+  <section style="background: #151517; border-radius: 16px; padding: 0 16px">
+    <div style="padding: 12px 0">
+      <div role="radiogroup" aria-label="Provider" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #232326; border-radius: 10px; padding: 2px; height: 34px; box-sizing: border-box">
+        <button role="radio" aria-checked="true" style="border: 0; border-radius: 8px; background: #48484D; color: #F5F5F7; font-size: 13px; font-weight: 600; cursor: pointer">Gemini</button>
+        <button role="radio" aria-checked="false" style="border: 0; border-radius: 8px; background: transparent; color: #C7C7CC; font-size: 13px; cursor: pointer">OpenAI</button>
+        <button role="radio" aria-checked="false" style="border: 0; border-radius: 8px; background: transparent; color: #C7C7CC; font-size: 13px; cursor: pointer">Claude</button>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="flex: 1; font-size: 15px">API key</span>
+      <span style="font-size: 15px; color: #A1A1A8; font-variant-numeric: tabular-nums">AIza••••3kQ</span>
+      <a href="#" style="font-size: 15px">Change</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="flex: 1; font-size: 15px">Status</span>
+      <span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #3DDC97">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Working</span>
+      <button style="height: 30px; padding: 0 12px; border: 0; border-radius: 15px; background: #232326; color: #F5F5F7; font-size: 13px; cursor: pointer">Test</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="flex: 1; font-size: 15px">Daily limit</span>
+      <span style="font-size: 15px; color: #A1A1A8">20 requests</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E6E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="flex: 1; font-size: 15px">On-device AI</span>
+      <span style="font-size: 15px; color: #A1A1A8">Not on this phone</span>
+    </div>
+  </section>
+  <p style="margin: 6px 16px 20px; font-size: 12px; line-height: 17px; color: #A1A1A8">Your key stays in this phone’s secure keystore. Requests go straight from your phone to the provider, and the provider bills you directly.</p>
+
+  <h2 style="margin: 0 16px 6px; font-size: 13px; font-weight: 500; color: #A1A1A8">Reminders</h2>
+  <section style="background: #151517; border-radius: 16px; padding: 0 16px; margin-bottom: 20px">
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px">
+      <span style="flex: 1; font-size: 15px">Daily reminder</span>
+      <span style="font-size: 15px; color: #A1A1A8">8:00 PM</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E6E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="flex: 1; font-size: 15px">Squad updates</span>
+      <button role="switch" aria-checked="true" aria-label="Squad updates" style="width: 51px; height: 31px; border: 0; border-radius: 16px; background: #3DDC97; position: relative; cursor: pointer; padding: 0">
+        <span style="position: absolute; top: 2px; right: 2px; width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF"></span>
+      </button>
+    </div>
+  </section>
+
+  <h2 style="margin: 0 16px 6px; font-size: 13px; font-weight: 500; color: #A1A1A8">Your data</h2>
+  <section style="background: #151517; border-radius: 16px; padding: 0 16px">
+    <div style="display: flex; align-items: center; height: 52px">
+      <a href="#" style="flex: 1; font-size: 15px; color: #F5F5F7">Export my data</a>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E6E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+    <div style="display: flex; align-items: center; height: 52px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <button style="flex: 1; text-align: left; border: 0; background: transparent; padding: 0; font-size: 15px; color: #FF6B60; cursor: pointer">Delete account</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

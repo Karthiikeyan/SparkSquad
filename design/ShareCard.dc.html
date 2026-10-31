@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Daily share card</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B0B0C; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden; padding: 52px 16px 34px; display: flex; flex-direction: column">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; height: 44px; margin-bottom: 8px">
+    <h1 style="margin: 0; font-size: 17px; font-weight: 600">Share today’s board</h1>
+    <a href="Squad.dc.html" style="font-size: 17px">Done</a>
+  </div>
+
+  <figure aria-label="Share card preview" style="margin: 0 auto; width: 300px; height: 533px; border-radius: 24px; background: #000000; border: 0.5px solid #2A2A2E; box-sizing: border-box; padding: 24px 22px; display: flex; flex-direction: column; position: relative; overflow: hidden">
+    <div aria-hidden="true" style="position: absolute; width: 360px; height: 360px; border-radius: 180px; right: -170px; top: -150px; border: 1px solid rgba(255,178,36,0.22)"></div>
+    <div aria-hidden="true" style="position: absolute; width: 260px; height: 260px; border-radius: 130px; right: -120px; top: -100px; border: 1px solid rgba(255,178,36,0.3)"></div>
+    <span style="font-size: 13px; color: #A1A1A8">Placement Squad 7</span>
+    <span style="font-size: 15px; font-weight: 500; margin-top: 2px">Day 12 of DSA 60</span>
+
+    <span style="margin-top: 36px; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 88px; font-weight: 700; line-height: 84px; letter-spacing: -2px; color: #FFB224; font-variant-numeric: tabular-nums">6<span style="color: #5E5E64">/9</span></span>
+    <span style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 600; line-height: 30px; margin-top: 6px">showed up today</span>
+
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px 6px; margin-top: 26px; justify-items: center">
+      <sc-for list="{{members}}" as="m" hint-placeholder-count="9">
+        <span style="{{m.style}}">{{m.init}}</span>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 12px; color: #A1A1A8">Longest streaks</span>
+      <span style="font-size: 15px; font-variant-numeric: tabular-nums">Divya 12, Kiran 12, Arun 8</span>
+    </div>
+    <div style="margin-top: 18px; padding-top: 14px; border-top: 0.5px solid #2A2A2E; display: flex; justify-content: space-between; align-items: center">
+      <span style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 17px; font-weight: 700">sparksquad</span>
+      <span style="font-size: 12px; color: #A1A1A8">Join with code <span style="color: #F5F5F7; font-weight: 600">7K2P</span></span>
+    </div>
+  </figure>
+
+  <div style="flex: 1"></div>
+  <button style="height: 52px; border: 0; border-radius: 14px; background: #FFB224; color: #1A1200; font-size: 17px; font-weight: 600; cursor: pointer">Share to WhatsApp</button>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px">
+    <button style="height: 48px; border: 0; border-radius: 14px; background: #1C1C1F; color: #F5F5F7; font-size: 15px; font-weight: 500; cursor: pointer">Save image</button>
+    <button style="height: 48px; border: 0; border-radius: 14px; background: #1C1C1F; color: #F5F5F7; font-size: 15px; font-weight: 500; cursor: pointer">Copy invite link</button>
+  </div>
+  <span style="margin-top: 10px; font-size: 12px; color: #8E8E95; text-align: center">The image is made on your phone. Nothing is uploaded.</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var palette = ['#3B3A5C', '#2F4A45', '#4A3A2F', '#3A2F4A', '#2F3F4A', '#2F2F4A', '#4A2F3A', '#3F4A2F', '#4A442F'];
+    var inits = ['DV', 'AR', 'SK', 'ME', 'RH', 'KI', 'KV', 'VG', 'NI'];
+    var members = inits.map(function (s, i) {
+      var on = i < 6;
+      return {
+        init: s,
+        style: 'width: 40px; height: 40px; border-radius: 20px; background: ' + palette[i] + '; color: #E6E6EA; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; ' + (on ? 'box-shadow: 0 0 0 2px #000, 0 0 0 4px #FFB224;' : 'opacity: 0.45;')
+      };
+    });
+    return { members: members };
+  }
+}
+</script>
+</body>
+</html>

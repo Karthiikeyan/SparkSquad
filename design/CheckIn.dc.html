@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Check-in sheet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #000000; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden">
+
+  <div aria-hidden="true" style="padding: 60px 16px 0; opacity: 0.35">
+    <div style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 34px; font-weight: 700; line-height: 40px">Today</div>
+    <div style="font-size: 15px; color: #A1A1A8">Saturday, 31 October</div>
+  </div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.55)"></div>
+
+  <section role="dialog" aria-label="Day 12 check-in" style="position: absolute; left: 0; right: 0; bottom: 0; top: 128px; background: #151517; border-radius: 22px 22px 0 0; padding: 8px 16px 34px; box-sizing: border-box; display: flex; flex-direction: column">
+    <div aria-hidden="true" style="width: 36px; height: 5px; border-radius: 3px; background: #48484D; align-self: center; margin-bottom: 14px"></div>
+
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 600; line-height: 30px">Day 12 check-in</h2>
+        <span style="font-size: 13px; color: #A1A1A8">DSA 60 with Placement Squad 7</span>
+      </div>
+      <a href="Main.dc.html" aria-label="Close" style="width: 36px; height: 36px; border-radius: 18px; background: #2A2A2E; color: #D6D6DB; display: flex; align-items: center; justify-content: center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </a>
+    </div>
+
+    <div style="display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid rgba(84,84,88,0.6)">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 15px; font-weight: 500">Solve 2 medium array problems</span>
+          <span style="display: flex; align-items: center; gap: 4px; font-size: 13px; color: #3DDC97">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            Verified from your LeetCode activity
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; background: #2A2A2E; border-radius: 12px; height: 40px">
+          <button aria-label="Decrease problems" style="width: 40px; height: 40px; border: 0; background: transparent; color: #D6D6DB; font-size: 20px; cursor: pointer">−</button>
+          <span style="min-width: 28px; text-align: center; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums">2</span>
+          <button aria-label="Increase problems" style="width: 40px; height: 40px; border: 0; background: transparent; color: #D6D6DB; font-size: 20px; cursor: pointer">+</button>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid rgba(84,84,88,0.6)">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 15px; font-weight: 500">Watch the sliding window lesson</span>
+          <span style="font-size: 13px; color: #A1A1A8">Target 30 minutes</span>
+        </div>
+        <div style="display: flex; align-items: center; background: #2A2A2E; border-radius: 12px; height: 40px">
+          <button aria-label="Decrease minutes" style="width: 40px; height: 40px; border: 0; background: transparent; color: #D6D6DB; font-size: 20px; cursor: pointer">−</button>
+          <span style="min-width: 28px; text-align: center; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums">30</span>
+          <button aria-label="Increase minutes" style="width: 40px; height: 40px; border: 0; background: transparent; color: #D6D6DB; font-size: 20px; cursor: pointer">+</button>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid rgba(84,84,88,0.6)">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 15px; font-weight: 500">Write notes on today’s patterns</span>
+          <span style="font-size: 13px; color: #A1A1A8">Done or not</span>
+        </div>
+        <button role="switch" aria-checked="true" aria-label="Write notes on today’s patterns, done" style="width: 51px; height: 31px; border: 0; border-radius: 16px; background: #3DDC97; position: relative; cursor: pointer; padding: 0">
+          <span style="position: absolute; top: 2px; right: 2px; width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.25)"></span>
+        </button>
+      </div>
+    </div>
+
+    <label for="note" style="font-size: 13px; color: #A1A1A8; margin: 18px 0 6px">Note for your squad</label>
+    <textarea id="note" rows="3" maxlength="280" style="resize: none; background: #232326; color: #F5F5F7; border: 0; border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 21px; outline-color: #FFB224">Sliding window finally clicked. Did Longest Substring twice to be sure.</textarea>
+    <span style="font-size: 12px; color: #8E8E95; align-self: flex-end; margin-top: 4px; font-variant-numeric: tabular-nums">71 / 280</span>
+
+    <button style="margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px dashed #48484D; border-radius: 14px; background: transparent; color: #F5F5F7; cursor: pointer; text-align: left">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB224" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 18l5-5 4 4 2.5-2.5L20 19"/></svg>
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 15px; font-weight: 500">Add a photo as proof</span>
+        <span style="font-size: 12px; color: #A1A1A8">Saved on your phone only. Plus shares it with your squad.</span>
+      </span>
+    </button>
+
+    <div style="flex: 1"></div>
+    <a href="Squad.dc.html" style="height: 52px; border-radius: 14px; background: #FFB224; color: #1A1200; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center">Check in</a>
+    <span style="font-size: 12px; color: #8E8E95; text-align: center; margin-top: 10px">You can edit this until midnight tomorrow.</span>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

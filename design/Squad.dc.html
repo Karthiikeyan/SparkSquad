@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Squad board</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #000000; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden; padding: 52px 16px 0">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; height: 44px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 2px; font-size: 17px; margin-left: -6px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Squads</a>
+    <a href="ShareCard.dc.html" aria-label="Share today’s board" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #F5F5F7">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 13v6.5h14V13"/></svg></a>
+  </div>
+
+  <h1 style="margin: 4px 0 2px; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 28px; font-weight: 700; line-height: 34px; letter-spacing: -0.3px">Placement Squad 7</h1>
+  <p style="margin: 0 0 14px; font-size: 15px; color: #A1A1A8">DSA 60, day 12 of 60, 9 members</p>
+
+  <nav aria-label="Squad sections" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #1C1C1F; border-radius: 10px; padding: 2px; height: 36px; box-sizing: border-box; margin-bottom: 16px">
+    <a href="Squad.dc.html" aria-current="page" style="border-radius: 8px; background: #3A3A3F; color: #F5F5F7; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">Board</a>
+    <a href="Leaderboard.dc.html" style="color: #C7C7CC; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center">Leaderboard</a>
+    <a href="Plan.dc.html" style="color: #C7C7CC; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center">Plan</a>
+  </nav>
+
+  <section style="background: #151517; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: baseline; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 44px; font-weight: 700; line-height: 46px; font-variant-numeric: tabular-nums; color: #FFB224">6<span style="color: #6E6E75">/9</span></span>
+      <span style="font-size: 15px; color: #A1A1A8">showed up today</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px">
+      <sc-for list="{{members}}" as="m" hint-placeholder-count="9">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <span style="{{m.style}}">{{m.init}}</span>
+          <span style="font-size: 11px; color: #A1A1A8">{{m.name}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <h2 style="margin: 20px 4px 8px; font-size: 15px; font-weight: 600; color: #F5F5F7">Still to check in</h2>
+  <section style="background: #151517; border-radius: 16px; padding: 0 16px">
+    <div style="display: flex; align-items: center; gap: 12px; height: 56px">
+      <span style="width: 32px; height: 32px; border-radius: 16px; background: #4A2F3A; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">KV</span>
+      <span style="flex: 1; font-size: 15px">Kavya</span>
+      <button style="height: 32px; padding: 0 14px; border: 0; border-radius: 16px; background: rgba(255,178,36,0.14); color: #FFB224; font-size: 13px; font-weight: 600; cursor: pointer">Nudge</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 56px; border-top: 0.5px solid rgba(84,84,88,0.6)">
+      <span style="width: 32px; height: 32px; border-radius: 16px; background: #3F4A2F; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">VG</span>
+      <span style="flex: 1; font-size: 15px">Vignesh</span>
+      <button disabled style="height: 32px; padding: 0 14px; border: 0; border-radius: 16px; background: #232326; color: #8E8E95; font-size: 13px; font-weight: 500">Nudged</button>
+    </div>
+  </section>
+
+  <h2 style="margin: 20px 4px 8px; font-size: 15px; font-weight: 600">Today’s check-ins</h2>
+  <section style="background: #151517; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; gap: 12px">
+      <span style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #3B3A5C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">DV</span>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px"><span style="font-weight: 600">Divya</span> <span style="color: #A1A1A8">finished 3 of 3 tasks, 7:42 AM</span></span>
+        <span style="font-size: 15px; line-height: 21px; color: #D6D6DB">Two pointers finally made sense. Doing one extra tonight.</span>
+        <div style="display: flex; gap: 8px; margin-top: 4px">
+          <button aria-label="Fire, 4 reactions" style="height: 30px; padding: 0 10px; border: 0; border-radius: 15px; background: rgba(255,178,36,0.14); color: #FFB224; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; cursor: pointer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.2 2.1-5.3 3.8-7.3.5 1.8 1.4 3 2.7 3.6-.2-2.9.8-5.6 3.1-8.1.5 3.3 3.4 5.6 3.4 10.6 0 4.3-2.7 7.4-6.5 7.4z"/></svg>4</button>
+          <button style="height: 30px; padding: 0 12px; border: 0; border-radius: 15px; background: #232326; color: #C7C7CC; font-size: 13px; cursor: pointer">Comment</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <a href="#" style="position: absolute; left: 16px; right: 16px; bottom: 96px; height: 48px; border-radius: 14px; background: #151517; color: #F5F5F7; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 15px">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/></svg>
+    <span style="flex: 1">Open the squad’s WhatsApp group</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </a>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: rgba(14,14,16,0.94); border-top: 0.5px solid rgba(84,84,88,0.6); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; padding-top: 6px; box-sizing: border-box">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>Today</a>
+    <a href="Squad.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #FFB224; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Squads</a>
+    <a href="CheckIn.dc.html" aria-label="Check in" style="justify-self: center; width: 56px; height: 56px; margin-top: -14px; border-radius: 28px; background: #FFB224; color: #1A1200; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(255,178,36,0.28)">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a href="Discover.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Discover</a>
+    <a href="Profile.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c1.2-4 4.3-6 8-6s6.8 2 8 6"/></svg>You</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var palette = ['#3B3A5C', '#2F4A45', '#4A3A2F', '#3A2F4A', '#2F3F4A', '#2F2F4A', '#4A2F3A', '#3F4A2F', '#4A442F'];
+    var people = [['DV', 'Divya'], ['AR', 'Arun'], ['SK', 'Sanjay'], ['ME', 'Meena'], ['RH', 'Rahul'], ['Y', 'You'], ['KV', 'Kavya'], ['VG', 'Vignesh'], ['NI', 'Nisha']];
+    var members = people.map(function (p, i) {
+      var on = i < 6;
+      return {
+        init: p[0],
+        name: p[1],
+        style: 'width: 32px; height: 32px; border-radius: 16px; background: ' + palette[i] + '; color: #E6E6EA; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; ' + (on ? 'box-shadow: 0 0 0 2px #151517, 0 0 0 4px #FFB224;' : 'opacity: 0.55;')
+      };
+    });
+    return { members: members };
+  }
+}
+</script>
+</body>
+</html>

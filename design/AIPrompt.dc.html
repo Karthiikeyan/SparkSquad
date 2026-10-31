@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build it with your AI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #000000; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden; padding: 52px 16px 34px; display: flex; flex-direction: column">
+
+  <div style="display: flex; align-items: center; height: 44px">
+    <a href="CreateSquad.dc.html" style="display: flex; align-items: center; gap: 2px; font-size: 17px; margin-left: -6px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>Back</a>
+  </div>
+  <h1 style="margin: 4px 0 6px; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 28px; font-weight: 700; line-height: 34px; letter-spacing: -0.3px">Build it with your AI</h1>
+  <p style="margin: 0 0 18px; font-size: 15px; line-height: 21px; color: #A1A1A8">Your AI interviews you about your level, schedule and resources, then writes the whole plan. Free, and no key needed.</p>
+
+  <label for="goal" style="font-size: 13px; font-weight: 600; margin: 0 2px 6px">1. Your goal</label>
+  <input id="goal" type="text" value="Crack product-company DSA interviews in 60 days" style="height: 48px; border: 0; border-radius: 14px; background: #151517; color: #F5F5F7; padding: 0 14px; font-size: 15px; outline-color: #FFB224">
+
+  <span style="font-size: 13px; font-weight: 600; margin: 18px 2px 6px">2. Copy the prompt</span>
+  <section style="background: #151517; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
+    <div style="position: relative; max-height: 132px; overflow: hidden">
+      <p style="margin: 0; font-size: 13px; line-height: 19px; color: #C7C7CC; white-space: pre-line">I use an app called SparkSquad to follow a day-by-day plan with an accountability squad. Help me design that plan.
+
+My goal: Crack product-company DSA interviews in 60 days
+
+Before you write anything, interview me. Ask one question at a time and wait for my answer…</p>
+      <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(rgba(21,21,23,0), #151517)"></div>
+    </div>
+    <button style="height: 44px; border: 0; border-radius: 12px; background: #FFB224; color: #1A1200; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"></rect><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"></path></svg>
+      Copy prompt</button>
+  </section>
+
+  <span style="font-size: 13px; font-weight: 600; margin: 18px 2px 6px">3. Paste it into your AI and answer its questions</span>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <a href="#" style="height: 44px; border-radius: 12px; background: #151517; color: #F5F5F7; font-size: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center">ChatGPT</a>
+    <a href="#" style="height: 44px; border-radius: 12px; background: #151517; color: #F5F5F7; font-size: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center">Gemini</a>
+    <a href="#" style="height: 44px; border-radius: 12px; background: #151517; color: #F5F5F7; font-size: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center">Claude</a>
+  </div>
+
+  <span style="font-size: 13px; font-weight: 600; margin: 18px 2px 6px">4. Bring back the reply</span>
+  <a href="ImportPlan.dc.html" style="height: 48px; border-radius: 14px; background: rgba(255,178,36,0.14); color: #FFB224; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4.5h6M8 6h-.5A2.5 2.5 0 0 0 5 8.5v10A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5v-10A2.5 2.5 0 0 0 16.5 6H16"></path><rect x="8" y="3" width="8" height="4" rx="1.5"></rect></svg>
+    Paste the AI’s reply</a>
+
+  <div style="flex: 1"></div>
+  <p style="margin: 0; font-size: 13px; line-height: 18px; color: #8E8E95; text-align: center">Paste the whole reply. SparkSquad finds the plan inside it, fixes small mistakes and shows you a preview first.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

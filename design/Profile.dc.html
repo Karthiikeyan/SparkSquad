@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>You</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+a{color:#FFB224;text-decoration:none}a:hover{color:#FFC75C}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #000000; color: #F5F5F7; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden; padding: 60px 16px 0">
+
+  <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px">
+    <span style="width: 56px; height: 56px; border-radius: 28px; background: #2F2F4A; font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center">KR</span>
+    <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 600; line-height: 28px">Kiran Raj</span>
+      <span style="font-size: 13px; color: #A1A1A8">In 2 squads since October</span>
+    </span>
+    <a href="Settings.dc.html" aria-label="Settings" style="width: 44px; height: 44px; border-radius: 22px; background: #151517; color: #F5F5F7; display: flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+  </div>
+
+  <dl style="margin: 0 0 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <div style="background: #151517; border-radius: 16px; padding: 14px; display: flex; flex-direction: column-reverse; gap: 2px">
+      <dt style="font-size: 13px; color: #A1A1A8">day streak</dt>
+      <dd style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 30px; font-weight: 700; line-height: 34px; color: #FFB224; font-variant-numeric: tabular-nums">12</dd></div>
+    <div style="background: #151517; border-radius: 16px; padding: 14px; display: flex; flex-direction: column-reverse; gap: 2px">
+      <dt style="font-size: 13px; color: #A1A1A8">best streak</dt>
+      <dd style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 30px; font-weight: 700; line-height: 34px; font-variant-numeric: tabular-nums">21</dd></div>
+    <div style="background: #151517; border-radius: 16px; padding: 14px; display: flex; flex-direction: column-reverse; gap: 2px">
+      <dt style="font-size: 13px; color: #A1A1A8">days shown up</dt>
+      <dd style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 30px; font-weight: 700; line-height: 34px; font-variant-numeric: tabular-nums">86%</dd></div>
+  </dl>
+
+  <section style="background: #151517; border-radius: 18px; padding: 16px; margin-bottom: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px">
+      <h2 style="margin: 0; font-size: 15px; font-weight: 600">Last 18 weeks</h2>
+      <span style="font-size: 13px; color: #A1A1A8">108 check-ins</span>
+    </div>
+    <div role="img" aria-label="Check-in activity heatmap, most days active" style="display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(7, 14px); gap: 3px">
+      <sc-for list="{{cells}}" as="c" hint-placeholder-count="126">
+        <span style="{{c}}"></span>
+      </sc-for>
+    </div>
+    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 10px; font-size: 11px; color: #A1A1A8">
+      Less
+      <span style="width: 10px; height: 10px; border-radius: 3px; background: #26262A"></span>
+      <span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(255,178,36,0.35)"></span>
+      <span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(255,178,36,0.65)"></span>
+      <span style="width: 10px; height: 10px; border-radius: 3px; background: #FFB224"></span>
+      More
+    </div>
+  </section>
+
+  <section style="background: #151517; border-radius: 18px; padding: 16px; margin-bottom: 12px">
+    <h2 style="margin: 0 0 12px; font-size: 15px; font-weight: 600">Badges</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+        <span style="width: 48px; height: 48px; border-radius: 24px; background: rgba(255,178,36,0.14); color: #FFB224; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">7</span>
+        <span style="font-size: 12px; color: #D6D6DB">7-day streak</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+        <span style="width: 48px; height: 48px; border-radius: 24px; background: rgba(255,178,36,0.14); color: #FFB224; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">21</span>
+        <span style="font-size: 12px; color: #D6D6DB">21-day streak</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+        <span style="width: 48px; height: 48px; border-radius: 24px; border: 1.5px dashed #48484D; color: #8E8E95; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-sizing: border-box">30</span>
+        <span style="font-size: 12px; color: #A1A1A8">18 days to go</span></div>
+    </div>
+  </section>
+
+  <a href="Plus.dc.html" style="display: flex; align-items: center; gap: 12px; background: #151517; border-radius: 16px; padding: 14px 16px; color: #F5F5F7">
+    <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 15px; font-weight: 500">Free plan</span>
+      <span style="font-size: 13px; color: #A1A1A8">In 2 of 3 squads you can join</span>
+    </span>
+    <span style="font-size: 15px; font-weight: 600; color: #FFB224">See Plus</span>
+  </a>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: rgba(14,14,16,0.94); border-top: 0.5px solid rgba(84,84,88,0.6); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; padding-top: 6px; box-sizing: border-box">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>Today</a>
+    <a href="Squad.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Squads</a>
+    <a href="CheckIn.dc.html" aria-label="Check in" style="justify-self: center; width: 56px; height: 56px; margin-top: -14px; border-radius: 28px; background: #FFB224; color: #1A1200; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(255,178,36,0.28)">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a href="Discover.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9A9AA0; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Discover</a>
+    <a href="Profile.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #FFB224; font-size: 11px; font-weight: 500; padding-top: 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c1.2-4 4.3-6 8-6s6.8 2 8 6"/></svg>You</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var fills = ['#26262A', 'rgba(255,178,36,0.35)', 'rgba(255,178,36,0.65)', '#FFB224'];
+    var cells = [];
+    for (var i = 0; i < 126; i++) {
+      var week = Math.floor(i / 7);
+      var h = (i * 37 + week * 11) % 10;
+      var lvl = week < 4 ? (h < 6 ? 0 : 1) : (h < 2 ? 0 : (h < 4 ? 1 : (h < 7 ? 2 : 3)));
+      if (week >= 16) lvl = h < 1 ? 1 : 3;
+      cells.push('height: 14px; border-radius: 3px; background: ' + fills[lvl] + ';');
+    }
+    return { cells: cells };
+  }
+}
+</script>
+</body>
+</html>
