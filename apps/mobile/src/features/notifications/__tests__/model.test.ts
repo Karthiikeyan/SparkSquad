@@ -49,6 +49,32 @@ describe('inbox copy', () => {
     );
   });
 
+  it('describes comments, grouped fires, new members and milestone days', () => {
+    expect(
+      notificationText(n({ kind: 'comment', payload: { name: 'Asha', body: 'Great work' } })),
+    ).toBe('Asha commented on your check-in: Great work');
+    expect(notificationText(n({ kind: 'fires', payload: { name: 'Ravi', count: 1 } }))).toBe(
+      'Ravi sent fire on your check-in',
+    );
+    expect(notificationText(n({ kind: 'fires', payload: { name: 'Ravi', count: 3 } }))).toBe(
+      'Ravi and 2 more sent fire on your check-in',
+    );
+    expect(
+      notificationText(n({ kind: 'member_joined', payload: { name: 'Mia', squadName: 'S' } })),
+    ).toBe('Mia joined S');
+    expect(
+      notificationText(
+        n({ kind: 'milestone', payload: { squadName: 'S', day: 30, total: 60, title: 'DSA 60' } }),
+      ),
+    ).toBe('S reached day 30 of 60 in DSA 60. Keep going.');
+    expect(
+      notificationRoute(n({ kind: 'comment', payload: { checkinId: 'K1', squadId: 'S1' } })),
+    ).toBe('/checkins/K1');
+    expect(notificationRoute(n({ kind: 'member_joined', payload: { squadId: 'S1' } }))).toBe(
+      '/squad/S1/members',
+    );
+  });
+
   it('groups by the user’s local day', () => {
     const today = n({ id: 'a', createdAt: '2026-10-30T20:00:00.000Z' }); // 01:30 IST on the 31st
     const earlier = n({ id: 'b', createdAt: '2026-10-30T10:00:00.000Z' });
@@ -132,5 +158,56 @@ describe('planReminders', () => {
     expect(planReminders({ ...base, activeTitles: ['A', 'B'] })[0]!.body).toBe(
       '2 challenges are waiting for you today.',
     );
+  });
+
+  it('warns at 10 PM when a streak of 3+ is on the line, and stays quiet when switched off', () => {
+    const plan = planReminders({ ...base, streak: 5, notifyStreakRisk: true });
+    const risk = plan.filter((p) => p.kind === 'streak');
+    expect(risk.map((p) => p.at)).toEqual([
+      new Date(2026, 9, 31, 22, 0),
+      new Date(2026, 10, 1, 22, 0),
+    ]);
+    expect(risk[0]!.title).toBe('Your 5-day streak ends at midnight');
+    const done = planReminders({ ...base, todayDone: true, streak: 5, notifyStreakRisk: true });
+    expect(done.filter((p) => p.kind === 'streak').map((p) => p.id)).toEqual(['streak-1']);
+    expect(
+      planReminders({ ...base, streak: 1, notifyStreakRisk: true }).some(
+        (p) => p.kind === 'streak',
+      ),
+    ).toBe(false);
+    expect(
+      planReminders({ ...base, streak: 5, notifyStreakRisk: false }).some(
+        (p) => p.kind === 'streak',
+      ),
+    ).toBe(false);
+    const lateReminder = planReminders({
+      ...base,
+      reminderTime: '21:45',
+      streak: 5,
+      notifyStreakRisk: true,
+    });
+    expect(lateReminder.find((p) => p.id === 'streak-0')?.at).toEqual(new Date(2026, 9, 31, 23, 0));
+  });
+
+  it('plans the evening before and the morning a challenge starts', () => {
+    const plan = planReminders({
+      ...base,
+      activeTitles: [],
+      upcoming: [{ title: 'SQL 30', startDate: '2026-11-02', squadId: 'S1' }],
+      notifyChallengeStart: true,
+    });
+    expect(plan.map((p) => [p.id, p.at])).toEqual([
+      ['start-eve-0', new Date(2026, 10, 1, 19, 0)],
+      ['start-day-0', new Date(2026, 10, 2, 8, 0)],
+    ]);
+    expect(plan[0]!.title).toBe('SQL 30 starts tomorrow');
+    expect(plan[0]!.data).toEqual({ squadId: 'S1' });
+    expect(
+      planReminders({
+        ...base,
+        upcoming: [{ title: 'SQL 30', startDate: '2026-11-02', squadId: 'S1' }],
+        notifyChallengeStart: false,
+      }).some((p) => p.kind === 'start'),
+    ).toBe(false);
   });
 });

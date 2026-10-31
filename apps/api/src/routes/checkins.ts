@@ -28,8 +28,8 @@ import {
   takeUsage,
   userPlan,
 } from '../services/access';
-import { isSquadPro, toCheckin, toComment, toStreak } from '../services/dto';
-import { addNotification } from '../services/notify';
+import { displayNameOf, isSquadPro, toCheckin, toComment, toStreak } from '../services/dto';
+import { addNotification, addNotificationIf, notifyFires } from '../services/notify';
 import { effectiveDay } from '../services/plans';
 import { signedUrl } from '../services/r2';
 import { awardBadges, recomputeChallengeStreak, recomputeGlobalStreak } from '../services/streaks';
@@ -249,7 +249,7 @@ checkinRoutes.get('/:id', async (c) => {
 async function setReaction(c: Parameters<typeof db>[0], on: boolean) {
   const d = db(c);
   const me = c.get('user');
-  const { row } = await loadCheckin(d, c.req.param('id')!, me.id);
+  const { row, squad } = await loadCheckin(d, c.req.param('id')!, me.id);
   if (on) {
     await d
       .insert(reactions)
@@ -281,6 +281,16 @@ async function setReaction(c: Parameters<typeof db>[0], on: boolean) {
     .from(checkins)
     .where(eq(checkins.id, row.id))
     .get();
+  if (on && row.userId !== me.id && (fresh?.n ?? 0) > 0) {
+    const actor = await d.select().from(user).where(eq(user.id, me.id)).get();
+    await notifyFires(d, row.userId, {
+      checkinId: row.id,
+      squadId: squad.id,
+      squadName: squad.name,
+      name: actor ? displayNameOf(actor) : '',
+      count: fresh?.n ?? 0,
+    });
+  }
   return c.json({ reactionCount: fresh?.n ?? 0, reactedByMe: on });
 }
 
@@ -351,6 +361,15 @@ checkinRoutes.post('/:id/comments', async (c) => {
       .where(eq(checkins.id, row.id)),
   ]);
   const author = await d.select().from(user).where(eq(user.id, me.id)).get();
+  if (row.userId !== me.id) {
+    await addNotificationIf(d, row.userId, 'notifyComments', 'comment', {
+      checkinId: row.id,
+      squadId: squad.id,
+      squadName: squad.name,
+      name: author ? displayNameOf(author) : '',
+      body: input.body.slice(0, 80),
+    });
+  }
   return c.json(toComment({ ...comment, hiddenAt: null }, author!), 201);
 });
 

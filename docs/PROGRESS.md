@@ -230,3 +230,7 @@ First run on real hardware. Fixed: NativeWind wrapper breaking pressed-state sty
 - 13 categories across shared, API, app and docs; onboarding interests use them.
 - Squads: rich squad cards (progress, today's avatars, my status / Check in), plan slot count, Find more squads suggestions.
 - Badges: 12 badges with tiers and family icons; summary with Up next; grouped grids; profile strip always shows three.
+
+### Notifications N1–N6 — done
+
+Comments and grouped fires (inbox), streak at risk and challenge starting (local), new members and milestone days (inbox), and a Notifications screen split into "From this phone" and "From your squads" with a switch per type. Migration `0001_notify_settings`: run `pnpm db:migrate:remote` before deploying the API.

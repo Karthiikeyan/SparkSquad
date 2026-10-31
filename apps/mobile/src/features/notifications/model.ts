@@ -28,7 +28,26 @@ export function notificationText(n: NotificationDTO): string {
     case 'announcement':
       return t('inbox.announcement', { squad, body: str(p, 'body') ?? '' });
     case 'milestone':
-      return t('inbox.milestone', { squad });
+      return num(p, 'day')
+        ? t('inbox.milestoneDay', {
+            squad,
+            n: num(p, 'day'),
+            total: num(p, 'total'),
+            title: str(p, 'title') ?? '',
+          })
+        : t('inbox.milestone', { squad });
+    case 'comment':
+      return t('inbox.comment', {
+        name: str(p, 'name') ?? t('inbox.someone'),
+        body: str(p, 'body') ?? '',
+      });
+    case 'fires': {
+      const n = num(p, 'count');
+      const name = str(p, 'name') ?? t('inbox.someone');
+      return n > 1 ? t('inbox.firesMany', { name, n: n - 1 }) : t('inbox.firesOne', { name });
+    }
+    case 'member_joined':
+      return t('inbox.member_joined', { name: str(p, 'name') ?? t('inbox.someone'), squad });
     case 'badge': {
       const badge = str(p, 'badge');
       return t('inbox.badge', { badge: (badge && tMaybe(`badges.${badge}`)) ?? badge ?? '' });
@@ -58,9 +77,12 @@ export function notificationText(n: NotificationDTO): string {
 export function notificationRoute(n: NotificationDTO): string {
   const squadId = str(n.payload, 'squadId');
   const challengeId = str(n.payload, 'challengeId');
+  const checkinId = str(n.payload, 'checkinId');
   if (n.kind === 'badge') return '/you';
+  if ((n.kind === 'comment' || n.kind === 'fires') && checkinId) return `/checkins/${checkinId}`;
   if (!squadId) return '/today';
   if (n.kind === 'join_request') return `/squad/${squadId}/requests`;
+  if (n.kind === 'member_joined') return `/squad/${squadId}/members`;
   if (n.kind === 'challenge_ended' && challengeId)
     return `/squad/${squadId}/history/${challengeId}`;
   if (n.kind === 'freeze_used') return '/today';

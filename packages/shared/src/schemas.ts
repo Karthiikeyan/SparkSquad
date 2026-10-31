@@ -66,6 +66,11 @@ export const updateMeSchema = z
     notifyMissedDay: z.boolean(),
     notifySquadUpdates: z.boolean(),
     notifyNudges: z.boolean(),
+    notifyComments: z.boolean(),
+    notifyMembers: z.boolean(),
+    notifyMilestones: z.boolean(),
+    notifyStreakRisk: z.boolean(),
+    notifyChallengeStart: z.boolean(),
   })
   .partial();
 export type UpdateMeInput = z.infer<typeof updateMeSchema>;

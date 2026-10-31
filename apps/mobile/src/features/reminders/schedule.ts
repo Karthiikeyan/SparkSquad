@@ -23,7 +23,7 @@ export async function applyReminders(planned: readonly PlannedReminder[]): Promi
   for (const p of planned) {
     await n.scheduleNotificationAsync({
       identifier: p.id,
-      content: { title: p.title, body: p.body, data: { type: p.kind } },
+      content: { title: p.title, body: p.body, data: { ...p.data, type: p.kind } },
       trigger: { type: n.SchedulableTriggerInputTypes.DATE, date: p.at, channelId: 'default' },
     });
   }

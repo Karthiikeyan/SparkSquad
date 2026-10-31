@@ -37,7 +37,7 @@ import {
   requireMember,
 } from '../services/access';
 import { toChallenge, toMember, toPublicUser, toSquad } from '../services/dto';
-import { addNotification } from '../services/notify';
+import { addNotification, addNotificationIf } from '../services/notify';
 import { activeChallenge, managerIds, recountMembers, uniqueInviteCode } from '../services/squads';
 import { memberConsistency } from '../services/leaderboard';
 
@@ -180,6 +180,15 @@ squadRoutes.post('/join', async (c) => {
     .run();
   if (status === 'active') {
     await recountMembers(d, [sq.id]);
+    for (const id of await managerIds(d, sq.id)) {
+      if (id === me.id) continue;
+      await addNotificationIf(d, id, 'notifyMembers', 'member_joined', {
+        squadId: sq.id,
+        squadName: sq.name,
+        userId: me.id,
+        name: me.name,
+      });
+    }
   } else {
     for (const id of await managerIds(d, sq.id)) {
       await addNotification(d, id, 'join_request', {

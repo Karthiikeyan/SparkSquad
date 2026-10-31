@@ -124,7 +124,7 @@ Errors: `{ error: { code, message } }` with stable codes (`LIMIT_SQUADS_JOINED`,
 
 1. **No realtime sockets** for free users. Board refreshes on app open, pull-to-refresh, after own actions, and when a push arrives. (Paid chat in v2 = Durable Objects with WebSocket hibernation — not now.)
 2. **Delta sync** with cursors; phones never refetch whole boards.
-3. **Reminders are local notifications** (expo-notifications scheduled on device).
+3. **Reminders are local notifications** (expo-notifications scheduled on device): daily reminder, missed-day note (8 AM), streak at risk (10 PM, or 11 PM after a late reminder; streak of 3+), challenge starting (7 PM the day before, 8 AM on the day).
 4. **Server pushes batched**: cron builds at most 2 digest pushes per user per day; nudges are the only immediate push.
 5. **Photos**: Free never uploads. Plus compresses on device (expo-image-manipulator, max 1080 px, ~100 KB) and uploads straight to R2 with a presigned URL; R2 lifecycle deletes.
 6. **Images made on device** (share card, commitment card) with react-native-view-shot.

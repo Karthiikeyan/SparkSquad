@@ -28,7 +28,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 | B5 | Check-in success | modal `checkin/success` | Peak moment: ring animates to full, "Day 12 done. 12-day streak.", squad count, buttons: Share card, Back to Today. Badge unlock variant. |
 | B6 | Streak freeze used | sheet | "You missed yesterday. A streak freeze kept your 12-day streak." (shown once next morning). |
 | B7 | Backfill yesterday | sheet | From missed-day banner: check in for yesterday until midnight today. |
-| B8 | Notifications inbox | `notifications` | Nudges, approvals, announcements, milestones; grouped Today / Earlier; mark all read. |
+| B8 | Notifications inbox | `notifications` | Nudges, approvals, announcements, milestone days, comments and grouped fires on my check-ins, new members in squads I run, badges; grouped Today / Earlier; mark all read. |
 
 ## C. Squads (tab 2)  `(tabs)/squads`
 | # | Screen | Route | Notes |
@@ -82,7 +82,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 | F5 | Settings **[D] Settings** | `settings` | Sections: AI plan builder, Reminders, Integrations, Plan & billing, Your data, Help, About. |
 | F6 | AI key setup | `settings/ai` | Provider segmented (Gemini/OpenAI/Claude), key field (paste, masked), Test, daily limit stepper, on-device AI status, how-to-get-a-key links per provider, Remove key. |
 | F7 | Integrations | `settings/integrations` | GitHub username, LeetCode username, Codeforces handle (public handles only, validated by a test fetch), Health Connect / HealthKit connect (steps permission). |
-| F8 | Notifications | `settings/notifications` | Daily reminder time, missed-day note on/off, squad updates on/off, nudges on/off. |
+| F8 | Notifications | `settings/notifications` | From this phone: daily reminder time, missed-day note, streak at risk, challenge starting. From your squads: nudges, squad updates (digest), comments and fires, new members, milestones. |
 | F9 | Plus paywall **[D] Plus** | modal `paywall/plus` | Free vs Plus table, Yearly (default, "save 33%") / Monthly, Start Plus, Restore, Squad Pro link, cancel note. Prices from RevenueCat offerings, never hard-coded. With `PAYMENTS_ENABLED=false`: same layout, prices shown from config, button "Plus is coming soon. Get notified". |
 | F10 | Squad Pro paywall | modal `paywall/squad-pro` | For owners; pick squad; feature list. |
 | F11 | Plan & billing | `settings/billing` | Current plan, renewal date, manage subscription (opens store), restore. |
