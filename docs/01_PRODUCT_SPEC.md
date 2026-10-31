@@ -81,7 +81,7 @@ Join or create a squad → challenge with a day-by-day plan → daily check-in (
 | Comment history | 30 days | 90 days | 90 days |
 | Streak freezes banked | 2 | 5 | — |
 | Weekly recap | template | AI (on-device or BYOK) | AI squad summary for owner |
-| In-app AI plan builder (BYOK) | — (copy-prompt flow is free) | ✓ | ✓ |
+| In-app AI plan builder (BYOK) | ✓ (own key; copy-prompt flow needs none) | ✓ | ✓ |
 | Owner tools | basic | basic | analytics, CSV export, challenge series, custom branding |
 | Chat | link to WhatsApp/Telegram | same | in-app squad chat (**v2, do not build in v1**) |
 

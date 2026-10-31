@@ -18,8 +18,17 @@
     "today": "Today",
     "squads": "Squads",
     "checkIn": "Check in",
+    "checkInHint": "Long press to mark everything waiting today as done",
     "discover": "Discover",
     "you": "You"
+  },
+  "quickCheckin": {
+    "title": "Did it all?",
+    "bodyOne": "Marks all {{n}} tasks in {{title}} as done for today.",
+    "bodyMany": "Marks all {{n}} tasks across {{count}} challenges as done for today.",
+    "confirm": "Mark all done",
+    "nothing": "Nothing is waiting for a check-in right now.",
+    "doneMany": "Checked in for {{n}} challenges."
   },
   "offline": {
     "banner": "Offline. Check-ins will sync when you’re back."
@@ -449,6 +458,9 @@
     "findMoreAny": "Popular public squads you can join.",
     "browse": "Browse Discover",
     "quickActions": "Quick actions",
+    "streakLabel": "Your streak here: {{n}} days",
+    "soloHint": "Just you so far. Bring a friend along.",
+    "invite": "Invite friends",
     "roleOwner": "Owner",
     "roleAdmin": "Admin",
     "roleMember": "Member"
@@ -770,6 +782,7 @@
     "optBlankBody": "Add tasks day by day yourself",
     "tagFree": "Free",
     "tagPlus": "Plus",
+    "tagOwnKey": "Your key",
     "formatNote": "Plans use one open format, so a plan made anywhere can be imported here and shared with other squads.",
     "lowercasePrivate": "private",
     "lowercasePublic": "public"

@@ -53,8 +53,15 @@ describe('comparisonRows', () => {
       ['Photo proof', 'On your phone', 'Shared, 30 days'],
       ['Streak freezes', '2', '5'],
       ['Weekly recap', 'Summary', 'AI-written'],
-      ['Plan builder', 'Copy prompt', 'In the app'],
     ]);
+  });
+
+  it('hides rows where Free and Plus are the same', () => {
+    const rows = comparisonRows({
+      ...TIER_LIMITS,
+      free: { ...TIER_LIMITS.free, aiBuilder: false },
+    });
+    expect(rows.at(-1)).toEqual({ label: 'Plan builder', free: 'Copy prompt', plus: 'In the app' });
   });
 
   it('follows the config when limits change', () => {

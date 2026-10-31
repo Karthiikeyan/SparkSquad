@@ -234,3 +234,7 @@ First run on real hardware. Fixed: NativeWind wrapper breaking pressed-state sty
 ### Notifications N1–N6 — done
 
 Comments and grouped fires (inbox), streak at risk and challenge starting (local), new members and milestone days (inbox), and a Notifications screen split into "From this phone" and "From your squads" with a switch per type. Migration `0001_notify_settings`: run `pnpm db:migrate:remote` before deploying the API.
+
+### Quick check-in, squad streaks, invite prompt, free BYOK builder — done
+
+Long-press the centre button to mark everything done (confirm first); streak flame on squad cards; Invite friends on solo squads; AI builder open to Free with the user's key (tag "Your key").

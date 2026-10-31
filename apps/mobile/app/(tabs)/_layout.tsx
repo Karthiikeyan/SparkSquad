@@ -2,6 +2,7 @@ import { router, Tabs, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TabBar, useToast, type TabName } from '../../src/components/ui';
+import { useQuickCheckin } from '../../src/features/checkin/quick';
 
 const TAB_NAMES: readonly TabName[] = ['today', 'squads', 'discover', 'you'];
 
@@ -12,6 +13,7 @@ function isTab(name: string | undefined): name is TabName {
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const { setAboveTabBar } = useToast();
+  const quickCheckin = useQuickCheckin();
   useFocusEffect(
     useCallback(() => {
       setAboveTabBar(true);
@@ -39,6 +41,7 @@ export default function TabsLayout() {
               if (index !== state.index && !event.defaultPrevented) navigateToTab(route.key);
             }}
             onCheckIn={() => router.push('/checkin/next')}
+            onCheckInLong={quickCheckin}
           />
         );
       }}

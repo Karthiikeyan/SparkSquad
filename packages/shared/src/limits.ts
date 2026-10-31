@@ -22,7 +22,8 @@ export const TIER_LIMITS: Record<UserPlan, TierLimits> = {
     commentRetentionDays: 30,
     photoUpload: false,
     photoRetentionDays: 0,
-    aiBuilder: false,
+    // BYOK: the phone calls the user's own provider, so this costs SparkSquad nothing.
+    aiBuilder: true,
   },
   plus: {
     squadsJoined: 10,

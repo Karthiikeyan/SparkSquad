@@ -47,6 +47,15 @@ export function draftDoneCount(tasks: readonly PlanTask[], draft: DraftValues): 
   return computeCheckinStatus(tasks, toTaskValues(tasks, draft)).completed;
 }
 
+/** "I did it all": every task at its target. */
+export function allDoneDraft(tasks: readonly PlanTask[]): DraftValues {
+  const out: DraftValues = {};
+  tasks.forEach((task, i) => {
+    out[i] = task.type === 'check' ? true : (task.target ?? 1);
+  });
+  return out;
+}
+
 export interface SubmitArgs {
   db: LocalDb;
   outbox: Pick<Outbox, 'enqueue'>;

@@ -4,12 +4,15 @@ import { createOutbox } from '../../../lib/outbox/outbox';
 import { checkin, ME_ID } from '../../../test/fixtures';
 import { createTestDb } from '../../../test/testDb';
 import {
+  allDoneDraft,
   draftDoneCount,
   fromTaskValues,
   submitCheckin,
   toggleDraft,
   toTaskValues,
 } from '../submit';
+import { quickCards } from '../quick';
+import type { TodayCard } from '../../today/model';
 
 const tasks: PlanTask[] = [
   { id: 'a', title: 'Problems', type: 'count', target: 2, unit: 'problems' },
@@ -18,6 +21,31 @@ const tasks: PlanTask[] = [
 ];
 
 describe('draft values', () => {
+  it('fills every task to its target for "I did it all"', () => {
+    const draft = allDoneDraft(tasks);
+    expect(draft).toEqual({ 0: 2, 1: 30, 2: true });
+    expect(draftDoneCount(tasks, draft)).toBe(3);
+  });
+
+  it('quick check-in skips done, rest-day and step challenges', () => {
+    const card = (over: Partial<TodayCard>): TodayCard =>
+      ({
+        state: 'active',
+        mine: null,
+        kind: 'tasks',
+        day: { day: 1, title: 'D', tasks },
+        ...over,
+      }) as TodayCard;
+    const list = [
+      card({}),
+      card({ mine: {} as TodayCard['mine'] }),
+      card({ day: { day: 1, title: 'R', rest: true, tasks: [] } }),
+      card({ kind: 'steps' }),
+      card({ state: 'upcoming' }),
+    ];
+    expect(quickCards(list)).toHaveLength(1);
+  });
+
   it('maps drafts to typed wire values', () => {
     expect(toTaskValues(tasks, { 0: true, 1: 12.6, 2: 1 })).toEqual([
       { t: 0, v: 2 },

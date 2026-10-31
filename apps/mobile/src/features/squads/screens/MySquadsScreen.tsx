@@ -1,7 +1,16 @@
 import { limitsFor, type Category, type SquadPreviewDTO } from '@sparksquad/shared';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { CheckCircle2, ChevronRight, Clock, Compass, Moon, Users } from 'lucide-react-native';
+import {
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Compass,
+  Flame,
+  Moon,
+  UserPlus,
+  Users,
+} from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import {
   AvatarRing,
@@ -23,6 +32,8 @@ import { formatLocalDate } from '../../../lib/format';
 import { useOnline } from '../../../lib/hooks/useOnline';
 import { qk } from '../../../lib/query/keys';
 import { useLocalQuery } from '../../../lib/query/useLocalQuery';
+import { streaks } from '../../../lib/db/schema';
+import { eq } from 'drizzle-orm';
 import { colors, fonts, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
 import { SquadList } from '../../discover/parts';
@@ -46,6 +57,8 @@ interface Row {
   total: number;
   ring: RingMember[];
   mine: MyState;
+  /** My streak in this squad's challenge (0 when none). */
+  streak: number;
   role: 'owner' | 'admin' | 'member' | null;
   manages: boolean;
   privacy: 'public' | 'private';
@@ -80,6 +93,9 @@ export function MySquadsScreen() {
           : board.day?.rest
             ? 'rest'
             : 'pending';
+      const streakRow = ch
+        ? await db.select().from(streaks).where(eq(streaks.scope, ch.id)).get()
+        : undefined;
       rows.push({
         id,
         name: src.squad.name,
@@ -98,6 +114,7 @@ export function MySquadsScreen() {
           checked: m.checked,
         })),
         mine,
+        streak: streakRow?.current ?? 0,
         role: src.myRole,
         manages: canManage(src.myRole),
         privacy: src.squad.privacy,
@@ -272,6 +289,18 @@ function SquadCard({ r }: { r: Row }) {
             {r.line}
           </Text>
         </View>
+        {r.streak > 0 ? (
+          <View
+            style={styles.streak}
+            accessible
+            accessibilityLabel={t('squads.streakLabel', { n: r.streak })}
+          >
+            <Flame size={16} color={colors.accent} strokeWidth={iconStroke} />
+            <Text variant="bodySemibold" color="accent" tabular>
+              {r.streak}
+            </Text>
+          </View>
+        ) : null}
         <ChevronRight size={18} color={colors.iconMuted} strokeWidth={iconStroke} />
       </View>
 
@@ -295,6 +324,23 @@ function SquadCard({ r }: { r: Row }) {
             <StatusPill r={r} />
           </View>
         </>
+      ) : null}
+
+      {r.total === 1 && r.manages ? (
+        <View style={styles.solo}>
+          <Text variant="footnote" color="label2" style={styles.flex}>
+            {t('squads.soloHint')}
+          </Text>
+          <Button
+            label={t('squads.invite')}
+            variant="soft"
+            size="sm"
+            icon={<UserPlus size={16} color={colors.accent} strokeWidth={iconStroke} />}
+            accessibilityLabel={`${t('squads.invite')}, ${r.name}`}
+            onPress={() => router.push({ pathname: '/squad/[id]/invite', params: { id: r.id } })}
+            testID={`invite-${r.id}`}
+          />
+        </View>
       ) : null}
     </Pressable>
   );
@@ -387,6 +433,15 @@ const styles = StyleSheet.create({
   cardFoot: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 34 },
   today: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
   pill: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  streak: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  solo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.separator,
+    paddingTop: 12,
+  },
   slots: { marginTop: 10, marginHorizontal: 4 },
   block: { marginTop: 24 },
   group: { backgroundColor: colors.surface, borderRadius: radius.listLarge, paddingHorizontal: 16 },
