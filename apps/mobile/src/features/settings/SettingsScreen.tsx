@@ -14,6 +14,7 @@ import {
 } from '../../components/ui';
 import { t, type TKey } from '../../i18n';
 import { getAiKey, type AiProvider } from '../../lib/aiKeys';
+import { analyticsOptedOut, setAnalyticsOptOut } from '../../lib/analytics';
 import { env } from '../../lib/env';
 import { getPref, type Prefs } from '../../lib/prefs';
 import { getRuntime } from '../../lib/runtime';
@@ -43,6 +44,7 @@ export function SettingsScreen() {
   const patch = useMePatch();
   const [aiProvider, setAiProvider] = useState<AiProvider | null>(null);
   const [theme, setTheme] = useState<Prefs['theme']>(getPref('theme') ?? 'dark');
+  const [shareUsage, setShareUsage] = useState(!analyticsOptedOut());
 
   useEffect(() => {
     let alive = true;
@@ -168,6 +170,17 @@ export function SettingsScreen() {
           title={t('settingsMain.export')}
           chevron
           onPress={() => router.push('/settings/export')}
+        />
+        <ListRow
+          title={t('settingsMain.usageData')}
+          subtitle={t('settingsMain.usageDataBody')}
+          toggle={{
+            value: shareUsage,
+            onValueChange: (v) => {
+              setShareUsage(v);
+              setAnalyticsOptOut(!v);
+            },
+          }}
         />
         <ListRow
           title={t('settingsMain.delete')}

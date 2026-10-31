@@ -12,7 +12,7 @@
 - [x] 7. Create and join D1–D11, E1–E4
 - [x] 8. You and settings F1–F16, weekly recap
 - [x] 9. Polish and hardening
-- [ ] 10. Documentation (SETUP.md, README, final PROGRESS/DECISIONS)
+- [x] 10. Documentation (SETUP.md, README, final PROGRESS/DECISIONS)
 
 ## Log
 
@@ -190,3 +190,26 @@
 - Brand icons are placeholders.
 
 **Notes for the next session:** SETUP.md must list every env var: mobile `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `EXPO_PUBLIC_PAYMENTS_ENABLED`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_POSTHOG_KEY`, `EXPO_PUBLIC_POSTHOG_HOST`, `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_IOS_STORE_URL`, `EXPO_PUBLIC_LIGHT_THEME`, `EAS_PROJECT_ID`, `APP_VARIANT`; api vars and secrets from `apps/api/src/env.ts` and `wrangler.toml` (including `PRICE_*`, `REVENUECAT_WEBHOOK_SECRET`, `ADMIN_EMAILS`). RevenueCat names: offerings `plus` and `squad_pro` (annual + monthly packages), entitlements `plus` and `squad_pro`, subscriber attribute `squad_id`. Health: Play Console health permissions declaration for READ_STEPS; HealthKit capability. Follow the SETUP.md spec in the master prompt (sections 1–9), including the breach procedure (DPDP).
+
+### Phase 10 — done
+
+- `SETUP.md`: prerequisites with versions; every environment variable and secret (mobile, API vars, API secrets) with where to get it and where it goes; step-by-step Cloudflare (D1, R2 + lifecycle rules, R2 token, rate limiting, cron, secrets, deploy, optional domain), Better Auth, Google, Apple (including client-secret generation), Resend, Expo/EAS (FCM v1, APNs, channels), RevenueCat (Later), PostHog/Sentry, Health Connect/HealthKit; running locally; deploying the API, EAS builds and EAS Update; Play Console and App Store checklists; templates, admins and moderation; costs and when to move to Workers Paid; troubleshooting for the ten most likely errors; the DPDP breach procedure.
+- `README.md` rewritten: what v1 does, repository layout, quick start, scripts, links to all docs.
+- Analytics opt-out switch wired (E109).
+
+## Status
+
+All phases 0–10 are done. Typecheck, lint and tests are green; Android and iOS bundles build.
+
+**Still needs you (accounts and devices):**
+- Create the Cloudflare, Google, Apple, Resend, Expo and (later) RevenueCat accounts and fill in the variables in SETUP.md §2.
+- Make development builds and test on real phones: sign-in, push, Health Connect/HealthKit, on-device AI, photo upload, purchases. None of these were run on hardware in the build environment.
+- Replace the placeholder spark icon with final brand art before store submission.
+- Optional: buy a domain for universal links (D5).
+
+**Known limitations:**
+- History and heatmap only cover check-ins stored on the phone (the first sync returns the last 7 days).
+- Light theme is wired but hidden until `EXPO_PUBLIC_LIGHT_THEME=true` (D6).
+- RevenueCat purchases are untested against real store products.
+
+Next step: run the final audit (Prompt 3 in the master prompt) and write `docs/AUDIT.md`.

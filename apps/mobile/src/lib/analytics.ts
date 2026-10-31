@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 import PostHog from 'posthog-react-native';
 import { env } from './env';
+import { getPref, setPref } from './prefs';
 
 export type AnalyticsValue = string | number | boolean | null;
 export type AnalyticsProps = Record<string, AnalyticsValue | undefined>;
@@ -34,6 +35,7 @@ export function initAnalytics(): void {
     posthog = new PostHog(env.posthogKey, {
       host: env.posthogHost,
       captureAppLifecycleEvents: true,
+      defaultOptIn: !optedOut(),
     });
   }
   if (env.sentryDsn && !sentryReady) {
@@ -65,11 +67,12 @@ export function initAnalytics(): void {
 }
 
 export function track(event: string, props?: AnalyticsProps): void {
+  if (optedOut()) return;
   posthog?.capture(event, sanitizeProps(props));
 }
 
 export function identify(userId: string): void {
-  posthog?.identify(userId);
+  if (!optedOut()) posthog?.identify(userId);
   if (sentryReady) Sentry.setUser({ id: userId });
 }
 
@@ -78,10 +81,18 @@ export function resetAnalytics(): void {
   if (sentryReady) Sentry.setUser(null);
 }
 
+const optedOut = () => getPref('analyticsOptOut') === true;
+
+/** Settings › Your data: stops anonymous usage events (crash reports are unaffected). */
 export function setAnalyticsOptOut(optOut: boolean): void {
+  setPref('analyticsOptOut', optOut);
   if (!posthog) return;
   if (optOut) void posthog.optOut();
   else void posthog.optIn();
+}
+
+export function analyticsOptedOut(): boolean {
+  return optedOut();
 }
 
 export function captureError(error: unknown): void {
