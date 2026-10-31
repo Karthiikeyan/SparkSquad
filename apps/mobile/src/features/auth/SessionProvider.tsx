@@ -20,6 +20,7 @@ import { registerPushToken, unregisterPushToken } from '../../lib/notifications'
 import { getPref, removePref, setPref } from '../../lib/prefs';
 import { clearLocalData, getRuntime, refresh, setSignedIn } from '../../lib/runtime';
 import { KV_ME } from '../../lib/sync/applySync';
+import { clearReminders } from '../reminders/schedule';
 import { hasRequiredProfile, type SessionStatus } from './routing';
 import { signOutGoogle } from './signIn';
 
@@ -180,6 +181,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         // Clear the local session even if the server can't be reached.
       }
       await signOutGoogle();
+      await clearReminders();
       await clearLocalData();
       removePref('onboardedUserId');
       removePref('pendingInvite');

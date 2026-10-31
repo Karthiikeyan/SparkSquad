@@ -46,3 +46,23 @@ export function removePref(key: keyof Prefs): void {
 export function clearPrefs(): void {
   mmkv().clearAll();
 }
+
+/* Keyed JSON values outside the fixed Prefs shape (drafts, local photo paths). */
+
+export function getKeyed<T>(namespace: 'draft' | 'photo', key: string): T | undefined {
+  const raw = mmkv().getString(`${namespace}:${key}`);
+  if (raw === undefined) return undefined;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return undefined;
+  }
+}
+
+export function setKeyed(namespace: 'draft' | 'photo', key: string, value: unknown): void {
+  mmkv().set(`${namespace}:${key}`, JSON.stringify(value));
+}
+
+export function removeKeyed(namespace: 'draft' | 'photo', key: string): void {
+  mmkv().remove(`${namespace}:${key}`);
+}

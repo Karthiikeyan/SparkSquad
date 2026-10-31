@@ -6,6 +6,7 @@ import { openLocalDb } from './db/client';
 import type { LocalDb } from './db/types';
 import { createOutboxHandlers, revertRejected } from './outbox/handlers';
 import { createOutbox, type Outbox } from './outbox/outbox';
+import { ensurePlans } from './plans';
 import { wipeLocalData } from './sync/applySync';
 import { createSyncEngine, type SyncEngine } from './sync/engine';
 
@@ -63,6 +64,7 @@ export async function refresh(): Promise<void> {
     // Retried on the next trigger.
   }
   await runtime.sync.sync();
+  if ((await ensurePlans(runtime.db)) > 0) appEvents.emit('syncCompleted');
 }
 
 let listening = false;

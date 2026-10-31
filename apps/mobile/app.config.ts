@@ -54,6 +54,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-secure-store',
     'expo-sqlite',
     'expo-apple-authentication',
+    [
+      'expo-image-picker',
+      {
+        photosPermission:
+          'SparkSquad uses your photos so you can add proof to a check-in. Free plan photos stay on this phone.',
+        cameraPermission: false,
+        microphonePermission: false,
+      },
+    ],
     '@react-native-community/datetimepicker',
     [
       'expo-notifications',

@@ -52,3 +52,13 @@ jest.mock('react-native-safe-area-context', () => {
     initialWindowMetrics: { insets: inset, frame },
   };
 });
+
+// The Better Auth client is ESM and talks to the network; unit tests never sign in.
+jest.mock('./src/lib/auth', () => ({
+  authClient: {
+    useSession: () => ({ data: null, isPending: false, error: null, refetch: jest.fn() }),
+    signOut: jest.fn(),
+    getCookie: jest.fn(async () => ''),
+  },
+  authCookie: jest.fn(async () => ''),
+}));

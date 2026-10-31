@@ -7,7 +7,7 @@
 - [x] 2. apps/api (Drizzle schema + migrations, Better Auth, all endpoints, sync, R2, webhooks, push, cron, moderation, admin, seeding, integration tests)
 - [x] 3. apps/mobile foundation (tokens, fonts, components, navigation, API client, Query, SQLite + outbox, banners, toasts, i18n, analytics)
 - [x] 4. Auth and onboarding A1â€“A10 + invite deep links
-- [ ] 5. Core loop B1â€“B8, reminders, push
+- [x] 5. Core loop B1â€“B8, reminders, push
 - [ ] 6. Squads C1â€“C15
 - [ ] 7. Create and join D1â€“D11, E1â€“E4
 - [ ] 8. You and settings F1â€“F16, weekly recap
@@ -87,3 +87,25 @@
 - Native sign-in, push and pickers need a development build (`expo run:android` / EAS); they can't run in Expo Go.
 
 **Notes for the next session:** design files read so far: Main, CheckIn, Welcome, Squad, Leaderboard, Plan, Discover, Profile, Settings. Read the rest (CreateSquad, ImportPlan, AIPrompt, AIBuild, Plus, ShareCard) before building those screens. Signed-in screens get the user from `useMe()` and session helpers from `useSession()`. Add routes for new signed-in screens inside the `ready` guard in `src/components/RootNavigator.tsx`. `api` endpoints live in `src/lib/api/endpoints.ts`. Local reads go through `useLocalQuery` with keys under `qk.local`; writes go through `getRuntime().outbox.enqueue(...)` after an optimistic local write (see `upsertCheckinRow(..., 1)`). Reminder time is in `me.reminderTime` and MMKV `reminderTime`; Phase 5 schedules the local notification (`src/lib/notifications.ts` already handles permission). Tab roots still use `FoundationTab` until their phase replaces them.
+
+### Phase 5 — done
+
+- Plans: `src/lib/plans.ts` caches plan JSON by hash after each sync and overlays day edits (`effectiveDay`).
+- Today (B1–B3, B6, B7): `src/features/today/` — `model.ts` (pure `buildTodayCards`: active/upcoming/finished, plan loading, day number, effective day, squad ring, my check-in + sync state, steps variant, backfill offer, sort; `pendingCards`, `predictedStreak`), `source.ts` (one local read), `ChallengeCard.tsx` (tasks with draft ticks and "Check in (n of m done)", B3 collapsed card with time / edit / sync clock / squad progress, rest day, steps card, upcoming, backfill banner), `HeaderActions.tsx` (streak pill, bell with unread dot), `TodayScreen.tsx` (loading/empty/error/offline, freeze sheet).
+- Check-in (B4, B5): `src/features/checkin/` — `CheckinSheet.tsx` (challenge picker when several are pending, steppers/switches, note with counter, device-only photo, honest miss, edits until midnight tomorrow, backfill title), `submit.ts` (optimistic pending row + outbox), `drafts.ts`, `localProof.ts`, `SuccessScreen.tsx` (animated squad ring, haptic, streak, badges, offline note).
+- Inbox (B8): `src/features/notifications/` — copy per kind, Today/Earlier groups, unread dots, mark one/all read.
+- Reminders: `src/features/reminders/` (pure 7-day planner + morning missed-day note, native scheduler); Push: `src/features/push/AppBackground.tsx` (foreground display, refresh on receive, tap routing, cold start).
+- Routes: `checkin/[challengeId]` (sheet, `next` = first pending), `checkin/success`, `notifications`; the centre tab button opens the sheet.
+- 124 mobile tests (card model, submit/drafts, plan cache, reminders planner, inbox copy/grouping/freeze notice, task text, card rendering for B1/B3/B7/upcoming). Android bundle builds.
+
+**Next:** Phase 6 — Squads C1–C15.
+
+**Known issues:**
+- Share card button on the success screen arrives with C13 (Phase 6).
+- Tapping a card header goes to the Squads tab until the squad board exists (Phase 6).
+- Verified task labels and pre-filled values need integrations (Phase 8); steps are entered by hand until then.
+- Plus photo upload (presigned R2) is deferred to the billing phase; free device-only proof works.
+- Paywall routes (F9/F10) don't exist yet; limit errors show a toast until Phase 8.
+- Native sign-in, push, pickers and photos need a development build.
+
+**Notes for the next session:** read `design/Squad.dc.html`, `Leaderboard.dc.html`, `Plan.dc.html`, `ShareCard.dc.html` before Phase 6. Squad board data: local `members`, `checkins` (14 days of others), `nudges`, `announcements`; reactions/comments/nudges go through the outbox kinds that already exist (`fire`, `comment`, `nudge`). Update `notificationRoute`/`routeForNotification` and the Today card's `onOpenSquad` to the new `squad/[id]` route. Add the share card button to `SuccessScreen.tsx`.

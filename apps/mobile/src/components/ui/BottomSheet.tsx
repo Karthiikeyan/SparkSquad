@@ -18,6 +18,8 @@ export interface BottomSheetProps {
   onClose: () => void;
   children: ReactNode;
   accessibilityLabel: string;
+  /** Called after the close animation finishes (navigate away here). */
+  onClosed?: () => void;
   /** Distance from the top of the screen (CheckIn design: 128). Omit to size to content. */
   top?: number;
 }
@@ -26,6 +28,7 @@ export interface BottomSheetProps {
 export function BottomSheet({
   visible,
   onClose,
+  onClosed,
   children,
   accessibilityLabel,
   top,
@@ -35,6 +38,8 @@ export function BottomSheet({
   const reduced = useReducedMotion();
   const progress = useRef(new Animated.Value(0)).current;
   const [mounted, setMounted] = useState(visible);
+  const closedRef = useRef(onClosed);
+  closedRef.current = onClosed;
 
   useEffect(() => {
     if (visible) setMounted(true);
@@ -44,7 +49,10 @@ export function BottomSheet({
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start(({ finished }) => {
-      if (finished && !visible) setMounted(false);
+      if (finished && !visible) {
+        setMounted(false);
+        closedRef.current?.();
+      }
     });
   }, [visible, progress, reduced]);
 
