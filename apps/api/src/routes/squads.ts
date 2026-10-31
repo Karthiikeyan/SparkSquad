@@ -27,6 +27,7 @@ import {
   user,
 } from '../db/schema';
 import type { AppEnv } from '../env';
+import { chunks } from '../lib/chunk';
 import { ApiError, errors } from '../lib/errors';
 import { body, db, nowIso } from '../lib/http';
 import {
@@ -34,9 +35,15 @@ import {
   assertCanOwn,
   assertClean,
   blockedByMe,
+  isBlockedEitherWay,
+  joinLimitError,
+  overJoinLimit,
+  overOwnLimit,
+  ownLimitError,
   requireMember,
+  takeUsage,
 } from '../services/access';
-import { toChallenge, toMember, toPublicUser, toSquad } from '../services/dto';
+import { displayNameOf, toChallenge, toMember, toPublicUser, toSquad } from '../services/dto';
 import { addNotification } from '../services/notify';
 import { activeChallenge, managerIds, recountMembers, uniqueInviteCode } from '../services/squads';
 import { memberConsistency } from '../services/leaderboard';
@@ -119,8 +126,34 @@ squadRoutes.post('/', async (c) => {
       updatedAt: ts,
     }),
   ]);
+  // Concurrent creates can both pass the pre-check; undo this one if it overshot.
+  if ((await overOwnLimit(d, me.id)) || (await overJoinLimit(d, me.id))) {
+    const ownErr = await overOwnLimit(d, me.id);
+    await d.delete(squadMembers).where(eq(squadMembers.squadId, id)).run();
+    await d.delete(squads).where(eq(squads.id, id)).run();
+    throw ownErr ? await ownLimitError(d, me.id) : await joinLimitError(d, me.id);
+  }
   const sq = await d.select().from(squads).where(eq(squads.id, id)).get();
   return c.json(toSquad(sq!, 'owner'), 201);
+});
+
+/** Withdraw my own pending join request (frees the squadsJoined slot it holds). */
+squadRoutes.delete('/:id/request', async (c) => {
+  const d = db(c);
+  const me = c.get('user');
+  const res = await d
+    .delete(squadMembers)
+    .where(
+      and(
+        eq(squadMembers.squadId, c.req.param('id')),
+        eq(squadMembers.userId, me.id),
+        eq(squadMembers.status, 'pending'),
+      ),
+    )
+    .returning({ id: squadMembers.userId })
+    .all();
+  if (res.length === 0) throw errors.notFound('That request');
+  return c.json({ ok: true });
 });
 
 squadRoutes.post('/join', async (c) => {
@@ -166,6 +199,13 @@ squadRoutes.post('/join', async (c) => {
   if (sq.memberCount >= sq.memberLimit) {
     throw errors.limit('LIMIT_SQUAD_FULL', 'This squad is full.');
   }
+  // Blocks hold in both directions: a blocked user cannot reach the people who run the squad.
+  const managers = await managerIds(d, sq.id);
+  for (const id of managers) {
+    if (await isBlockedEitherWay(d, me.id, id)) {
+      throw errors.forbidden('You can’t join this squad.');
+    }
+  }
   await assertCanJoin(d, me.id);
 
   const status = sq.privacy === 'public' ? 'active' : 'pending';
@@ -178,15 +218,37 @@ squadRoutes.post('/join', async (c) => {
       set: { role: 'member', status, joinedAt: ts, updatedAt: ts },
     })
     .run();
+  // Re-check after the write so concurrent joins cannot both slip under the tier limit.
+  if (await overJoinLimit(d, me.id)) {
+    if (existing) {
+      await d
+        .update(squadMembers)
+        .set({
+          role: existing.role,
+          status: existing.status,
+          joinedAt: existing.joinedAt,
+          updatedAt: existing.updatedAt,
+        })
+        .where(and(eq(squadMembers.squadId, sq.id), eq(squadMembers.userId, me.id)))
+        .run();
+    } else {
+      await d
+        .delete(squadMembers)
+        .where(and(eq(squadMembers.squadId, sq.id), eq(squadMembers.userId, me.id)))
+        .run();
+    }
+    throw await joinLimitError(d, me.id);
+  }
   if (status === 'active') {
     await recountMembers(d, [sq.id]);
   } else {
-    for (const id of await managerIds(d, sq.id)) {
+    const meRow = await d.select().from(user).where(eq(user.id, me.id)).get();
+    for (const id of managers) {
       await addNotification(d, id, 'join_request', {
         squadId: sq.id,
         squadName: sq.name,
         userId: me.id,
-        name: me.name,
+        name: meRow ? displayNameOf(meRow) : 'Member',
       });
     }
   }
@@ -280,7 +342,18 @@ squadRoutes.patch('/:id', async (c) => {
 
 squadRoutes.delete('/:id', async (c) => {
   const d = db(c);
-  const { squad } = await requireMember(d, c.req.param('id'), c.get('user').id, ['owner']);
+  const me = c.get('user');
+  // Owners may delete a squad even after moderation hid it, so it stops counting against them.
+  const squad = await d
+    .select()
+    .from(squads)
+    .where(eq(squads.id, c.req.param('id')))
+    .get();
+  if (!squad || squad.archivedAt) throw errors.notFound('That squad');
+  if (squad.ownerId !== me.id) {
+    if (squad.hiddenAt) throw errors.notFound('That squad');
+    await requireMember(d, squad.id, me.id, ['owner']);
+  }
   const ts = nowIso();
   await d.batch([
     d.update(squads).set({ archivedAt: ts, updatedAt: ts }).where(eq(squads.id, squad.id)),
@@ -295,7 +368,20 @@ squadRoutes.delete('/:id', async (c) => {
 squadRoutes.post('/:id/leave', async (c) => {
   const d = db(c);
   const me = c.get('user');
-  const { squad, member } = await requireMember(d, c.req.param('id'), me.id);
+  // A squad hidden by moderation can still be left, so its slot is not stuck.
+  const squad = await d
+    .select()
+    .from(squads)
+    .where(eq(squads.id, c.req.param('id')))
+    .get();
+  if (!squad || squad.archivedAt) throw errors.notFound('That squad');
+  const member = await d
+    .select()
+    .from(squadMembers)
+    .where(and(eq(squadMembers.squadId, squad.id), eq(squadMembers.userId, me.id)))
+    .get();
+  if (!member || member.status !== 'active')
+    throw errors.forbidden('You’re not a member of this squad.');
   if (member.role === 'owner') {
     throw errors.conflict(
       'OWNER_MUST_TRANSFER',
@@ -332,18 +418,21 @@ squadRoutes.get('/:id/members', async (c) => {
       )
     : new Map<string, number>();
   const ids = rows.map((r) => r.user.id);
-  const streakRows =
-    ch && ids.length
-      ? await d
+  const streakRows: (typeof streaks.$inferSelect)[] = [];
+  const badgeRows: (typeof badges.$inferSelect)[] = [];
+  for (const part of chunks(ids)) {
+    if (ch) {
+      streakRows.push(
+        ...(await d
           .select()
           .from(streaks)
-          .where(and(eq(streaks.scope, ch.id), inArray(streaks.userId, ids)))
-          .all()
-      : [];
+          .where(and(eq(streaks.scope, ch.id), inArray(streaks.userId, part)))
+          .all()),
+      );
+    }
+    badgeRows.push(...(await d.select().from(badges).where(inArray(badges.userId, part)).all()));
+  }
   const streakOf = new Map(streakRows.map((s) => [s.userId, s]));
-  const badgeRows = ids.length
-    ? await d.select().from(badges).where(inArray(badges.userId, ids)).all()
-    : [];
   const members: SquadMemberStatsDTO[] = rows
     .filter((r) => !blocked.has(r.user.id))
     .map((r) => {
@@ -360,7 +449,9 @@ squadRoutes.get('/:id/members', async (c) => {
 
 squadRoutes.get('/:id/requests', async (c) => {
   const d = db(c);
-  const { squad } = await requireMember(d, c.req.param('id'), c.get('user').id, ['owner', 'admin']);
+  const me = c.get('user');
+  const { squad } = await requireMember(d, c.req.param('id'), me.id, ['owner', 'admin']);
+  const blocked = new Set(await blockedByMe(d, me.id));
   const rows = await d
     .select()
     .from(squadMembers)
@@ -368,7 +459,11 @@ squadRoutes.get('/:id/requests', async (c) => {
     .where(and(eq(squadMembers.squadId, squad.id), eq(squadMembers.status, 'pending')))
     .orderBy(asc(squadMembers.joinedAt))
     .all();
-  return c.json({ requests: rows.map((r) => toMember(r.squad_members, r.user)) });
+  return c.json({
+    requests: rows
+      .filter((r) => !blocked.has(r.user.id))
+      .map((r) => toMember(r.squad_members, r.user)),
+  });
 });
 
 async function decide(
@@ -377,33 +472,37 @@ async function decide(
   userIds: string[],
   approve: boolean,
 ): Promise<number> {
-  const pending = await d
-    .select()
-    .from(squadMembers)
-    .where(
-      and(
-        eq(squadMembers.squadId, squad.id),
-        eq(squadMembers.status, 'pending'),
-        inArray(squadMembers.userId, userIds),
-      ),
-    )
-    .all();
+  const pending: (typeof squadMembers.$inferSelect)[] = [];
+  for (const part of chunks(userIds)) {
+    pending.push(
+      ...(await d
+        .select()
+        .from(squadMembers)
+        .where(
+          and(
+            eq(squadMembers.squadId, squad.id),
+            eq(squadMembers.status, 'pending'),
+            inArray(squadMembers.userId, part),
+          ),
+        )
+        .all()),
+    );
+  }
   if (pending.length === 0) return 0;
   const ts = nowIso();
   if (!approve) {
-    await d
-      .delete(squadMembers)
-      .where(
-        and(
-          eq(squadMembers.squadId, squad.id),
-          eq(squadMembers.status, 'pending'),
-          inArray(
-            squadMembers.userId,
-            pending.map((p) => p.userId),
+    for (const part of chunks(pending.map((p) => p.userId))) {
+      await d
+        .delete(squadMembers)
+        .where(
+          and(
+            eq(squadMembers.squadId, squad.id),
+            eq(squadMembers.status, 'pending'),
+            inArray(squadMembers.userId, part),
           ),
-        ),
-      )
-      .run();
+        )
+        .run();
+    }
     return pending.length;
   }
   const room = squad.memberLimit - squad.memberCount;
@@ -413,11 +512,13 @@ async function decide(
       'There isn’t room for everyone. Raise the member limit first.',
     );
   const ids = pending.map((p) => p.userId);
-  await d
-    .update(squadMembers)
-    .set({ status: 'active', joinedAt: ts, updatedAt: ts })
-    .where(and(eq(squadMembers.squadId, squad.id), inArray(squadMembers.userId, ids)))
-    .run();
+  for (const part of chunks(ids)) {
+    await d
+      .update(squadMembers)
+      .set({ status: 'active', joinedAt: ts, updatedAt: ts })
+      .where(and(eq(squadMembers.squadId, squad.id), inArray(squadMembers.userId, part)))
+      .run();
+  }
   await recountMembers(d, [squad.id]);
   for (const id of ids) {
     await addNotification(d, id, 'request_approved', { squadId: squad.id, squadName: squad.name });
@@ -463,6 +564,7 @@ squadRoutes.patch('/:id/members/:userId', async (c) => {
     .get();
   if (!m || m.status !== 'active') throw errors.notFound('That member');
   if (m.role === 'owner') throw errors.forbidden('Use “Transfer ownership” to change the owner.');
+  if (m.role === role) return c.json({ ok: true });
   await d
     .update(squadMembers)
     .set({ role, updatedAt: nowIso() })
@@ -519,6 +621,33 @@ squadRoutes.put('/:id/announcement', async (c) => {
   const me = c.get('user');
   const { squad } = await requireMember(d, c.req.param('id'), me.id, ['owner', 'admin']);
   assertClean(input.body);
+  const current = await d
+    .select()
+    .from(announcements)
+    .where(eq(announcements.squadId, squad.id))
+    .get();
+  if (current && current.body === input.body) {
+    return c.json({
+      squadId: squad.id,
+      body: current.body,
+      authorId: current.authorId,
+      updatedAt: current.updatedAt,
+    });
+  }
+  // Each announcement fans out one notification per member; cap how often a squad can do it.
+  const day = new Date().toISOString().slice(0, 10);
+  if (
+    input.body &&
+    !(await takeUsage(
+      d,
+      `squad:${squad.id}`,
+      day,
+      'announcement',
+      HARD_CAPS.announcementsPerSquadPerDay,
+    ))
+  ) {
+    throw errors.rateLimited();
+  }
   const ts = nowIso();
   await d
     .insert(announcements)
@@ -558,6 +687,8 @@ squadRoutes.post('/:id/transfer', async (c) => {
     .where(and(eq(squadMembers.squadId, squad.id), eq(squadMembers.userId, userId)))
     .get();
   if (!target || target.status !== 'active') throw errors.notFound('That member');
+  // The recipient must have room on their own plan to own one more squad.
+  await assertCanOwn(d, userId);
   const ts = nowIso();
   await d.batch([
     d.update(squads).set({ ownerId: userId, updatedAt: ts }).where(eq(squads.id, squad.id)),

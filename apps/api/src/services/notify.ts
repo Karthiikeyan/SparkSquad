@@ -3,6 +3,7 @@ import { eq, inArray } from 'drizzle-orm';
 import type { Db } from '../db/client';
 import { notifications, pushTokens, user } from '../db/schema';
 import type { Bindings } from '../env';
+import { chunks } from '../lib/chunk';
 import { takeUsage } from './access';
 
 export interface PushMessage {
@@ -48,16 +49,26 @@ export async function sendPush(
   channel: PushChannel,
 ): Promise<number> {
   if (userIds.length === 0) return 0;
-  const users = await db
-    .select({
-      id: user.id,
-      timezone: user.timezone,
-      notifyNudges: user.notifyNudges,
-      notifySquadUpdates: user.notifySquadUpdates,
-    })
-    .from(user)
-    .where(inArray(user.id, userIds))
-    .all();
+  const users: {
+    id: string;
+    timezone: string;
+    notifyNudges: boolean;
+    notifySquadUpdates: boolean;
+  }[] = [];
+  for (const part of chunks(userIds)) {
+    users.push(
+      ...(await db
+        .select({
+          id: user.id,
+          timezone: user.timezone,
+          notifyNudges: user.notifyNudges,
+          notifySquadUpdates: user.notifySquadUpdates,
+        })
+        .from(user)
+        .where(inArray(user.id, part))
+        .all()),
+    );
+  }
 
   const allowed: string[] = [];
   for (const u of users) {
@@ -72,11 +83,12 @@ export async function sendPush(
   }
   if (allowed.length === 0) return 0;
 
-  const tokens = await db
-    .select()
-    .from(pushTokens)
-    .where(inArray(pushTokens.userId, allowed))
-    .all();
+  const tokens: (typeof pushTokens.$inferSelect)[] = [];
+  for (const part of chunks(allowed)) {
+    tokens.push(
+      ...(await db.select().from(pushTokens).where(inArray(pushTokens.userId, part)).all()),
+    );
+  }
   if (tokens.length === 0) return 0;
 
   const messages = tokens.map((t) => ({
@@ -110,7 +122,9 @@ export async function sendPush(
         if (ticket.status === 'ok') sent++;
         else if (ticket.details?.error === 'DeviceNotRegistered') dead.push(batch[idx]!.to);
       });
-      if (dead.length > 0) await db.delete(pushTokens).where(inArray(pushTokens.token, dead)).run();
+      for (const part of chunks(dead)) {
+        await db.delete(pushTokens).where(inArray(pushTokens.token, part)).run();
+      }
     } catch (e) {
       console.error('push batch failed', e instanceof Error ? e.message : 'unknown');
     }

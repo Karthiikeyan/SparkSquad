@@ -1,4 +1,5 @@
 import {
+  HARD_CAPS,
   addDays,
   createChallengeSchema,
   editDaySchema,
@@ -18,7 +19,7 @@ import { challenges, planDayEdits, squads, user } from '../db/schema';
 import type { AppEnv } from '../env';
 import { ApiError, errors } from '../lib/errors';
 import { body, db, nowIso, query } from '../lib/http';
-import { assertClean, blockedByMe, requireMember } from '../services/access';
+import { assertClean, blockedByMe, requireMember, takeUsage } from '../services/access';
 import { toChallenge, toPublicUser } from '../services/dto';
 import { leaderboard } from '../services/leaderboard';
 import { dayEdits, effectivePlanFor, loadPlan, planShape, storePlan } from '../services/plans';
@@ -81,6 +82,18 @@ export async function createChallenge(c: Parameters<typeof db>[0]) {
   const today = localDateInZone(new Date(), await myTimezone(c));
   if (input.startDate < addDays(today, -7) || input.startDate > addDays(today, 90)) {
     throw errors.badRequest('Pick a start date within the next 90 days.');
+  }
+  // Every challenge writes a permanent plan object to R2; cap creations per user per day.
+  if (
+    !(await takeUsage(
+      d,
+      me.id,
+      new Date().toISOString().slice(0, 10),
+      'challenge_create',
+      HARD_CAPS.challengesCreatedPerUserPerDay,
+    ))
+  ) {
+    throw errors.rateLimited();
   }
   const id = ulid();
   const { key, hash } = await storePlan(c.env, id, plan);

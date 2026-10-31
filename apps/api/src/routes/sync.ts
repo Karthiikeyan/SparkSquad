@@ -1,11 +1,12 @@
 import {
+  HARD_CAPS,
   addDays,
   localDateInZone,
   syncQuerySchema,
   type CheckinDTO,
   type SyncResponse,
 } from '@sparksquad/shared';
-import { and, eq, gt, gte, inArray, notInArray, or } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, inArray, or } from 'drizzle-orm';
 import type { SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import { Hono } from 'hono';
 import {
@@ -23,6 +24,7 @@ import {
   user,
 } from '../db/schema';
 import type { AppEnv } from '../env';
+import { chunks } from '../lib/chunk';
 import { db, query } from '../lib/http';
 import { blockedByMe, getUser } from '../services/access';
 import {
@@ -70,6 +72,7 @@ syncRoutes.get('/', async (c) => {
 
   const meRow = await getUser(d, me.id);
   const blocked = await blockedByMe(d, me.id);
+  const blockedSet = new Set(blocked);
   const today = localDateInZone(startedAt, meRow.timezone);
 
   // My memberships (all statuses so removals/leaves reach the phone).
@@ -80,12 +83,25 @@ syncRoutes.get('/', async (c) => {
     .all();
   const activeIds = myMemberships.filter((m) => m.status === 'active').map((m) => m.squadId);
   const myRole = new Map(myMemberships.map((m) => [m.squadId, m.role]));
+  const manages = (squadId: string) => {
+    const role = myRole.get(squadId);
+    return role === 'owner' || role === 'admin';
+  };
   const removedSquadIds = myMemberships
     .filter((m) => m.status !== 'active' && m.status !== 'pending' && m.updatedAt > sinceIso)
     .map((m) => m.squadId);
+
+  // Squads hidden by moderation or archived by the owner deliver no content, even to members
+  // (the same rule requireMember applies on every squad route).
+  const mySquads =
+    activeIds.length === 0
+      ? []
+      : await d.select().from(squads).where(inArray(squads.id, activeIds)).all();
+  const goneIds = new Set(mySquads.filter((s) => s.archivedAt || s.hiddenAt).map((s) => s.id));
+  const liveIds = activeIds.filter((id) => !goneIds.has(id));
   const newlyActive = new Set(
     myMemberships
-      .filter((m) => m.status === 'active' && m.updatedAt > sinceIso)
+      .filter((m) => m.status === 'active' && m.updatedAt > sinceIso && !goneIds.has(m.squadId))
       .map((m) => m.squadId),
   );
   const newIds = [...newlyActive];
@@ -97,33 +113,61 @@ syncRoutes.get('/', async (c) => {
         ? or(gt(updated, sinceIso), inArray(squadCol, newIds))
         : gt(updated, sinceIso);
 
-  const empty = activeIds.length === 0;
-  const changedSquads = empty
-    ? []
-    : await d
-        .select()
-        .from(squads)
-        .where(and(inArray(squads.id, activeIds), changedOrNew(squads.updatedAt, squads.id)))
-        .all();
-  const archived = changedSquads.filter((s) => s.archivedAt || s.hiddenAt).map((s) => s.id);
+  const changedSquads = mySquads.filter(
+    (s) => initial || s.updatedAt > sinceIso || newlyActive.has(s.id),
+  );
+  const archived = changedSquads.filter((s) => goneIds.has(s.id)).map((s) => s.id);
+  const liveChanged = changedSquads.filter((s) => !goneIds.has(s.id));
 
-  const memberRows = empty
-    ? []
-    : await d
-        .select()
-        .from(squadMembers)
-        .innerJoin(user, eq(user.id, squadMembers.userId))
-        .where(
-          and(
-            inArray(squadMembers.squadId, activeIds),
-            changedOrNew(squadMembers.updatedAt, squadMembers.squadId),
-          ),
-        )
-        .all();
+  const empty = liveIds.length === 0;
+  const memberRows = (
+    empty
+      ? []
+      : await d
+          .select()
+          .from(squadMembers)
+          .innerJoin(user, eq(user.id, squadMembers.userId))
+          .where(
+            and(
+              inArray(squadMembers.squadId, liveIds),
+              changedOrNew(squadMembers.updatedAt, squadMembers.squadId),
+            ),
+          )
+          .all()
+  ).filter(
+    // Pending join requests are visible only to the squad's owner/admins (as on /requests).
+    (r) =>
+      !blockedSet.has(r.user.id) &&
+      (r.squad_members.status !== 'pending' || manages(r.squad_members.squadId)),
+  );
+
+  // Full active roster of each changed squad so phones can prune members that are gone.
+  const rosterRows =
+    liveChanged.length === 0
+      ? []
+      : await d
+          .select({ squadId: squadMembers.squadId, userId: squadMembers.userId })
+          .from(squadMembers)
+          .where(
+            and(
+              inArray(
+                squadMembers.squadId,
+                liveChanged.map((s) => s.id),
+              ),
+              eq(squadMembers.status, 'active'),
+            ),
+          )
+          .all();
+  const squadMemberIds = liveChanged.map((s) => ({
+    squadId: s.id,
+    userIds: rosterRows
+      .filter((r) => r.squadId === s.id && !blockedSet.has(r.userId))
+      .map((r) => r.userId),
+  }));
 
   const allChallenges = empty
     ? []
-    : await d.select().from(challenges).where(inArray(challenges.squadId, activeIds)).all();
+    : await d.select().from(challenges).where(inArray(challenges.squadId, liveIds)).all();
   const activeChallengeIds = allChallenges
     .filter((ch) => ch.status === 'active')
     .map((ch) => ch.id);
@@ -131,9 +175,17 @@ syncRoutes.get('/', async (c) => {
     (ch) => initial || ch.updatedAt > sinceIso || newlyActive.has(ch.squadId),
   );
 
-  const newChallengeIds = allChallenges
-    .filter((ch) => newlyActive.has(ch.squadId))
+  // Only active challenges are queried below, so only their ids ever need binding.
+  const newActiveChallengeIds = allChallenges
+    .filter((ch) => ch.status === 'active' && newlyActive.has(ch.squadId))
     .map((ch) => ch.id);
+  const changedOrNewChallenge = (updated: SQLiteColumn, challengeCol: SQLiteColumn) =>
+    initial
+      ? undefined
+      : newActiveChallengeIds.length
+        ? or(gt(updated, sinceIso), inArray(challengeCol, newActiveChallengeIds))
+        : gt(updated, sinceIso);
+
   const edits =
     activeChallengeIds.length === 0
       ? []
@@ -143,14 +195,7 @@ syncRoutes.get('/', async (c) => {
           .where(
             and(
               inArray(planDayEdits.challengeId, activeChallengeIds),
-              initial
-                ? undefined
-                : newChallengeIds.length
-                  ? or(
-                      gt(planDayEdits.updatedAt, sinceIso),
-                      inArray(planDayEdits.challengeId, newChallengeIds),
-                    )
-                  : gt(planDayEdits.updatedAt, sinceIso),
+              changedOrNewChallenge(planDayEdits.updatedAt, planDayEdits.challengeId),
             ),
           )
           .all();
@@ -162,7 +207,7 @@ syncRoutes.get('/', async (c) => {
         .from(announcements)
         .where(
           and(
-            inArray(announcements.squadId, activeIds),
+            inArray(announcements.squadId, liveIds),
             changedOrNew(announcements.updatedAt, announcements.squadId),
           ),
         )
@@ -179,39 +224,21 @@ syncRoutes.get('/', async (c) => {
             and(
               inArray(checkins.challengeId, activeChallengeIds),
               gte(checkins.localDate, recentFrom),
-              initial
-                ? undefined
-                : newChallengeIds.length
-                  ? or(
-                      gt(checkins.updatedAt, sinceIso),
-                      inArray(checkins.challengeId, newChallengeIds),
-                    )
-                  : gt(checkins.updatedAt, sinceIso),
-              blocked.length ? notInArray(checkins.userId, blocked) : undefined,
+              changedOrNewChallenge(checkins.updatedAt, checkins.challengeId),
             ),
           )
           .all();
-  const visibleCheckins = checkinRows.filter((r) => !r.hiddenAt);
-  const myReactions =
-    visibleCheckins.length === 0
-      ? new Set<string>()
-      : new Set(
-          (
-            await d
-              .select({ id: reactions.checkinId })
-              .from(reactions)
-              .where(
-                and(
-                  eq(reactions.userId, me.id),
-                  inArray(
-                    reactions.checkinId,
-                    visibleCheckins.map((r) => r.id),
-                  ),
-                ),
-              )
-              .all()
-          ).map((r) => r.id),
-        );
+  const removedCheckinIds = initial ? [] : checkinRows.filter((r) => r.hiddenAt).map((r) => r.id);
+  const visibleCheckins = checkinRows.filter((r) => !r.hiddenAt && !blockedSet.has(r.userId));
+  const myReactions = new Set<string>();
+  for (const part of chunks(visibleCheckins.map((r) => r.id))) {
+    const rows = await d
+      .select({ id: reactions.checkinId })
+      .from(reactions)
+      .where(and(eq(reactions.userId, me.id), inArray(reactions.checkinId, part)))
+      .all();
+    for (const r of rows) myReactions.add(r.id);
+  }
   const checkinDtos: CheckinDTO[] = [];
   for (const r of visibleCheckins) {
     checkinDtos.push(
@@ -254,23 +281,25 @@ syncRoutes.get('/', async (c) => {
         initial ? undefined : gt(notifications.updatedAt, sinceIso),
       ),
     )
+    .orderBy(desc(notifications.updatedAt))
+    .limit(HARD_CAPS.syncNotificationsMax)
     .all();
+  const notificationDtos = notificationRows.map(toNotification).filter((n) => {
+    const p = n.payload as { userId?: unknown; fromUserId?: unknown };
+    return !(
+      (typeof p.userId === 'string' && blockedSet.has(p.userId)) ||
+      (typeof p.fromUserId === 'string' && blockedSet.has(p.fromUserId))
+    );
+  });
 
-  const blockedSet = new Set(blocked);
   const users = new Map<string, ReturnType<typeof toPublicUser>>();
-  for (const r of memberRows) {
-    if (!blockedSet.has(r.user.id)) users.set(r.user.id, toPublicUser(r.user));
-  }
+  for (const r of memberRows) users.set(r.user.id, toPublicUser(r.user));
 
   const response: SyncResponse = {
     me: toMe(meRow, c.env.ADMIN_EMAILS),
-    squads: changedSquads
-      .filter((s) => !archived.includes(s.id))
-      .map((s) => toSquad(s, myRole.get(s.id) ?? null)),
+    squads: liveChanged.map((s) => toSquad(s, myRole.get(s.id) ?? null)),
     removedSquadIds: [...removedSquadIds, ...archived],
-    members: memberRows
-      .filter((r) => !blockedSet.has(r.user.id))
-      .map((r) => toMember(r.squad_members, r.user)),
+    members: memberRows.map((r) => toMember(r.squad_members, r.user)),
     users: [...users.values()],
     challenges: changedChallenges.map(toChallenge),
     dayEdits: edits
@@ -302,8 +331,10 @@ syncRoutes.get('/', async (c) => {
     })),
     streaks: streakRows.map(toStreak),
     badges: badgeRows.map(toBadge),
-    notifications: notificationRows.map(toNotification),
+    notifications: notificationDtos,
     blockedUserIds: blocked,
+    removedCheckinIds,
+    squadMemberIds,
     nextCursor: encodeCursor(new Date(startedAt.getTime() - CURSOR_OVERLAP_MS).toISOString()),
     serverTime: startedAt.toISOString(),
   };

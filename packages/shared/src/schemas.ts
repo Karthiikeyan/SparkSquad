@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isLocalDate, isReminderTime, isValidTimeZone } from './date';
+import { canonicalTimeZone, isLocalDate, isReminderTime, isValidTimeZone } from './date';
 import { HARD_CAPS, TEXT_LIMITS } from './limits';
 import { CATEGORIES } from './plan/schema';
 
@@ -7,7 +7,11 @@ import { CATEGORIES } from './plan/schema';
 
 export const idSchema = z.string().min(1).max(64);
 export const localDateSchema = z.string().refine(isLocalDate, 'Must be a date like 2026-10-31');
-export const timeZoneSchema = z.string().max(64).refine(isValidTimeZone, 'Unknown timezone');
+export const timeZoneSchema = z
+  .string()
+  .max(64)
+  .refine(isValidTimeZone, 'Unknown timezone')
+  .transform(canonicalTimeZone);
 export const reminderTimeSchema = z.string().refine(isReminderTime, 'Must be HH:MM');
 export const categorySchema = z.enum(CATEGORIES);
 export const privacySchema = z.enum(['public', 'private']);
@@ -155,8 +159,13 @@ export type UpsertCheckinInput = z.infer<typeof upsertCheckinSchema>;
 export const commentSchema = z.object({ body: trimmed(TEXT_LIMITS.comment).min(1) });
 export const nudgeSchema = z.object({ challengeId: idSchema, toUserId: idSchema });
 
+/** Client-generated check-in ids (ULIDs); also used as an R2 key segment. */
+export const checkinIdSchema = z
+  .string()
+  .regex(/^[0-9A-Za-z_-]{10,64}$/, 'Check-in id is not valid.');
+
 export const proofUploadSchema = z.object({
-  checkinId: idSchema,
+  checkinId: checkinIdSchema,
   contentType: z.enum(HARD_CAPS.uploadContentTypes),
   size: z.number().int().min(1).max(HARD_CAPS.uploadMaxBytes),
 });

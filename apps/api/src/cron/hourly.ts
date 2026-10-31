@@ -15,6 +15,8 @@ import {
   verification,
 } from '../db/schema';
 import type { Bindings } from '../env';
+import { chunks } from '../lib/chunk';
+import { expireLapsedSquadPro } from '../routes/webhooks';
 import { addNotification, sendPush } from '../services/notify';
 import { recomputeChallengeStreak, recomputeGlobalStreak } from '../services/streaks';
 import { finishChallenge } from './rollup';
@@ -34,12 +36,17 @@ const DIGEST_KINDS = [
 ];
 
 async function usersInTimezones(db: Db, zones: string[]) {
-  if (zones.length === 0) return [];
-  return db
-    .select({ id: user.id, timezone: user.timezone })
-    .from(user)
-    .where(and(inArray(user.timezone, zones), isNull(user.deletedAt), isNull(user.suspendedAt)))
-    .all();
+  const out: { id: string; timezone: string }[] = [];
+  for (const part of chunks(zones)) {
+    out.push(
+      ...(await db
+        .select({ id: user.id, timezone: user.timezone })
+        .from(user)
+        .where(and(inArray(user.timezone, part), isNull(user.deletedAt), isNull(user.suspendedAt)))
+        .all()),
+    );
+  }
+  return out;
 }
 
 async function activeChallengesFor(db: Db, userId: string) {
@@ -165,6 +172,9 @@ async function endFinishedChallenges(env: Bindings, db: Db, now: Date): Promise<
 
 async function expireData(db: Db, now: Date): Promise<void> {
   const nowIso = now.toISOString();
+  // Auth purges first so a later failure cannot leave expired sessions/codes behind.
+  await db.delete(session).where(lt(session.expiresAt, now)).run();
+  await db.delete(verification).where(lt(verification.expiresAt, now)).run();
   const expired = await db
     .select({ checkinId: comments.checkinId })
     .from(comments)
@@ -173,8 +183,7 @@ async function expireData(db: Db, now: Date): Promise<void> {
   if (expired.length > 0) {
     await db.delete(comments).where(lt(comments.expiresAt, nowIso)).run();
     const ids = [...new Set(expired.map((e) => e.checkinId))];
-    for (let i = 0; i < ids.length; i += 50) {
-      const chunk = ids.slice(i, i + 50);
+    for (const chunk of chunks(ids)) {
       await db
         .update(checkins)
         .set({
@@ -215,6 +224,7 @@ async function expireData(db: Db, now: Date): Promise<void> {
     .where(and(isNotNull(checkins.photoKey), lt(checkins.createdAt, days(90))))
     .run();
   // Raw check-ins of free squads go 60 days after the challenge ended (roll-ups stay).
+  // "Free" means not Pro right now: a lapsed proExpiresAt counts as free even if isPro is stale.
   const old = await db
     .select({ id: challenges.id })
     .from(challenges)
@@ -223,23 +233,14 @@ async function expireData(db: Db, now: Date): Promise<void> {
       and(
         eq(challenges.status, 'ended'),
         lt(challenges.endedAt, days(HARD_CAPS.rawCheckinRetentionAfterEndDays)),
-        eq(squads.isPro, false),
+        sql`(${squads.isPro} = 0 or (${squads.proExpiresAt} is not null and ${squads.proExpiresAt} <= ${nowIso}))`,
+        sql`exists (select 1 from ${checkins} where ${checkins.challengeId} = ${challenges.id})`,
       ),
     )
     .all();
-  if (old.length > 0) {
-    await db
-      .delete(checkins)
-      .where(
-        inArray(
-          checkins.challengeId,
-          old.map((o) => o.id),
-        ),
-      )
-      .run();
+  for (const chunk of chunks(old.map((o) => o.id))) {
+    await db.delete(checkins).where(inArray(checkins.challengeId, chunk)).run();
   }
-  await db.delete(session).where(lt(session.expiresAt, now)).run();
-  await db.delete(verification).where(lt(verification.expiresAt, now)).run();
 }
 
 export async function runHourly(env: Bindings, now: Date = new Date()): Promise<void> {
@@ -252,6 +253,7 @@ export async function runHourly(env: Bindings, now: Date = new Date()): Promise<
     ['morning', () => morningDigest(env, db, at(MORNING_DIGEST_HOUR), now)],
     ['evening', () => eveningDigest(env, db, at(EVENING_DIGEST_HOUR), now)],
     ['end', () => endFinishedChallenges(env, db, now)],
+    ['squad-pro', () => expireLapsedSquadPro(db, now.toISOString())],
     ['expire', () => expireData(db, now)],
   ];
   for (const [name, step] of steps) {

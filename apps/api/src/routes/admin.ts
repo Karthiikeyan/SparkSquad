@@ -1,18 +1,24 @@
 import { adminActionSchema } from '@sparksquad/shared';
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, gt, or } from 'drizzle-orm';
 import { Hono, type MiddlewareHandler } from 'hono';
-import { checkins, comments, reports, squads, user } from '../db/schema';
+import { checkins, comments, reports, session, squads, user } from '../db/schema';
 import type { AppEnv } from '../env';
 import { errors } from '../lib/errors';
 import { body, db, nowIso } from '../lib/http';
-import { isAdminEmail } from '../services/dto';
+import { isAdmin } from '../services/dto';
 import { deleteTokensForUser } from '../services/notify';
 
 export const adminRoutes = new Hono<AppEnv>();
 
+const REPORTS_PAGE = 100;
+
 const requireAdmin: MiddlewareHandler<AppEnv> = async (c, next) => {
-  if (!isAdminEmail(c.env.ADMIN_EMAILS, c.get('user').email))
-    throw errors.forbidden('Admins only.');
+  const row = await db(c)
+    .select({ email: user.email, emailVerified: user.emailVerified })
+    .from(user)
+    .where(eq(user.id, c.get('user').id))
+    .get();
+  if (!row || !isAdmin(c.env.ADMIN_EMAILS, row)) throw errors.forbidden('Admins only.');
   await next();
 };
 
@@ -59,17 +65,31 @@ async function targetPreview(
 adminRoutes.get('/reports', async (c) => {
   const d = db(c);
   const status = c.req.query('status') === 'all' ? undefined : 'open';
+  // Keyset cursor "createdAt|id" so a flood of reports cannot hide later ones.
+  const [afterAt, afterId] = (c.req.query('cursor') ?? '').split('|');
   const rows = await d
     .select()
     .from(reports)
-    .where(status ? eq(reports.status, status) : undefined)
-    .orderBy(asc(reports.createdAt))
-    .limit(100)
+    .where(
+      and(
+        status ? eq(reports.status, status) : undefined,
+        afterAt && afterId
+          ? or(
+              gt(reports.createdAt, afterAt),
+              and(eq(reports.createdAt, afterAt), gt(reports.id, afterId)),
+            )
+          : undefined,
+      ),
+    )
+    .orderBy(asc(reports.createdAt), asc(reports.id))
+    .limit(REPORTS_PAGE)
     .all();
   const out = [];
   for (const r of rows)
     out.push({ ...r, target: await targetPreview(d, r.targetType, r.targetId) });
-  return c.json({ reports: out });
+  const last = rows[rows.length - 1];
+  const nextCursor = rows.length === REPORTS_PAGE && last ? `${last.createdAt}|${last.id}` : null;
+  return c.json({ reports: out, nextCursor });
 });
 
 /** Owner of the reported content (for "suspend"). */
@@ -127,6 +147,8 @@ adminRoutes.post('/reports/:id', async (c) => {
         .where(eq(user.id, target))
         .run();
       await deleteTokensForUser(d, target);
+      // Revoke every Better Auth session so /api/auth/* is closed too, not just /v1.
+      await d.delete(session).where(eq(session.userId, target)).run();
     }
   }
   const status = action === 'hide' ? 'hidden' : action === 'suspend' ? 'suspended' : 'dismissed';

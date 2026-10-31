@@ -69,31 +69,49 @@
         await load();
       }
 
+      let nextCursor = null;
+
+      function card(r) {
+        return el(
+          'div',
+          { class: 'card' },
+          el('div', { class: 'row' },
+            el('span', { class: 'tag' }, r.targetType),
+            el('span', { class: 'tag' }, r.reason),
+            el('span', { class: 'tag' }, new Date(r.createdAt).toLocaleString()),
+          ),
+          r.details ? el('p', {}, r.details) : '',
+          el('pre', {}, JSON.stringify(r.target, null, 2)),
+          el('div', { class: 'row' },
+            el('button', { class: 'hide', onclick: () => act(r.id, 'hide') }, 'Hide content'),
+            el('button', { class: 'suspend', onclick: () => act(r.id, 'suspend') }, 'Suspend user'),
+            el('button', { class: 'dismiss', onclick: () => act(r.id, 'dismiss') }, 'Dismiss'),
+          ),
+        );
+      }
+
+      function moreButton() {
+        return nextCursor
+          ? el('button', { class: 'dismiss', id: 'more', onclick: () => loadMore() }, 'Load more reports')
+          : '';
+      }
+
+      async function loadMore() {
+        const page = await api(`/v1/admin/reports?cursor=${encodeURIComponent(nextCursor)}`);
+        nextCursor = page.nextCursor;
+        $('more')?.remove();
+        list.append(...page.reports.map(card), moreButton());
+      }
+
       async function load() {
         try {
-          const { reports } = await api('/v1/admin/reports');
+          const { reports, nextCursor: cursor } = await api('/v1/admin/reports');
+          nextCursor = cursor ?? null;
           $('signin').hidden = true;
-          statusEl.textContent = reports.length ? `${reports.length} open report(s). Review within 24 hours.` : 'No open reports.';
-          list.replaceChildren(
-            ...reports.map((r) =>
-              el(
-                'div',
-                { class: 'card' },
-                el('div', { class: 'row' },
-                  el('span', { class: 'tag' }, r.targetType),
-                  el('span', { class: 'tag' }, r.reason),
-                  el('span', { class: 'tag' }, new Date(r.createdAt).toLocaleString()),
-                ),
-                r.details ? el('p', {}, r.details) : '',
-                el('pre', {}, JSON.stringify(r.target, null, 2)),
-                el('div', { class: 'row' },
-                  el('button', { class: 'hide', onclick: () => act(r.id, 'hide') }, 'Hide content'),
-                  el('button', { class: 'suspend', onclick: () => act(r.id, 'suspend') }, 'Suspend user'),
-                  el('button', { class: 'dismiss', onclick: () => act(r.id, 'dismiss') }, 'Dismiss'),
-                ),
-              ),
-            ),
-          );
+          statusEl.textContent = reports.length
+            ? `${reports.length}${nextCursor ? '+' : ''} open report(s), oldest first. Review within 24 hours.`
+            : 'No open reports.';
+          list.replaceChildren(...reports.map(card), moreButton());
         } catch (e) {
           if (e.status === 401 || e.status === 403) {
             statusEl.textContent = e.status === 403 ? 'This account is not an admin.' : 'Sign in to continue.';

@@ -1,5 +1,9 @@
 # Local secrets for `wrangler dev`. Copy to .dev.vars (git-ignored). Production: `wrangler secret put NAME`.
 
+# Local only: wrangler.toml defaults to production. "development" enables exp:// origins for Expo Go
+# and logs sign-in codes to the console when RESEND_API_KEY is empty. Never set this in production.
+APP_ENV=development
+
 # Required. Generate with: openssl rand -base64 32
 BETTER_AUTH_SECRET=
 
@@ -19,6 +23,8 @@ RESEND_API_KEY=
 
 # RevenueCat webhook shared secret (only when payments are on)
 REVENUECAT_WEBHOOK_SECRET=
+# Staging only: "true" lets RevenueCat SANDBOX events grant entitlements while APP_ENV=production.
+REVENUECAT_ALLOW_SANDBOX=
 
 # Expo push access token (expo.dev > Account settings > Access tokens), optional
 EXPO_ACCESS_TOKEN=

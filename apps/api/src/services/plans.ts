@@ -9,8 +9,29 @@ import { dayFromJson, parseJson } from './dto';
 
 type ChallengeRow = typeof challenges.$inferSelect;
 
-/** Per-isolate cache; plans are immutable per key (key contains the hash). */
-const planCache = new Map<string, Plan>();
+/**
+ * Per-isolate cache; plans are immutable per key (key contains the hash). Bounded by total
+ * serialized size, not just entry count, so large plans cannot grow the isolate heap unchecked.
+ */
+const PLAN_CACHE_MAX_BYTES = 8 * 1024 * 1024;
+const planCache = new Map<string, { plan: Plan; bytes: number }>();
+let planCacheBytes = 0;
+
+function cachePlan(key: string, plan: Plan, bytes: number): void {
+  if (bytes > PLAN_CACHE_MAX_BYTES / 4) return;
+  const old = planCache.get(key);
+  if (old) {
+    planCacheBytes -= old.bytes;
+    planCache.delete(key);
+  }
+  while (planCacheBytes + bytes > PLAN_CACHE_MAX_BYTES && planCache.size > 0) {
+    const [oldestKey, oldest] = planCache.entries().next().value!;
+    planCache.delete(oldestKey);
+    planCacheBytes -= oldest.bytes;
+  }
+  planCache.set(key, { plan, bytes });
+  planCacheBytes += bytes;
+}
 
 export function planKeyFor(challengeId: string, hash: string): string {
   return `plans/${challengeId}/${hash}.json`;
@@ -23,21 +44,22 @@ export async function storePlan(
 ): Promise<{ key: string; hash: string }> {
   const hash = planHash(plan);
   const key = planKeyFor(challengeId, hash);
-  await env.BUCKET.put(key, JSON.stringify(plan), {
+  const json = JSON.stringify(plan);
+  await env.BUCKET.put(key, json, {
     httpMetadata: { contentType: 'application/json' },
   });
-  planCache.set(key, plan);
+  cachePlan(key, plan, json.length);
   return { key, hash };
 }
 
 export async function loadPlan(env: Bindings, key: string): Promise<Plan> {
   const cached = planCache.get(key);
-  if (cached) return cached;
+  if (cached) return cached.plan;
   const obj = await env.BUCKET.get(key);
   if (!obj) throw errors.notFound('That plan');
-  const plan = (await obj.json()) as Plan;
-  if (planCache.size > 200) planCache.clear();
-  planCache.set(key, plan);
+  const text = await obj.text();
+  const plan = JSON.parse(text) as Plan;
+  cachePlan(key, plan, text.length);
   return plan;
 }
 

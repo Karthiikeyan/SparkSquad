@@ -30,6 +30,8 @@ export interface Bindings {
   APPLE_APP_BUNDLE_IDENTIFIER?: string;
   RESEND_API_KEY?: string;
   REVENUECAT_WEBHOOK_SECRET?: string;
+  /** "true" lets RevenueCat SANDBOX events grant entitlements when APP_ENV=production (staging only). */
+  REVENUECAT_ALLOW_SANDBOX?: string;
   EXPO_ACCESS_TOKEN?: string;
   R2_ACCOUNT_ID?: string;
   R2_ACCESS_KEY_ID?: string;

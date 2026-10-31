@@ -1,9 +1,11 @@
+import { HARD_CAPS } from '@sparksquad/shared';
 import { Hono, type MiddlewareHandler } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 import { HTTPException } from 'hono/http-exception';
 import { secureHeaders } from 'hono/secure-headers';
-import { createAuth } from './auth';
 import { runHourly } from './cron/hourly';
 import type { AppEnv } from './env';
+import { authGate } from './lib/authGate';
 import { ApiError } from './lib/errors';
 import { ipRateLimit, requireAuth, requireConsent } from './lib/http';
 import { adminRoutes } from './routes/admin';
@@ -74,10 +76,20 @@ app.notFound((c) => c.json({ error: { code: 'NOT_FOUND', message: 'Not found.' }
 app.get('/health', (c) => c.json({ ok: true }));
 
 app.use('/api/auth/*', ipRateLimit);
-app.on(['GET', 'POST'], '/api/auth/*', (c) =>
-  createAuth(c.env, (p) => c.executionCtx.waitUntil(p)).handler(c.req.raw),
-);
+app.on(['GET', 'POST'], '/api/auth/*', authGate);
 
+/** Rejects oversized bodies before anything buffers or parses them. */
+const v1BodyLimit: MiddlewareHandler<AppEnv> = (c, next) =>
+  bodyLimit({
+    maxSize:
+      c.req.method === 'POST' && /^\/v1\/squads\/[^/]+\/challenges$/.test(c.req.path)
+        ? HARD_CAPS.planRequestMaxBytes
+        : HARD_CAPS.requestBodyMaxBytes,
+    onError: (ctx) =>
+      ctx.json({ error: { code: 'BAD_REQUEST', message: 'That request is too large.' } }, 413),
+  })(c, next);
+
+app.use('/webhooks/*', bodyLimit({ maxSize: HARD_CAPS.requestBodyMaxBytes }));
 app.route('/webhooks', webhookRoutes);
 app.route('/', publicRoutes);
 app.get('/admin', async (c) => {
@@ -87,7 +99,7 @@ app.get('/admin', async (c) => {
 });
 
 const v1 = new Hono<AppEnv>();
-v1.use('*', ipRateLimit, requireAppVersion);
+v1.use('*', ipRateLimit, requireAppVersion, v1BodyLimit);
 v1.route('/config', configRoutes);
 v1.use('*', requireAuth);
 v1.route('/me', meRoutes);

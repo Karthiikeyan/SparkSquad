@@ -22,7 +22,7 @@ import {
 import type { AppEnv, Bindings } from '../env';
 import { ApiError } from '../lib/errors';
 import { body, db, nowIso, query } from '../lib/http';
-import { assertClean, getUser } from '../services/access';
+import { assertClean, atOwnLimit, getUser } from '../services/access';
 import { toMe } from '../services/dto';
 import { signedUrl } from '../services/r2';
 import { recountMembers } from '../services/squads';
@@ -124,7 +124,11 @@ async function deleteR2Prefix(env: Bindings, prefix: string): Promise<void> {
   } while (cursor);
 }
 
-/** Hands owned squads to the longest-standing admin (else member); deletes squads with nobody left. */
+/**
+ * Hands owned squads to the longest-standing admin (else member) who may own another squad and is
+ * not suspended. If nobody qualifies the squad is archived under the first candidate (archived
+ * squads do not count toward owned limits). Squads with nobody left are deleted.
+ */
 async function releaseOwnedSquads(env: Bindings, d: Db, userId: string): Promise<void> {
   const owned = await d.select().from(squads).where(eq(squads.ownerId, userId)).all();
   for (const sq of owned) {
@@ -140,15 +144,48 @@ async function releaseOwnedSquads(env: Bindings, d: Db, userId: string): Promise
       )
       .orderBy(asc(squadMembers.joinedAt))
       .all();
-    const heir = others.find((m) => m.role === 'admin') ?? others[0];
+    const candidates = [
+      ...others.filter((m) => m.role === 'admin'),
+      ...others.filter((m) => m.role !== 'admin'),
+    ];
+    let heir: (typeof candidates)[number] | undefined;
+    for (const m of candidates) {
+      const u = await d
+        .select({ suspendedAt: user.suspendedAt, deletedAt: user.deletedAt })
+        .from(user)
+        .where(eq(user.id, m.userId))
+        .get();
+      if (!u || u.suspendedAt || u.deletedAt) continue;
+      if (sq.archivedAt || !(await atOwnLimit(d, m.userId))) {
+        heir = m;
+        break;
+      }
+    }
+    const fallback = heir ? undefined : candidates[0];
     const ts = nowIso();
-    if (heir) {
+    const next = heir ?? fallback;
+    if (next) {
       await d.batch([
-        d.update(squads).set({ ownerId: heir.userId, updatedAt: ts }).where(eq(squads.id, sq.id)),
+        d
+          .update(squads)
+          .set({
+            ownerId: next.userId,
+            updatedAt: ts,
+            ...(heir ? {} : { archivedAt: sq.archivedAt ?? ts }),
+          })
+          .where(eq(squads.id, sq.id)),
         d
           .update(squadMembers)
           .set({ role: 'owner', updatedAt: ts })
-          .where(and(eq(squadMembers.squadId, sq.id), eq(squadMembers.userId, heir.userId))),
+          .where(and(eq(squadMembers.squadId, sq.id), eq(squadMembers.userId, next.userId))),
+        ...(heir
+          ? []
+          : [
+              d
+                .update(challenges)
+                .set({ status: 'ended', endedAt: ts, updatedAt: ts })
+                .where(and(eq(challenges.squadId, sq.id), eq(challenges.status, 'active'))),
+            ]),
       ]);
     } else {
       const chs = await d

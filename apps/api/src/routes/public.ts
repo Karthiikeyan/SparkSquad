@@ -1,7 +1,7 @@
 import { HARD_CAPS, isInviteCode, normalizeInviteCode } from '@sparksquad/shared';
 import { Hono } from 'hono';
 import type { AppEnv } from '../env';
-import { verifyFileToken } from '../services/r2';
+import { isSafeObjectKey, verifyFileToken } from '../services/r2';
 
 /** Public, unauthenticated routes: invite landing pages and HMAC-signed file access. */
 export const publicRoutes = new Hono<AppEnv>();
@@ -48,16 +48,25 @@ a.sec{background:#1C1C1F;color:#F5F5F7}
   return c.html(html);
 });
 
-function fileKey(path: string): string {
-  return path
-    .replace(/^\/files\//, '')
-    .split('/')
-    .map(decodeURIComponent)
-    .join('/');
+function fileKey(path: string): string | null {
+  try {
+    const key = path
+      .replace(/^\/files\//, '')
+      .split('/')
+      .map(decodeURIComponent)
+      .join('/');
+    return isSafeObjectKey(key) ? key : null;
+  } catch {
+    return null;
+  }
 }
+
+/** Content types we ever store; anything else is served as an opaque download. */
+const SERVABLE_TYPES = new Set<string>([...HARD_CAPS.uploadContentTypes, 'application/json']);
 
 publicRoutes.put('/files/*', async (c) => {
   const key = fileKey(c.req.path);
+  if (!key) return c.text('Forbidden', 403);
   const exp = Number(c.req.query('exp'));
   const sig = c.req.query('sig') ?? '';
   const contentType = c.req.header('content-type') ?? '';
@@ -75,13 +84,21 @@ publicRoutes.put('/files/*', async (c) => {
 
 publicRoutes.get('/files/*', async (c) => {
   const key = fileKey(c.req.path);
+  if (!key) return c.text('Forbidden', 403);
   const exp = Number(c.req.query('exp'));
   const sig = c.req.query('sig') ?? '';
   if (!(await verifyFileToken(c.env, 'GET', key, exp, sig))) return c.text('Forbidden', 403);
   const obj = await c.env.BUCKET.get(key);
   if (!obj) return c.text('Not found', 404);
-  const headers = new Headers();
-  obj.writeHttpMetadata(headers);
-  headers.set('Cache-Control', 'private, max-age=3600');
+  // Never replay stored metadata: this origin also serves /admin.
+  const stored = obj.httpMetadata?.contentType ?? '';
+  const type = SERVABLE_TYPES.has(stored) ? stored : 'application/octet-stream';
+  const headers = new Headers({
+    'Content-Type': type,
+    'Content-Security-Policy': "default-src 'none'; sandbox",
+    'X-Content-Type-Options': 'nosniff',
+    'Cache-Control': 'private, max-age=3600',
+  });
+  if (!type.startsWith('image/')) headers.set('Content-Disposition', 'attachment');
   return new Response(obj.body, { headers });
 });

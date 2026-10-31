@@ -108,7 +108,26 @@ export function findObjectSpans(text: string): string[] {
   return spans;
 }
 
-const FENCE_RE = /```[^\n`]*\n?([\s\S]*?)```/g;
+/**
+ * Bodies of ```fenced``` blocks, in order. A linear scan equivalent to
+ * /```[^\n`]*\n?([\s\S]*?)```/g without the regex's quadratic backtracking on long, unclosed lines.
+ */
+function fencedBlocks(text: string): string[] {
+  const blocks: string[] = [];
+  let from = 0;
+  for (;;) {
+    const open = text.indexOf('```', from);
+    if (open < 0) break;
+    let body = open + 3;
+    while (body < text.length && text[body] !== '\n' && text[body] !== '`') body++;
+    if (text[body] === '\n') body++;
+    const close = text.indexOf('```', body);
+    if (close < 0) break;
+    blocks.push(text.slice(body, close));
+    from = close + 3;
+  }
+  return blocks;
+}
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -116,7 +135,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 
 function candidates(text: string): unknown[] {
   const found: unknown[] = [];
-  const blocks = [...text.matchAll(FENCE_RE)].map((m) => m[1] ?? '');
+  const blocks = fencedBlocks(text);
   const sources = blocks.length > 0 ? blocks : [text];
   for (const src of sources) {
     const whole = parseLenient(src);

@@ -54,6 +54,22 @@ export const HARD_CAPS = {
   exportRetentionDays: 1,
   rawCheckinRetentionAfterEndDays: 60,
   freezeEarnEveryDays: 7,
+  /** Sign-in code abuse limits, per email address (server-enforced before Better Auth). */
+  otpSendsPerEmailPerHour: 5,
+  otpSendsPerEmailPerDay: 10,
+  otpVerifyAttemptsPerEmailPerHour: 10,
+  /** Request body caps (bytes). Plan uploads get a larger cap than other writes. */
+  authBodyMaxBytes: 16 * 1024,
+  requestBodyMaxBytes: 64 * 1024,
+  planRequestMaxBytes: 600 * 1024,
+  /** Per-user daily caps on writes that cost the operator storage or moderator time. */
+  challengesCreatedPerUserPerDay: 5,
+  reportsPerUserPerDay: 20,
+  announcementsPerSquadPerDay: 10,
+  /** Most notifications returned by one sync (newest first). */
+  syncNotificationsMax: 200,
+  /** Largest id list bound into one D1 statement (D1 allows 100 bound parameters). */
+  d1InListChunk: 90,
 } as const;
 
 export const TEXT_LIMITS = {

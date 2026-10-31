@@ -24,6 +24,30 @@ export function isValidTimeZone(tz: string): boolean {
   }
 }
 
+let zoneByLowerCase: Map<string, string> | null = null;
+
+/**
+ * Folds letter case to the runtime's spelling ("europe/london" -> "Europe/London") without
+ * swapping one IANA alias for another (keeps "Asia/Kolkata" even where ICU prefers "Asia/Calcutta").
+ */
+export function canonicalTimeZone(tz: string): string {
+  if (!zoneByLowerCase) {
+    zoneByLowerCase = new Map();
+    const intl = Intl as unknown as { supportedValuesOf?: (key: string) => string[] };
+    for (const z of intl.supportedValuesOf?.('timeZone') ?? []) {
+      zoneByLowerCase.set(z.toLowerCase(), z);
+    }
+  }
+  const listed = zoneByLowerCase.get(tz.toLowerCase());
+  if (listed) return listed;
+  try {
+    const resolved = new Intl.DateTimeFormat('en-US', { timeZone: tz }).resolvedOptions().timeZone;
+    return resolved.toLowerCase() === tz.toLowerCase() ? resolved : tz;
+  } catch {
+    return tz;
+  }
+}
+
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
 
 function partsFormatter(timeZone: string): Intl.DateTimeFormat {

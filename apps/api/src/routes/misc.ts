@@ -1,4 +1,5 @@
 import {
+  HARD_CAPS,
   discoverQuerySchema,
   integrationProviderSchema,
   integrationSchema,
@@ -29,9 +30,10 @@ import {
   user,
 } from '../db/schema';
 import type { AppEnv } from '../env';
+import { chunks } from '../lib/chunk';
 import { ApiError, errors } from '../lib/errors';
 import { body, db, nowIso, query } from '../lib/http';
-import { isBlockedEitherWay, requireMember, userPlan } from '../services/access';
+import { isBlockedEitherWay, requireMember, takeUsage, userPlan } from '../services/access';
 import { displayNameOf, isSquadPro, toPublicUser } from '../services/dto';
 import { addNotification, sendPush } from '../services/notify';
 import { signedUrl } from '../services/r2';
@@ -256,6 +258,23 @@ safetyRoutes.post('/reports', async (c) => {
   const input = await body(c, reportSchema);
   const d = db(c);
   const me = c.get('user');
+  const dup = await d
+    .select({ id: reports.id })
+    .from(reports)
+    .where(
+      and(
+        eq(reports.reporterId, me.id),
+        eq(reports.targetType, input.targetType),
+        eq(reports.targetId, input.targetId),
+        eq(reports.status, 'open'),
+      ),
+    )
+    .get();
+  if (dup) return c.json({ ok: true }, 201);
+  const day = new Date().toISOString().slice(0, 10);
+  if (!(await takeUsage(d, me.id, day, 'report', HARD_CAPS.reportsPerUserPerDay))) {
+    throw errors.rateLimited();
+  }
   await d
     .insert(reports)
     .values({
@@ -346,16 +365,20 @@ notificationRoutes.post('/read', async (c) => {
   const { ids } = await body(c, z.object({ ids: z.array(z.string().max(64)).max(200).optional() }));
   const ts = nowIso();
   const me = c.get('user');
-  await db(c)
-    .update(notifications)
-    .set({ readAt: ts, updatedAt: ts })
-    .where(
-      and(
-        eq(notifications.userId, me.id),
-        isNull(notifications.readAt),
-        ids?.length ? inArray(notifications.id, ids) : undefined,
-      ),
-    )
-    .run();
+  const d = db(c);
+  const markRead = (part?: string[]) =>
+    d
+      .update(notifications)
+      .set({ readAt: ts, updatedAt: ts })
+      .where(
+        and(
+          eq(notifications.userId, me.id),
+          isNull(notifications.readAt),
+          part ? inArray(notifications.id, part) : undefined,
+        ),
+      )
+      .run();
+  if (ids?.length) for (const part of chunks(ids)) await markRead(part);
+  else await markRead();
   return c.json({ ok: true });
 });

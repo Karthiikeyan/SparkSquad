@@ -33,12 +33,14 @@ export function parseJson<T>(text: string | null | undefined, fallback: T): T {
   }
 }
 
-export function isAdminEmail(adminEmails: string, email: string): boolean {
+/** Admin = an allow-listed email that the identity provider (or an OTP) has verified. */
+export function isAdmin(adminEmails: string, u: Pick<UserRow, 'email' | 'emailVerified'>): boolean {
+  if (!u.emailVerified) return false;
   return adminEmails
     .split(',')
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)
-    .includes(email.toLowerCase());
+    .includes(u.email.toLowerCase());
 }
 
 export function displayNameOf(u: Pick<UserRow, 'displayName' | 'name' | 'username'>): string {
@@ -63,7 +65,7 @@ export function toMe(u: UserRow, adminEmails: string): MeDTO {
     ageConfirmedAt: u.ageConfirmedAt,
     termsAcceptedAt: u.termsAcceptedAt,
     createdAt: u.createdAt.toISOString(),
-    isAdmin: isAdminEmail(adminEmails, u.email),
+    isAdmin: isAdmin(adminEmails, u),
   };
 }
 

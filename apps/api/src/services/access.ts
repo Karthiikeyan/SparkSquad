@@ -74,23 +74,50 @@ export async function countOwned(db: Db, userId: string): Promise<number> {
   return row?.n ?? 0;
 }
 
+export async function joinLimitError(db: Db, userId: string): Promise<ApiError> {
+  const plan = await userPlan(db, userId);
+  return errors.limit(
+    'LIMIT_SQUADS_JOINED',
+    `You’re in ${TIER_LIMITS[plan].squadsJoined} squads, the most on your plan. Leave one or upgrade to join more.`,
+  );
+}
+
+export async function ownLimitError(db: Db, userId: string): Promise<ApiError> {
+  const plan = await userPlan(db, userId);
+  return errors.limit(
+    'LIMIT_SQUADS_OWNED',
+    `You can run ${TIER_LIMITS[plan].squadsOwned} squad${TIER_LIMITS[plan].squadsOwned === 1 ? '' : 's'} on your plan. Upgrade to start more.`,
+  );
+}
+
 export async function assertCanJoin(db: Db, userId: string): Promise<void> {
   const plan = await userPlan(db, userId);
   if ((await countJoined(db, userId)) >= TIER_LIMITS[plan].squadsJoined) {
-    throw errors.limit(
-      'LIMIT_SQUADS_JOINED',
-      `You’re in ${TIER_LIMITS[plan].squadsJoined} squads, the most on your plan. Leave one or upgrade to join more.`,
-    );
+    throw await joinLimitError(db, userId);
   }
+}
+
+/** True when a write already landed above the limit (concurrent requests); callers roll back. */
+export async function overJoinLimit(db: Db, userId: string): Promise<boolean> {
+  const plan = await userPlan(db, userId);
+  return (await countJoined(db, userId)) > TIER_LIMITS[plan].squadsJoined;
+}
+
+export async function overOwnLimit(db: Db, userId: string): Promise<boolean> {
+  const plan = await userPlan(db, userId);
+  return (await countOwned(db, userId)) > TIER_LIMITS[plan].squadsOwned;
+}
+
+/** True when owning one more squad would exceed the user's plan. */
+export async function atOwnLimit(db: Db, userId: string): Promise<boolean> {
+  const plan = await userPlan(db, userId);
+  return (await countOwned(db, userId)) >= TIER_LIMITS[plan].squadsOwned;
 }
 
 export async function assertCanOwn(db: Db, userId: string): Promise<void> {
   const plan = await userPlan(db, userId);
   if ((await countOwned(db, userId)) >= TIER_LIMITS[plan].squadsOwned) {
-    throw errors.limit(
-      'LIMIT_SQUADS_OWNED',
-      `You can run ${TIER_LIMITS[plan].squadsOwned} squad${TIER_LIMITS[plan].squadsOwned === 1 ? '' : 's'} on your plan. Upgrade to start more.`,
-    );
+    throw await ownLimitError(db, userId);
   }
 }
 

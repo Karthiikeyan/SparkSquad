@@ -413,8 +413,18 @@ export const entitlements = sqliteTable(
     expiresAt: text('expires_at'),
     rcEventId: text('rc_event_id').notNull().unique(),
     updatedAt: text('updated_at').notNull().default(now),
+    /** Comma-separated RevenueCat entitlement ids this event covers (e.g. "plus"). */
+    entitlementIds: text('entitlement_ids').notNull().default(''),
+    /** Subscription identity (original transaction id, else product id) used to order events. */
+    subscriptionKey: text('subscription_key'),
+    /** RevenueCat event time; newer events for the same subscription win. */
+    eventAt: text('event_at'),
   },
-  (t) => [index('entitlements_user_idx').on(t.userId)],
+  (t) => [
+    index('entitlements_user_idx').on(t.userId),
+    index('entitlements_sub_idx').on(t.subscriptionKey),
+    index('entitlements_squad_idx').on(t.squadId),
+  ],
 );
 
 export const reports = sqliteTable(

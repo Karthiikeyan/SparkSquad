@@ -13,7 +13,7 @@ import {
   HARD_CAPS,
   type PlanTask,
 } from '@sparksquad/shared';
-import { and, asc, eq, gt, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, isNull, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import type { Db } from '../db/client';
 import { challenges, checkins, comments, reactions, user } from '../db/schema';
@@ -291,7 +291,7 @@ checkinRoutes.get('/:id/comments', async (c) => {
   const d = db(c);
   const me = c.get('user');
   const { row } = await loadCheckin(d, c.req.param('id'), me.id);
-  const blocked = await blockedByMe(d, me.id);
+  const blocked = new Set(await blockedByMe(d, me.id));
   const rows = await d
     .select()
     .from(comments)
@@ -301,12 +301,15 @@ checkinRoutes.get('/:id/comments', async (c) => {
         eq(comments.checkinId, row.id),
         isNull(comments.hiddenAt),
         gt(comments.expiresAt, nowIso()),
-        blocked.length ? notInArray(comments.userId, blocked) : undefined,
       ),
     )
     .orderBy(asc(comments.createdAt))
     .all();
-  return c.json({ comments: rows.map((r) => toComment(r.comments, r.user)) });
+  return c.json({
+    comments: rows
+      .filter((r) => !blocked.has(r.comments.userId))
+      .map((r) => toComment(r.comments, r.user)),
+  });
 });
 
 checkinRoutes.post('/:id/comments', async (c) => {

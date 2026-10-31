@@ -191,6 +191,10 @@ export interface SyncResponse {
   badges: BadgeDTO[];
   notifications: NotificationDTO[];
   blockedUserIds: string[];
+  /** Check-ins hidden by moderation since the cursor; clients delete their cached copies. */
+  removedCheckinIds?: string[];
+  /** Current active member ids for every squad in `squads`; clients drop cached members not listed. */
+  squadMemberIds?: { squadId: string; userIds: string[] }[];
   nextCursor: string;
   serverTime: string;
 }

@@ -39,12 +39,9 @@ export function query<T extends z.ZodType>(c: Ctx, schema: T): z.infer<T> {
   return parsed.data;
 }
 
+/** Cloudflare sets cf-connecting-ip; client-supplied forwarding headers are not trusted. */
 function clientIp(c: Ctx): string {
-  return (
-    c.req.header('cf-connecting-ip') ??
-    c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-  );
+  return c.req.header('cf-connecting-ip') ?? 'unknown';
 }
 
 async function limitOrThrow(limiter: RateLimit | undefined, key: string): Promise<void> {
