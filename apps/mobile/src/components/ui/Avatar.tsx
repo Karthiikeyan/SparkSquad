@@ -26,6 +26,10 @@ export interface AvatarProps {
   label?: string;
   /** Colour behind the ring gap; match the surface the avatar sits on. */
   ringGap?: string;
+  /** Gap between avatar and ring in px (Welcome uses 3). */
+  ringOffset?: number;
+  /** Overrides the initials size. */
+  fontSize?: number;
   /** Hide from screen readers when a parent already describes the group. */
   decorative?: boolean;
   accessibilityLabel?: string;
@@ -41,11 +45,14 @@ export function Avatar({
   dimmed,
   label,
   ringGap = colors.surface,
+  ringOffset = 2,
+  fontSize,
   decorative,
   accessibilityLabel,
   style,
 }: AvatarProps) {
   const index = color ?? (id ? avatarIndexFor(id) : 0);
+  const font = fontSize ?? FONT[size];
   return (
     <View
       accessible={!decorative}
@@ -70,20 +77,32 @@ export function Avatar({
             pointerEvents="none"
             style={[
               styles.ring,
-              { inset: -4, borderRadius: size / 2 + 4, borderColor: colors.accent },
+              {
+                inset: -(ringOffset + 2),
+                borderRadius: size / 2 + ringOffset + 2,
+                borderColor: colors.accent,
+              },
             ]}
           />
           <View
             pointerEvents="none"
-            style={[styles.ring, { inset: -2, borderRadius: size / 2 + 2, borderColor: ringGap }]}
+            style={[
+              styles.ring,
+              {
+                inset: -ringOffset,
+                borderRadius: size / 2 + ringOffset,
+                borderColor: ringGap,
+                borderWidth: ringOffset,
+              },
+            ]}
           />
         </>
       ) : null}
       <Text
         style={{
           fontFamily: fonts.sansSemibold,
-          fontSize: FONT[size],
-          lineHeight: FONT[size] + 4,
+          fontSize: font,
+          lineHeight: font + 4,
           color: colors.avatarLabel,
         }}
         maxFontSizeMultiplier={1}

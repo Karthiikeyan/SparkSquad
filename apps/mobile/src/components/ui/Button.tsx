@@ -18,6 +18,8 @@ export interface ButtonProps {
   accessibilityLabel?: string;
   accessibilityHint?: string;
   style?: StyleProp<ViewStyle>;
+  /** Overrides the variant's label colour (e.g. black on the white Google button). */
+  labelColor?: string;
   testID?: string;
 }
 
@@ -46,11 +48,13 @@ export function Button({
   accessibilityLabel,
   accessibilityHint,
   style,
+  labelColor,
   testID,
 }: ButtonProps) {
   const v = VARIANT[variant];
   const s = SIZE[size];
   const inactive = disabled || loading;
+  const fg = labelColor ?? v.fg;
   return (
     <Pressable
       testID={testID}
@@ -76,7 +80,7 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={v.fg} />
+        <ActivityIndicator color={fg} />
       ) : (
         <View style={styles.row}>
           {icon}
@@ -86,7 +90,7 @@ export function Button({
               fontFamily: s.font,
               fontSize: s.fontSize,
               lineHeight: s.fontSize + 5,
-              color: v.fg,
+              color: fg,
             }}
           >
             {label}

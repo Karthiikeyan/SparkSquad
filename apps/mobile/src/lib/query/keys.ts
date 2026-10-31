@@ -19,4 +19,5 @@ export const qk = {
   discover: (category: string | undefined, q: string | undefined) =>
     ['discover', category ?? '', q ?? ''] as const,
   templates: ['templates'] as const,
+  squadPreview: (key: string) => ['squadPreview', key] as const,
 };

@@ -28,6 +28,7 @@ const dark = {
   chipLabel: '#C7C7CC',
   avatarLabel: '#E6E6EA',
   heatEmpty: '#26262A',
+  faint: '#5E5E64',
   scrim: 'rgba(0,0,0,0.55)',
 };
 
@@ -59,6 +60,7 @@ const light = {
   chipLabel: '#3A3A3F',
   avatarLabel: '#1C1C1F',
   heatEmpty: '#E3E3E8',
+  faint: '#A1A1A8',
   scrim: 'rgba(0,0,0,0.35)',
 };
 

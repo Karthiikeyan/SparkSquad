@@ -11,6 +11,15 @@ const bundleId = IS_DEV
 
 const name = IS_DEV ? 'SparkSquad (Dev)' : IS_PREVIEW ? 'SparkSquad (Preview)' : 'SparkSquad';
 
+/** "123-abc.apps.googleusercontent.com" → "com.googleusercontent.apps.123-abc" (iOS URL scheme). */
+function reversedClientId(clientId: string | undefined): string | null {
+  const suffix = '.apps.googleusercontent.com';
+  if (!clientId?.endsWith(suffix)) return null;
+  return `com.googleusercontent.apps.${clientId.slice(0, -suffix.length)}`;
+}
+
+const googleIosScheme = reversedClientId(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID);
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name,
@@ -44,6 +53,24 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-localization',
     'expo-secure-store',
     'expo-sqlite',
+    'expo-apple-authentication',
+    '@react-native-community/datetimepicker',
+    [
+      'expo-notifications',
+      {
+        icon: './assets/images/android-icon-monochrome.png',
+        color: '#FFB224',
+      },
+    ],
+    // The Google plugin needs the iOS URL scheme; without a client id Google sign-in is hidden.
+    ...(googleIosScheme
+      ? [
+          ['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosScheme }] as [
+            string,
+            unknown,
+          ],
+        ]
+      : ['@react-native-google-signin/google-signin']),
     [
       'expo-splash-screen',
       {

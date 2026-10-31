@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 
 interface Extra {
   apiUrl?: string;
+  eas?: { projectId?: string };
 }
 
 const extra = (Constants.expoConfig?.extra ?? {}) as Extra;
@@ -24,6 +25,7 @@ export const env = {
   sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN || undefined,
   googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || undefined,
   googleIosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || undefined,
+  easProjectId: extra.eas?.projectId || undefined,
 } as const;
 
 /** Compares dotted versions numerically ("1.10.0" > "1.9.3"). */

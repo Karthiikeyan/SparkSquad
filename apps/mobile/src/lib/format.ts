@@ -7,6 +7,14 @@ export function formatLongDate(date: Date): string {
   return `${weekdayFmt.format(date)}, ${dayMonthFmt.format(date)}`;
 }
 
+/** "2026-11-03" → "Monday 3 November" (calendar date, no timezone shift). */
+export function formatLocalDate(localDate: string): string {
+  const [y, m, d] = localDate.split('-').map(Number);
+  if (!y || !m || !d) return localDate;
+  const date = new Date(y, m - 1, d, 12);
+  return `${weekdayFmt.format(date)} ${dayMonthFmt.format(date)}`;
+}
+
 /** "7:42 AM" */
 export function formatTime(date: Date): string {
   return timeFmt.format(date);

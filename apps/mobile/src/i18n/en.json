@@ -74,6 +74,167 @@
   "placeholder": {
     "comingSoon": "This screen is being built"
   },
+  "welcome": {
+    "ringCount": "8",
+    "ringTotal": "/12",
+    "ringLabel": "checked in today",
+    "title": "Show up daily, with your squad.",
+    "body": "Join a small group, follow one plan, and check in every day. Your squad sees it, and you see theirs.",
+    "google": "Continue with Google",
+    "apple": "Continue with Apple",
+    "email": "Use my email instead",
+    "legalPrefix": "For ages 18 and up. By continuing you agree to the ",
+    "terms": "Terms",
+    "legalJoin": " and ",
+    "privacy": "Privacy Policy",
+    "legalSuffix": ".",
+    "inviteWaiting": "Sign in to see the squad that invited you.",
+    "signInFailed": "We couldn’t sign you in. Try again, or use your email instead."
+  },
+  "emailSignIn": {
+    "title": "Use your email",
+    "body": "We’ll send a 6-digit code. No password to remember.",
+    "label": "Email",
+    "placeholder": "you@example.com",
+    "invalid": "Enter an email address like name@example.com.",
+    "send": "Send code",
+    "sendFailed": "We couldn’t send the code. Check the address and try again."
+  },
+  "verify": {
+    "title": "Enter the code",
+    "body": "We sent a 6-digit code to {{email}}. It expires in 10 minutes.",
+    "label": "6-digit code",
+    "digit": "Digit {{n}} of 6",
+    "submit": "Verify",
+    "resendIn": "Resend code in {{seconds}} s",
+    "resend": "Resend code",
+    "resent": "New code sent.",
+    "invalid": "That code didn’t work. Check it or send a new one.",
+    "tooMany": "Too many tries. Send a new code.",
+    "changeEmail": "Use a different email"
+  },
+  "consent": {
+    "title": "Before you start",
+    "body": "SparkSquad is for adults working on their goals together.",
+    "age": "I’m 18 or older",
+    "terms": "I agree to the Terms and Privacy Policy",
+    "readTerms": "Read the Terms",
+    "readPrivacy": "Read the Privacy Policy",
+    "zeroTolerance": "We have zero tolerance for harassment, hate or sexual content. Reported content is reviewed within 24 hours, and accounts that break the rules are removed.",
+    "continue": "Continue",
+    "otherAccount": "Use a different account"
+  },
+  "profile": {
+    "step": "Step 1 of 4",
+    "title": "Your profile",
+    "body": "This is how your squad sees you.",
+    "name": "Display name",
+    "namePlaceholder": "Kiran Raj",
+    "nameRequired": "Add a name your squad will recognise.",
+    "username": "Username",
+    "usernamePlaceholder": "kiran_raj",
+    "usernameHelp": "3–20 characters: letters, numbers and _.",
+    "usernameInvalid": "Use 3–20 letters, numbers or _.",
+    "usernameChecking": "Checking…",
+    "usernameAvailable": "Available",
+    "usernameTaken": "That username is taken. Try another one.",
+    "colour": "Avatar colour",
+    "colourOption": "Colour {{n}} of 12",
+    "preview": "Preview",
+    "continue": "Continue"
+  },
+  "interests": {
+    "step": "Step 2 of 4",
+    "title": "What are you working on?",
+    "body": "Pick any that fit. We use this to suggest squads in Discover.",
+    "career": "Career",
+    "fitness": "Fitness",
+    "learning": "Learning",
+    "continue": "Continue",
+    "skip": "Skip for now"
+  },
+  "reminder": {
+    "step": "Step 3 of 4",
+    "title": "When should we remind you?",
+    "body": "Pick a time you’re usually free. Reminders are set on this phone, so they work offline and we never send them from a server.",
+    "label": "Daily reminder",
+    "change": "Change time",
+    "continue": "Continue"
+  },
+  "notificationsPrime": {
+    "step": "Step 4 of 4",
+    "title": "Stay in the loop",
+    "body": "Turn on notifications so you get your daily reminder, nudges from your squad and when someone approves your request.",
+    "point1": "One daily reminder at the time you picked",
+    "point2": "Nudges when a squadmate cheers you on",
+    "point3": "At most two squad updates a day",
+    "enable": "Turn on notifications",
+    "notNow": "Not now",
+    "denied": "Notifications are off. You can turn them on later in your phone’s settings.",
+    "openSettings": "Open settings"
+  },
+  "start": {
+    "title": "You’re all set",
+    "body": "How would you like to begin?",
+    "join": "Join with a code",
+    "joinBody": "Got an invite from a friend? Enter the 6-character code.",
+    "browse": "Browse public squads",
+    "browseBody": "Find a squad that’s starting soon.",
+    "create": "Start a squad",
+    "createBody": "Pick a plan and invite your friends."
+  },
+  "joinCode": {
+    "title": "Join with a code",
+    "body": "Enter the 6-character invite code your friend shared.",
+    "label": "Invite code",
+    "placeholder": "ABC234",
+    "invalid": "Invite codes have 6 letters and numbers.",
+    "submit": "Find squad"
+  },
+  "preview": {
+    "loading": "Loading squad",
+    "members": "{{count}} of {{limit}} members",
+    "owner": "Run by {{name}}",
+    "about": "About",
+    "rules": "Rules",
+    "plan": "Plan",
+    "planSummary": "{{days}} days, {{perWeek}} days a week",
+    "starts": "Starts {{date}}",
+    "started": "Started {{date}}",
+    "noPlan": "The owner hasn’t set up a plan yet.",
+    "private": "Private squad",
+    "public": "Public squad",
+    "join": "Join squad",
+    "request": "Request to join",
+    "requestNote": "The owner approves new members of private squads.",
+    "pending": "Request sent",
+    "pendingBody": "We’ll let you know when the owner approves it.",
+    "member": "You’re in this squad",
+    "open": "Go to Today",
+    "joined": "You joined {{name}}.",
+    "requested": "Request sent to {{name}}."
+  },
+  "categories": {
+    "career": "Career",
+    "fitness": "Fitness",
+    "learning": "Learning",
+    "other": "Other"
+  },
+  "session": {
+    "loadFailed": "We couldn’t load your profile. Check your connection and try again.",
+    "signOut": "Sign out"
+  },
+  "legal": {
+    "back": "Back",
+    "terms": {
+      "title": "Terms of Use",
+      "body": "Last updated October 2026.\n\nSparkSquad is a SparkTribe product that helps adults keep daily commitments with a small group. By using SparkSquad you agree to these terms.\n\nWho can use SparkSquad. You must be 18 or older. One account per person. Keep your sign-in secure; you are responsible for activity on your account.\n\nYour content. You own the notes, comments, plans and photos you add. You give us permission to store and show them to the members of your squads so the app can work. Remove content at any time; delete your account to remove everything.\n\nZero tolerance. Do not post harassment, hate, threats, sexual content, spam, or anything illegal, and do not impersonate others. Anyone can report content or block a person. We review reports within 24 hours and remove content and accounts that break these rules, without warning.\n\nSquads. Owners and admins manage their squads and can remove members. Squad chat links point to WhatsApp or Telegram, which have their own terms.\n\nAI and integrations. If you add your own AI key or public handles, requests go from your phone to that provider under its terms. We never receive your AI key.\n\nPaid plans. Plus and Squad Pro are billed by Apple or Google. Manage or cancel in your store account. Prices are shown before you buy.\n\nNo guarantees. SparkSquad is provided as is. We work hard to keep it running and your data safe, but we can’t promise it will always be available.\n\nChanges. We may update these terms and will tell you in the app when we do.\n\nContact. Questions or complaints: use Help & contact in Settings."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "body": "Last updated October 2026.\n\nWhat we collect. Your email, name, username, avatar colour, timezone, interests and reminder time; the squads you join; your check-ins, notes, reactions, comments and nudges; and push notification tokens. We do not collect phone numbers or contacts.\n\nWhat stays on your phone. Free photo proofs, your AI key, step counts and verification results stay on your phone. Plus photo proofs are uploaded so your squad can see them and are deleted after 30 days (90 for Squad Pro).\n\nHow we use it. To run your squads, show your progress to your squad, send reminders and nudges, keep the service safe, and improve the app with privacy-friendly, anonymous usage counts.\n\nWho sees it. Members of your squads see your name, avatar, check-ins and comments. Public squad listings show the squad name, description and member count. We do not sell your data.\n\nService providers. Cloudflare (hosting and storage), Resend (sign-in emails), Expo (push delivery) and, if you turn them on, PostHog (anonymous analytics) and Sentry (crash reports). Payments go through Apple or Google.\n\nRetention. Comments are deleted after 30 days (90 for paid squads), notifications after 30 days, exports after 1 day. Old check-ins are rolled up into summaries after a challenge ends.\n\nYour rights. Export your data or delete your account at any time from Settings. Deletion removes your rows, photos and tokens.\n\nGrievances. Contact us through Help & contact in Settings; we respond within 7 days."
+    }
+  },
   "errors": {
     "BAD_REQUEST": "Something about that request wasn’t right. Try again.",
     "VALIDATION_FAILED": "Some details need fixing. Check the highlighted fields.",

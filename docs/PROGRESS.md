@@ -6,7 +6,7 @@
 - [x] 1. packages/shared (schemas, limits, dates, scoring/streaks, word filter, plan module + tests)
 - [x] 2. apps/api (Drizzle schema + migrations, Better Auth, all endpoints, sync, R2, webhooks, push, cron, moderation, admin, seeding, integration tests)
 - [x] 3. apps/mobile foundation (tokens, fonts, components, navigation, API client, Query, SQLite + outbox, banners, toasts, i18n, analytics)
-- [ ] 4. Auth and onboarding A1–A10 + invite deep links
+- [x] 4. Auth and onboarding A1–A10 + invite deep links
 - [ ] 5. Core loop B1–B8, reminders, push
 - [ ] 6. Squads C1–C15
 - [ ] 7. Create and join D1–D11, E1–E4
@@ -70,3 +70,20 @@
 **Known issues:** none.
 
 **Notes for the next session:** design files read so far: Main, CheckIn, Welcome, Squad, Leaderboard, Plan, Discover, Profile, Settings. Read the rest (CreateSquad, ImportPlan, AIPrompt, AIBuild, Plus, ShareCard) before building those screens. `app/index.tsx` currently redirects to Today; Phase 4 replaces it with session-aware routing (`authClient.useSession()`, consent/profile gating) and should handle `appEvents` `unauthorized` (sign out → `clearLocalData()` → welcome). `api` endpoints live in `src/lib/api/endpoints.ts`; add new ones there. Local reads go through `useLocalQuery` with keys under `qk.local`; writes go through `getRuntime().outbox.enqueue(...)` after an optimistic local write. Tab roots use `FoundationTab` until their phase replaces them.
+
+### Phase 4 — done
+
+- Session: `src/features/auth/SessionProvider.tsx` (Better Auth session + `me` query seeded from the local store, per-user onboarding flag, account-switch wipe, timezone sync, push-token registration, sign-out on 401, pending invite/route), `routing.ts` (pure `resolveRoute`, validation helpers), `signIn.ts` (native Google + Apple ID-token sign-in, email OTP send/verify).
+- Navigation: `src/components/RootNavigator.tsx` with `Stack.Protected` groups; `app/index.tsx` is the single routing decision point (A1).
+- Screens: A2 Welcome (squad ring, providers shown per config, 18+/terms line), A3 email, A4 code (6 boxes, paste/autofill, 30 s resend), A5 consent (two checkboxes, zero-tolerance note), A6 profile (name, username availability check, 12-colour picker, preview), A7 interests, A8 reminder time (native pickers), A9 notifications prime (permission + push token, settings fallback when denied), A10 join or create; E3 squad preview (join / request / pending / member), E4 join with code; F16 Terms and Privacy pages; D1 placeholder for "Start a squad".
+- Invite deep links: `sparksquad://join/CODE` → stored while signed out → after onboarding (A9 skips A10) → `invite/[code]` preview.
+- Native config plugins: Google Sign-In (iOS URL scheme from `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`), Apple authentication, notifications, datetimepicker.
+- 91 mobile tests (routing, validation, OTP paste, consent gate, join-code flow, A9 invite skip, join actions, time helpers, prefs). Android bundle builds.
+
+**Next:** Phase 5 — core loop B1–B8, reminders, push.
+
+**Known issues:**
+- Paywall routes (F9/F10) don't exist yet; limit errors (`LIMIT_SQUADS_JOINED`) show a toast until Phase 8.
+- Native sign-in, push and pickers need a development build (`expo run:android` / EAS); they can't run in Expo Go.
+
+**Notes for the next session:** design files read so far: Main, CheckIn, Welcome, Squad, Leaderboard, Plan, Discover, Profile, Settings. Read the rest (CreateSquad, ImportPlan, AIPrompt, AIBuild, Plus, ShareCard) before building those screens. Signed-in screens get the user from `useMe()` and session helpers from `useSession()`. Add routes for new signed-in screens inside the `ready` guard in `src/components/RootNavigator.tsx`. `api` endpoints live in `src/lib/api/endpoints.ts`. Local reads go through `useLocalQuery` with keys under `qk.local`; writes go through `getRuntime().outbox.enqueue(...)` after an optimistic local write (see `upsertCheckinRow(..., 1)`). Reminder time is in `me.reminderTime` and MMKV `reminderTime`; Phase 5 schedules the local notification (`src/lib/notifications.ts` already handles permission). Tab roots still use `FoundationTab` until their phase replaces them.

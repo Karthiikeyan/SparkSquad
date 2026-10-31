@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorState, ToastProvider } from '../components/ui';
+import { SessionProvider } from '../features/auth/SessionProvider';
 import { ForceUpdateScreen, useMinVersionCheck } from '../features/system/ForceUpdate';
 import { t } from '../i18n';
 import { captureError } from '../lib/analytics';
@@ -96,7 +97,9 @@ export function AppProviders({ children, onReady }: { children: ReactNode; onRea
           <ToastProvider>
             <LocalInvalidation />
             <RuntimeGate onReady={onReady}>
-              <UpdateGate>{children}</UpdateGate>
+              <UpdateGate>
+                <SessionProvider>{children}</SessionProvider>
+              </UpdateGate>
             </RuntimeGate>
           </ToastProvider>
         </QueryClientProvider>

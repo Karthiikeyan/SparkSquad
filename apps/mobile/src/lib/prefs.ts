@@ -5,7 +5,12 @@ import { createMMKV, type MMKV } from 'react-native-mmkv';
  * they live in expo-secure-store.
  */
 export interface Prefs {
-  onboardingDone: boolean;
+  /** User id that finished onboarding on this phone (per-user so account switches re-check). */
+  onboardedUserId: string;
+  /** Invite code from a deep link, consumed after sign-in/onboarding. */
+  pendingInvite: string;
+  /** Expo push token registered with the API for this install. */
+  pushToken: string;
   reminderTime: string;
   aiDailyLimit: number;
   analyticsOptOut: boolean;

@@ -6,6 +6,8 @@ import type {
   MeDTO,
   Plan,
   PublicUserDTO,
+  SquadDTO,
+  SquadPreviewDTO,
   StreakDTO,
   SyncResponse,
   UpdateMeInput,
@@ -65,4 +67,23 @@ export const endpoints = {
     api.post<{ ok: true; localDate: string }>('/v1/nudges', { challengeId, toUserId }),
   markNotificationsRead: (ids?: string[]) =>
     api.post<{ ok: true }>('/v1/notifications/read', ids ? { ids } : {}),
+  consent: () => api.post<MeDTO>('/v1/me/consent', { ageConfirmed: true, termsAccepted: true }),
+  usernameAvailable: (username: string, signal?: AbortSignal) =>
+    api.get<{ username: string; available: boolean }>('/v1/me/username-available', {
+      query: { username },
+      signal,
+    }),
+  invitePreview: (code: string) => api.get<SquadPreviewDTO>(`/v1/squads/invites/${enc(code)}`),
+  squadPreview: (squadId: string) => api.get<SquadPreviewDTO>(`/v1/squads/${enc(squadId)}/preview`),
+  joinSquad: (input: { code: string } | { squadId: string }) =>
+    api.post<JoinSquadResponse>('/v1/squads/join', input),
+  registerPushToken: (token: string, platform: 'ios' | 'android') =>
+    api.put<{ ok: true }>('/v1/push-tokens', { token, platform }),
+  removePushToken: (token: string) => api.del<{ ok: true }>(`/v1/push-tokens/${enc(token)}`),
 };
+
+export interface JoinSquadResponse {
+  status: 'active' | 'pending';
+  squad: SquadDTO | null;
+  preview: SquadPreviewDTO;
+}

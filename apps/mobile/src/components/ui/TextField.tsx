@@ -6,6 +6,7 @@ import {
   View,
   type StyleProp,
   type TextInputProps,
+  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import { t } from '../../i18n';
@@ -21,6 +22,7 @@ export interface TextFieldProps extends Omit<TextInputProps, 'style' | 'ref'> {
   counter?: number;
   multiline?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
 }
 
 /** Text input on `surface2`; `multiline` gives the TextArea variant with a counter. */
@@ -32,6 +34,7 @@ export function TextField({
   counter,
   multiline,
   containerStyle,
+  inputStyle,
   value,
   accessibilityLabel,
   ...rest
@@ -55,7 +58,7 @@ export function TextField({
         multiline={multiline}
         textAlignVertical={multiline ? 'top' : 'center'}
         maxFontSizeMultiplier={1.3}
-        style={[styles.input, multiline ? styles.area : styles.single]}
+        style={[styles.input, multiline ? styles.area : styles.single, inputStyle]}
         {...rest}
       />
       {error ? (

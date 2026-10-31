@@ -2,15 +2,14 @@ import '../src/lib/polyfills';
 import '../global.css';
 
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useRef } from 'react';
 import { AppProviders } from '../src/components/AppProviders';
+import { RootNavigator } from '../src/components/RootNavigator';
 import { initAnalytics } from '../src/lib/analytics';
 import { setupQueryManagers } from '../src/lib/query/client';
 import { fontAssets } from '../src/theme/fonts';
-import { colors } from '../src/theme/tokens';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 initAnalytics();
@@ -37,18 +36,7 @@ export default function RootLayout() {
   return (
     <AppProviders onReady={onRuntimeReady}>
       <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: colors.bg },
-        }}
-      >
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen
-          name="checkin/[challengeId]"
-          options={{ presentation: 'transparentModal', animation: 'fade' }}
-        />
-      </Stack>
+      <RootNavigator />
     </AppProviders>
   );
 }

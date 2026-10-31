@@ -17,6 +17,12 @@ export interface Runtime {
 
 let runtime: Runtime | null = null;
 let starting: Promise<Runtime> | null = null;
+let signedIn = false;
+
+/** Sync and outbox delivery only run with a session (otherwise every call would 401). */
+export function setSignedIn(value: boolean): void {
+  signedIn = value;
+}
 
 /** Opens the DB and creates the sync engine + outbox (once). */
 export function startRuntime(): Promise<Runtime> {
@@ -50,7 +56,7 @@ export function getRuntime(): Runtime {
 
 /** Flush queued writes first so the pull sees them, then pull deltas. Errors are swallowed (offline). */
 export async function refresh(): Promise<void> {
-  if (!runtime) return;
+  if (!runtime || !signedIn) return;
   try {
     await flushAndSchedule();
   } catch {
@@ -64,7 +70,7 @@ let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** Flushes the outbox, then arms one timer for the next backed-off item (if any). */
 async function flushAndSchedule(): Promise<void> {
-  if (!runtime) return;
+  if (!runtime || !signedIn) return;
   const { outbox } = runtime;
   await outbox.flush();
   const due = await outbox.nextDueAt();

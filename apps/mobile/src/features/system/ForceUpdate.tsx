@@ -1,13 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react-native';
 import { Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Text } from '../../components/ui';
 import { t } from '../../i18n';
-import { endpoints } from '../../lib/api/endpoints';
 import { compareVersions, env } from '../../lib/env';
-import { qk } from '../../lib/query/keys';
 import { colors, iconStroke } from '../../theme/tokens';
+import { useConfig } from './useConfig';
 
 const ANDROID_STORE = 'market://details?id=com.sparktribe.sparksquad';
 const ANDROID_WEB = 'https://play.google.com/store/apps/details?id=com.sparktribe.sparksquad';
@@ -21,12 +19,7 @@ function storeUrl(): string {
 
 /** True when the server's minimum version is newer than this build (G2). */
 export function useMinVersionCheck(): boolean {
-  const { data } = useQuery({
-    queryKey: qk.config,
-    queryFn: endpoints.config,
-    staleTime: 60 * 60_000,
-    retry: false,
-  });
+  const { data } = useConfig();
   return !!data && compareVersions(env.appVersion, data.minAppVersion) < 0;
 }
 
