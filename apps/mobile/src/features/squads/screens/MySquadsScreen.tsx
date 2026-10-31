@@ -161,6 +161,7 @@ export function MySquadsScreen() {
   else
     body = (
       <>
+        <View style={styles.top}>{actions}</View>
         <View style={styles.cards}>
           {list.data.map((r) => (
             <SquadCard key={r.id} r={r} />
@@ -192,7 +193,6 @@ export function MySquadsScreen() {
             </View>
           </View>
         ) : null}
-        <View style={styles.block}>{actions}</View>
         {hasRoom && online ? (
           <Suggestions interests={me.interests} exclude={list.data.map((r) => r.id)} />
         ) : null}
@@ -352,6 +352,7 @@ function Suggestions({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   actions: { flexDirection: 'row', gap: 10 },
+  top: { marginBottom: 16 },
   cards: { gap: 12 },
   card: {
     backgroundColor: colors.surface,
