@@ -18,6 +18,8 @@ export interface Prefs {
   analyticsOptOut: boolean;
   recentSearches: string[];
   lastFreezeNoticeDate: string;
+  /** Public handles for on-device verification (mirrors the server; usernames only). */
+  integrations: Partial<Record<'github' | 'leetcode' | 'codeforces', string>>;
 }
 
 let store: MMKV | null = null;

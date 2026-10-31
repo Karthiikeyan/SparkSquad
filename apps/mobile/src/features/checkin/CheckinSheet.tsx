@@ -3,8 +3,8 @@ import { getCalendars } from 'expo-localization';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ImagePlus, X } from 'lucide-react-native';
-import { useMemo, useRef, useState } from 'react';
+import { BadgeCheck, ImagePlus, X } from 'lucide-react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import {
   BottomSheet,
@@ -33,6 +33,7 @@ import {
 } from '../today/model';
 import { stepperUnit, targetLabel } from '../today/taskText';
 import { useToday } from '../today/useToday';
+import { prefillFromVerification, verifiedIndices, type Prefill } from '../verify/prefill';
 import { clearDraft, readDraft, writeDraft } from './drafts';
 import { localProofUri, removeLocalProof, saveLocalProof } from './localProof';
 import { submitCheckin, type DraftValues } from './submit';
@@ -60,11 +61,14 @@ function TaskInput({
   value,
   onChange,
   first,
+  hint,
 }: {
   task: PlanTask;
   value: number | boolean | undefined;
   onChange: (v: number | boolean) => void;
   first: boolean;
+  /** Verification line under the target ("Verified from your GitHub activity"). */
+  hint?: { text: string; verified: boolean } | null;
 }) {
   const { step, max } = stepFor(task);
   return (
@@ -74,6 +78,16 @@ function TaskInput({
         <Text variant="footnote" color="label2">
           {targetLabel(task)}
         </Text>
+        {hint ? (
+          <View style={styles.hint} accessibilityLiveRegion="polite">
+            {hint.verified ? (
+              <BadgeCheck size={14} color={colors.success} strokeWidth={iconStroke} />
+            ) : null}
+            <Text variant="caption" color={hint.verified ? 'success' : 'label2'}>
+              {hint.text}
+            </Text>
+          </View>
+        ) : null}
       </View>
       {task.type === 'check' ? (
         <Switch value={value === true} onValueChange={onChange} accessibilityLabel={task.title} />
@@ -106,6 +120,49 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
   const [note, setNote] = useState(existing?.note ?? '');
   const [photo, setPhoto] = useState<string | null>(() => localProofUri(ch.id, date));
   const [saving, setSaving] = useState(false);
+  const [prefill, setPrefill] = useState<Prefill | null>(null);
+
+  // Fill in what GitHub / LeetCode / Codeforces already show; never blocks a manual check-in.
+  const tasks = day && !day.rest ? day.tasks : null;
+  const tasksRef = useRef(tasks);
+  tasksRef.current = tasks;
+  const verifyKey = tasks ? tasks.map((x) => x.verify ?? '').join('|') : '';
+  useEffect(() => {
+    const current = tasksRef.current;
+    if (!current || !current.some((x) => x.verify)) return;
+    let alive = true;
+    prefillFromVerification(current, date, me.timezone)
+      .then((p) => {
+        if (!alive) return;
+        setPrefill(p);
+        setDraft((cur) => {
+          const next = { ...cur };
+          for (const [i, v] of Object.entries(p.values)) {
+            const k = Number(i);
+            if (next[k] === undefined || next[k] === false || next[k] === 0) next[k] = v;
+          }
+          return next;
+        });
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [verifyKey, date, me.timezone]);
+
+  const hintFor = (i: number) => {
+    if (!prefill) return null;
+    const source = prefill.sources[i];
+    if (source && draft[i] === prefill.values[i]) {
+      return {
+        text: t('integrations.verified', { source: t(`integrations.name_${source}`) }),
+        verified: true,
+      };
+    }
+    return prefill.failed.includes(i)
+      ? { text: t('integrations.couldNot'), verified: false }
+      : null;
+  };
 
   const update = (i: number, v: number | boolean) => {
     const next = { ...draft, [i]: v };
@@ -147,6 +204,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
         hasPhoto: !honestMiss && !!photo,
         partialCounts: card.squad.partialCounts,
         existing,
+        verified: prefill ? verifiedIndices(prefill, draft) : [],
       });
       clearDraft(ch.id, date);
       track('checkin', {
@@ -202,6 +260,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
             value={draft[i]}
             onChange={(v) => update(i, v)}
             first={i === 0}
+            hint={hintFor(i)}
           />
         ))}
       </View>
@@ -406,6 +465,7 @@ const styles = StyleSheet.create({
   },
   taskRowFirst: {},
   taskTexts: { flex: 1, gap: 4, minWidth: 0 },
+  hint: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   note: { marginTop: 18 },
   photoButton: {
     marginTop: 10,

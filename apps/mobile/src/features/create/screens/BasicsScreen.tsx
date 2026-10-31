@@ -21,6 +21,7 @@ import {
   TextField,
   useToast,
 } from '../../../components/ui';
+import { openPlusPaywall } from '../../billing/paywallRoute';
 import { t } from '../../../i18n';
 import { members } from '../../../lib/db/schema';
 import { qk } from '../../../lib/query/keys';
@@ -73,6 +74,7 @@ export function BasicsScreen() {
     // The server enforces this too; checking here saves a dead end at the last step.
     if ((owned.data ?? 0) >= ownLimit) {
       toast.show({ message: t('create.ownLimit', { n: ownLimit }), kind: 'error' });
+      if (me.plan === 'free') openPlusPaywall();
       return;
     }
     update({

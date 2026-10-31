@@ -196,6 +196,13 @@ export interface ConfigResponse {
     apple: boolean;
   };
   contactEmail: string;
+  /** Display-only prices for the pilot paywall (payments off). Real prices come from RevenueCat. */
+  prices: {
+    plusMonthly: string | null;
+    plusYearly: string | null;
+    squadProMonthly: string | null;
+    squadProYearly: string | null;
+  };
 }
 
 export interface LeaderboardEntryDTO {

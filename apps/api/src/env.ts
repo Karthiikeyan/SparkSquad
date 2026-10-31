@@ -14,6 +14,11 @@ export interface Bindings {
   ANDROID_STORE_URL: string;
   IOS_STORE_URL: string;
   CONTACT_EMAIL: string;
+  /** Display prices for the pilot paywall when payments are off (e.g. "₹99"); empty hides them. */
+  PRICE_PLUS_MONTHLY?: string;
+  PRICE_PLUS_YEARLY?: string;
+  PRICE_SQUAD_PRO_MONTHLY?: string;
+  PRICE_SQUAD_PRO_YEARLY?: string;
 
   BETTER_AUTH_SECRET: string;
   GOOGLE_CLIENT_ID?: string;

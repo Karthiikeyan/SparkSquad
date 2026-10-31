@@ -15,6 +15,7 @@ import {
   Text,
   useToast,
 } from '../../components/ui';
+import { openPaywallFor } from '../billing/paywallRoute';
 import { t } from '../../i18n';
 import { track } from '../../lib/analytics';
 import { endpoints } from '../../lib/api/endpoints';
@@ -96,6 +97,7 @@ export function SquadPreview({ source }: { source: PreviewSource }) {
         void query.refetch();
       }
       toast.show({ message: errorMessage(e), kind: 'error' });
+      openPaywallFor(e);
     },
   });
 

@@ -120,4 +120,16 @@ describe('submitCheckin', () => {
       input: { values: [], honestMiss: true },
     });
   });
+
+  it('sends verified task indices (deduped, in range) and drops them for honest misses', async () => {
+    const { outbox, base } = await setup();
+    const res = await submitCheckin({ ...base, draft: { 0: 2 }, verified: [2, 0, 0, 9] });
+    expect(res.checkin.verified).toEqual([0, 2]);
+    expect((await outbox.list())[0]!.payload).toMatchObject({ input: { verified: [0, 2] } });
+
+    const miss = await submitCheckin({ ...base, honestMiss: true, draft: {}, verified: [0] });
+    expect(miss.checkin.verified).toEqual([]);
+    const input = (await outbox.list())[0]!.payload as { input: Record<string, unknown> };
+    expect(input.input.verified).toBeUndefined();
+  });
 });

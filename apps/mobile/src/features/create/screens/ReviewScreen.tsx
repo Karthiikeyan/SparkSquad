@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, NavHeader, Screen, Text, useToast } from '../../../components/ui';
+import { openPaywallFor } from '../../billing/paywallRoute';
 import { t } from '../../../i18n';
 import { track } from '../../../lib/analytics';
 import { endpoints } from '../../../lib/api/endpoints';
@@ -71,6 +72,7 @@ export function ReviewScreen() {
         message: squadMade ? `${t('review.failedPlan')} ${errorMessage(e)}` : errorMessage(e),
         kind: 'error',
       });
+      openPaywallFor(e);
     } finally {
       setBusy(false);
     }

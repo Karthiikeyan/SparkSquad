@@ -21,6 +21,7 @@ import {
   Text,
   TextField,
 } from '../../../components/ui';
+import { openPlusPaywall } from '../../billing/paywallRoute';
 import { t } from '../../../i18n';
 import { track } from '../../../lib/analytics';
 import { getAiKey, type AiProvider } from '../../../lib/aiKeys';
@@ -92,6 +93,8 @@ export function AiBuildScreen() {
         message={`${t('aiBuild.plusTitle')}. ${t('aiBuild.plusBody')}`}
         actionLabel={t('aiBuild.usePrompt')}
         onAction={() => router.replace('/create/ai-prompt')}
+        secondaryLabel={t('you.seePlus')}
+        onSecondary={openPlusPaywall}
       />,
     );
   }

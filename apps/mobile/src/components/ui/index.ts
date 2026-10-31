@@ -14,7 +14,7 @@ export { PhaseBar, ProgressBar } from './ProgressBar';
 export { Pressable } from './Pressable';
 export { Screen } from './Screen';
 export { SegmentedControl, type SegmentOption } from './SegmentedControl';
-export { Badge, Heatmap, StatTile } from './Stats';
+export { Badge, BadgeDisc, Heatmap, StatTile } from './Stats';
 export { EmptyState, ErrorState, OfflineBanner, Skeleton, SkeletonCard } from './States';
 export { Stepper } from './Stepper';
 export { Switch } from './Switch';

@@ -22,9 +22,11 @@ describe('auth guards', () => {
     const json = (await res.json()) as {
       limits: { free: { squadsJoined: number } };
       features: { paymentsEnabled: boolean };
+      prices: { plusMonthly: string | null };
     };
     expect(json.limits.free.squadsJoined).toBe(3);
     expect(json.features.paymentsEnabled).toBe(false);
+    expect(json.prices).toHaveProperty('plusMonthly');
   });
 
   it('signs in with an email code and returns the profile', async () => {

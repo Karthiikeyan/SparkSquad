@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { NavHeader, Screen, Text } from '../../../src/components/ui';
 import { t } from '../../../src/i18n';
 
-const DOCS = ['terms', 'privacy'] as const;
+const DOCS = ['terms', 'privacy', 'licences', 'guidelines'] as const;
 type Doc = (typeof DOCS)[number];
 
 function isDoc(value: string | undefined): value is Doc {

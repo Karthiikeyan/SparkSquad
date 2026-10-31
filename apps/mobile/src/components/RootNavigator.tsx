@@ -60,6 +60,19 @@ export function RootNavigator() {
           <Stack.Screen name="create" options={{ presentation: 'fullScreenModal' }} />
           <Stack.Screen name="discover/search" options={{ animation: 'fade' }} />
           <Stack.Screen name="settings/ai" />
+          <Stack.Screen name="settings/index" />
+          <Stack.Screen name="settings/notifications" />
+          <Stack.Screen name="settings/integrations" />
+          <Stack.Screen name="settings/billing" />
+          <Stack.Screen name="settings/blocked" />
+          <Stack.Screen name="settings/export" />
+          <Stack.Screen name="settings/delete" />
+          <Stack.Screen name="settings/help" />
+          <Stack.Screen name="you/edit" />
+          <Stack.Screen name="you/badges" />
+          <Stack.Screen name="you/history" />
+          <Stack.Screen name="paywall/plus" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="paywall/squad-pro" options={{ presentation: 'modal' }} />
         </Stack.Protected>
       </Stack>
     </>

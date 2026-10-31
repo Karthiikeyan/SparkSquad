@@ -147,7 +147,27 @@ export const endpoints = {
   template: (slug: string) => api.get<unknown>(`/v1/templates/${enc(slug)}`),
   discover: (params: { category?: string; q?: string; cursor?: string }) =>
     api.get<DiscoverResponse>('/v1/discover', { query: params }),
+
+  /* you & settings (Phase 8) */
+  blocks: () => api.get<{ blocked: { user: PublicUserDTO; createdAt: string }[] }>('/v1/blocks'),
+  unblock: (userId: string) => api.del<{ ok: true }>(`/v1/blocks/${enc(userId)}`),
+  exportData: () => api.post<{ url: string; expiresAt: string }>('/v1/me/export'),
+  deleteAccount: () => api.del<{ ok: true }>('/v1/me'),
+  plusInterest: (product: 'plus' | 'squad_pro') =>
+    api.post<{ ok: true }>('/v1/me/plus-interest', { product }),
+  integrations: () =>
+    api.get<{ integrations: { provider: IntegrationProvider; handle: string }[] }>(
+      '/v1/integrations',
+    ),
+  setIntegration: (provider: IntegrationProvider, handle: string) =>
+    api.put<{ provider: IntegrationProvider; handle: string }>(`/v1/integrations/${provider}`, {
+      handle,
+    }),
+  removeIntegration: (provider: IntegrationProvider) =>
+    api.del<{ ok: true }>(`/v1/integrations/${provider}`),
 };
+
+export type IntegrationProvider = 'github' | 'leetcode' | 'codeforces';
 
 export interface EditDayInput {
   title?: string;

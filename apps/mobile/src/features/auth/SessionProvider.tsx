@@ -24,6 +24,7 @@ import { KV_ME } from '../../lib/sync/applySync';
 import { clearReminders } from '../reminders/schedule';
 import { hasRequiredProfile, type SessionStatus } from './routing';
 import { signOutGoogle } from './signIn';
+import { resetPurchases } from '../billing/purchases';
 
 export interface SessionValue {
   status: SessionStatus;
@@ -182,11 +183,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         // Clear the local session even if the server can't be reached.
       }
       await signOutGoogle();
+      await resetPurchases();
       await clearReminders();
       await clearAiKeys();
       await clearLocalData();
       removePref('onboardedUserId');
       removePref('pendingInvite');
+      removePref('integrations');
       setPendingInviteState(null);
       setPendingRoute(null);
       pushRegistered.current = null;

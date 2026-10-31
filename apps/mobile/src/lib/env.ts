@@ -20,6 +20,9 @@ export const env = {
   appVersion: Constants.expoConfig?.version ?? '0.0.0',
   scheme: 'sparksquad',
   paymentsEnabled: flag(process.env.EXPO_PUBLIC_PAYMENTS_ENABLED),
+  /** Public RevenueCat SDK keys (safe to ship; only used when payments are on). */
+  revenuecatIosKey: process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY || undefined,
+  revenuecatAndroidKey: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY || undefined,
   posthogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY || undefined,
   posthogHost: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
   sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN || undefined,

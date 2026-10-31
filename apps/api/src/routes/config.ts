@@ -16,6 +16,12 @@ configRoutes.get('/', (c) => {
       apple: Boolean(env.APPLE_CLIENT_ID),
     },
     contactEmail: env.CONTACT_EMAIL,
+    prices: {
+      plusMonthly: env.PRICE_PLUS_MONTHLY || null,
+      plusYearly: env.PRICE_PLUS_YEARLY || null,
+      squadProMonthly: env.PRICE_SQUAD_PRO_MONTHLY || null,
+      squadProYearly: env.PRICE_SQUAD_PRO_YEARLY || null,
+    },
   };
   c.header('Cache-Control', 'public, max-age=300');
   return c.json(response);

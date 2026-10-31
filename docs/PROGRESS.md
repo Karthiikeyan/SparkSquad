@@ -10,7 +10,7 @@
 - [x] 5. Core loop B1–B8, reminders, push
 - [x] 6. Squads C1–C15
 - [x] 7. Create and join D1–D11, E1–E4
-- [ ] 8. You and settings F1–F16, weekly recap
+- [x] 8. You and settings F1–F16, weekly recap
 - [ ] 9. Polish and hardening
 - [ ] 10. Documentation (SETUP.md, README, final PROGRESS/DECISIONS)
 
@@ -146,3 +146,25 @@
 - Native features need a development build.
 
 **Notes for the next session:** read `design/Profile.dc.html`, `Settings.dc.html` (F5), `Plus.dc.html` before Phase 8. Profile stats: global streak in local `streaks`, my check-ins (kept locally without pruning) for the heatmap and "days shown up", `badges` table, `shared/streaks.ts` `badgeProgress`. Settings rows link to `settings/ai` (done), integrations, notifications (`me.notify*` via PATCH /v1/me, reminder time also MMKV), billing, blocked (`GET /v1/blocks`), export (`POST /v1/me/export`), delete (`DELETE /v1/me`), help, legal (`settings/legal/[doc]` exists). Paywall: `PAYMENTS_ENABLED=false` → "Plus is coming soon. Get notified" → `POST /v1/me/plus-interest`. Verification (Architecture §8) lives in `features/verify` and pre-fills the check-in sheet.
+
+### Phase 8 — done
+
+- You (`src/features/you/`): F1 profile (header with settings button, day streak / best streak / days shown up, 18-week heatmap, badges strip with "n days to go", plan row, weekly recap card, links), F2 edit profile (name, username check, colour), F3 badges (earned with date, locked with progress), F4 history (month calendar with heat levels, tap a day for its check-ins).
+- Weekly recap: template from this week’s local stats; Plus + BYOK key can rewrite it with AI.
+- Settings (`src/features/settings/`): F5 hub (AI key, reminders, squad updates switch, integrations, plan, blocked, export, delete, help, about, version, sign out), F7 integrations (GitHub / LeetCode / Codeforces handles checked by a live lookup, steps note), F8 notifications (reminder time, three switches, OS-permission banner), F12 blocked people, F13 export (download + share sheet), F14 delete account (type DELETE, owner warning), F15 help (FAQ, email, guidelines), F16 legal now includes licences and guidelines.
+- Verification (`src/features/verify/`): on-device GitHub / LeetCode / Codeforces checks pre-fill the check-in sheet, show "Verified from your X activity" and send `verified` indices.
+- Billing (`src/features/billing/`): F9 Plus paywall (Free vs Plus from limits, yearly/monthly, start, restore, Squad Pro link), F10 Squad Pro (pick an owned squad), F11 plan & billing (plan, renewal, manage in store, restore). Payments off: config prices and "Get notified" (`POST /v1/me/plus-interest`). Payments on: RevenueCat offerings, purchase (`squad_id` attribute for Pro), restore, `/v1/me` polling. Limit errors open the paywall.
+- API: `/v1/config` returns display `prices` from `PRICE_*` vars.
+- 191 mobile tests (heatmap/recap/badges/calendar, local profile source, verifiers with fake fetch, pre-fill and caching, verified indices on submit, paywall prices and comparison, paywall screen with payments off, delete and handle rules). Android bundle builds.
+
+**Next:** Phase 9 — polish and hardening.
+
+**Known issues:**
+- Steps verification (Health Connect / HealthKit) isn’t wired; step tasks are entered by hand.
+- Plus photo upload (presigned R2) isn’t wired; photos stay on the phone for everyone.
+- On-device AI (iOS Foundation Models) isn’t wired; the recap rewrite needs a BYOK key.
+- History and heatmap only cover check-ins on this phone (the first sync returns the last 7 days).
+- RevenueCat purchases are untested against real store products (payments are off for the pilot).
+- Native features need a development build.
+
+**Notes for the next session:** Phase 9 candidates: Plus photo upload (`POST /v1/uploads/proof` presign, compress to ≤300 KB JPEG/WebP, upload in the check-in outbox handler before the upsert, send `photoKey`), steps via `react-native-health-connect` / `@kingstinct/react-native-healthkit` (config plugins in `app.config.ts`), on-device recap where available, an accessibility and empty/offline-state pass over every screen, a full history backfill endpoint or paging if needed, and a review of performance (UI kit import cost in tests is ~7 s).

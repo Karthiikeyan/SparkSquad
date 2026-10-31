@@ -62,6 +62,8 @@ export interface SubmitArgs {
   hasPhoto: boolean;
   partialCounts: boolean;
   existing: CheckinDTO | null;
+  /** Task indices whose value came from GitHub/LeetCode/Codeforces on this phone. */
+  verified?: readonly number[];
   now?: Date;
 }
 
@@ -77,6 +79,11 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
   const { status, fraction } = computeCheckinStatus(a.tasks, values, a.honestMiss);
   const id = a.existing?.id ?? ulid();
   const note = a.note?.trim() ? a.note.trim() : null;
+  const verified = a.honestMiss
+    ? []
+    : [...new Set(a.verified ?? [])]
+        .filter((i) => i >= 0 && i < a.tasks.length)
+        .sort((x, y) => x - y);
 
   const checkin: CheckinDTO = {
     id,
@@ -89,7 +96,7 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     note,
     hasPhoto: a.hasPhoto,
     photoUrl: a.existing?.photoUrl ?? null,
-    verified: [],
+    verified,
     reactionCount: a.existing?.reactionCount ?? 0,
     commentCount: a.existing?.commentCount ?? 0,
     reactedByMe: a.existing?.reactedByMe ?? false,
@@ -105,6 +112,7 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     note,
     honestMiss: a.honestMiss,
     hasPhoto: a.hasPhoto,
+    ...(verified.length ? { verified } : {}),
   };
 
   await withWriteLock(() => upsertCheckinRow(a.db, checkin, 1));

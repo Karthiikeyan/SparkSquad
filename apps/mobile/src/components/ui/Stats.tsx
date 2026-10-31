@@ -91,14 +91,7 @@ export interface BadgeProps {
 export function Badge({ glyph, label, earned }: BadgeProps) {
   return (
     <View style={styles.badge} accessible accessibilityLabel={label}>
-      <View style={[styles.badgeDisc, earned ? styles.badgeEarned : styles.badgeLocked]}>
-        <Text
-          style={[styles.badgeGlyph, { color: earned ? colors.accent : colors.label3 }]}
-          tabular
-        >
-          {glyph}
-        </Text>
-      </View>
+      <BadgeDisc glyph={glyph} earned={earned} />
       <Text
         variant="caption"
         align="center"
@@ -106,6 +99,21 @@ export function Badge({ glyph, label, earned }: BadgeProps) {
         numberOfLines={2}
       >
         {label}
+      </Text>
+    </View>
+  );
+}
+
+/** Just the 48 px disc (decorative; the row around it carries the label). */
+export function BadgeDisc({ glyph, earned }: Pick<BadgeProps, 'glyph' | 'earned'>) {
+  return (
+    <View
+      style={[styles.badgeDisc, earned ? styles.badgeEarned : styles.badgeLocked]}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      <Text style={[styles.badgeGlyph, { color: earned ? colors.accent : colors.label3 }]} tabular>
+        {glyph}
       </Text>
     </View>
   );
