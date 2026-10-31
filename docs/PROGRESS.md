@@ -50,4 +50,4 @@
 
 **Known issues:** none.
 
-**Notes for the next session:** design files read so far: Main, CheckIn, Welcome, Squad, Leaderboard, Plan. Read the rest (CreateSquad, ImportPlan, AIPrompt, AIBuild, Discover, Profile, Plus, Settings, ShareCard) before building those screens.
+**Notes for the next session:** design files read so far: Main, CheckIn, Welcome, Squad, Leaderboard, Plan. Read the rest (CreateSquad, ImportPlan, AIPrompt, AIBuild, Discover, Profile, Plus, Settings, ShareCard) before building those screens. The mobile app currently has only the Expo Router shell (`app/_layout.tsx`, `app/index.tsx`), NativeWind and colour tokens; Phase 3 adds everything else. API contract for the app: zod schemas in `packages/shared/src/schemas.ts`, response types in `packages/shared/src/types.ts`, routes in `apps/api/src/index.ts`.
