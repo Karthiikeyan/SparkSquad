@@ -13,6 +13,7 @@ export interface Bindings {
   EMAIL_FROM: string;
   ANDROID_STORE_URL: string;
   IOS_STORE_URL: string;
+  CONTACT_EMAIL: string;
 
   BETTER_AUTH_SECRET: string;
   GOOGLE_CLIENT_ID?: string;
@@ -28,8 +29,21 @@ export interface Bindings {
   R2_ACCOUNT_ID?: string;
   R2_ACCESS_KEY_ID?: string;
   R2_SECRET_ACCESS_KEY?: string;
+  R2_BUCKET_NAME?: string;
+}
+
+export interface AuthedUser {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface Variables {
+  user: AuthedUser;
+  requestId: string;
 }
 
 export interface AppEnv {
   Bindings: Bindings;
+  Variables: Variables;
 }

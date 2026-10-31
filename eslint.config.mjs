@@ -41,5 +41,9 @@ export default tseslint.config(
     languageOptions: { sourceType: 'commonjs', globals: { ...globals.node } },
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
+  {
+    files: ['**/scripts/**', 'templates/**'],
+    rules: { 'no-console': 'off' },
+  },
   prettier,
 );

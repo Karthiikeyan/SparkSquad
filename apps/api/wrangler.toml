@@ -14,6 +14,8 @@ ADMIN_EMAILS = ""
 EMAIL_FROM = "SparkSquad <onboarding@resend.dev>"
 ANDROID_STORE_URL = "https://play.google.com/store/apps/details?id=com.sparktribe.sparksquad"
 IOS_STORE_URL = "https://apps.apple.com/app/sparksquad"
+R2_BUCKET_NAME = "sparksquad"
+CONTACT_EMAIL = "support@sparktribe.example"
 
 # Secrets (set with `wrangler secret put NAME`, or in .dev.vars for local dev):
 # BETTER_AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_IOS_CLIENT_ID,

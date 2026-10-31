@@ -4,7 +4,7 @@
 
 - [x] 0. Scaffold (pnpm + Turborepo monorepo, Expo app, Hono Worker, shared package, ESLint/Prettier, CI, env examples)
 - [x] 1. packages/shared (schemas, limits, dates, scoring/streaks, word filter, plan module + tests)
-- [ ] 2. apps/api (Drizzle schema + migrations, Better Auth, all endpoints, sync, R2, webhooks, push, cron, moderation, admin, seeding, integration tests)
+- [x] 2. apps/api (Drizzle schema + migrations, Better Auth, all endpoints, sync, R2, webhooks, push, cron, moderation, admin, seeding, integration tests)
 - [ ] 3. apps/mobile foundation (tokens, fonts, components, navigation, API client, Query, SQLite + outbox, banners, toasts, i18n, analytics)
 - [ ] 4. Auth and onboarding A1–A10 + invite deep links
 - [ ] 5. Core loop B1–B8, reminders, push
@@ -33,6 +33,20 @@
 - 127 tests, coverage 99% lines / 96% branches.
 
 **Next:** Phase 2 — API.
+
+**Known issues:** none.
+
+### Phase 2 — done
+
+- Drizzle schema for the full data model (`apps/api/src/db/schema.ts`) + migration `0000_init.sql`; Better Auth tables extended with profile columns.
+- Better Auth (`src/auth.ts`): Expo plugin, Google + Apple ID-token sign-in (enabled only when keys exist), email OTP via Resend (hashed OTPs; codes captured in tests/dev without a key).
+- Endpoints (Architecture §4): config, me (profile, username check, consent, plus-interest, export, delete), sync (cursor deltas), squads (CRUD, join by code/id, requests, roles, remove, rotate invite, announcement, transfer, members with consistency, history), discover/templates, challenges (create with server re-parse, plan with ETag, day edits locked for past/today, end, export, leaderboard), check-ins (idempotent upsert, window, personal targets, status, streaks, badges), reactions, comments (20/day, expiry), nudges (1/pair/day + immediate push), proof uploads (Plus/Pro only, presigned R2 or HMAC Worker URLs), push tokens, reports, blocks, integrations, notifications read, RevenueCat webhook, admin reports + `/admin` page, `/join/CODE` landing page.
+- Rate limiting per IP and per user via Workers Rate Limiting bindings; stable error codes; word filter; 18+ consent gate on writes; `x-app-version` → `APP_UPDATE_REQUIRED`.
+- Hourly cron: streak settlement + freeze notices (local 01:00), morning inbox digest (09:00), evening squad digest (18:00), max 2 digest pushes/user/day, challenge end roll-ups + "Challenge complete" badges, expiry of comments/notifications/counters/nudges/photo keys/old raw check-ins/sessions.
+- `pnpm seed:templates [-- --remote]` uploads templates to R2 and upserts the `templates` table.
+- 31 integration tests (auth guards, limits, check-in idempotency + window, streaks, reactions/comments caps, nudges, uploads, sync deltas, blocks, leaderboard maths, webhook, cron, pages).
+
+**Next:** Phase 3 — mobile foundation.
 
 **Known issues:** none.
 

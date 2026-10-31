@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>SparkSquad admin</title>
+    <style>
+      body { margin: 0; background: #000; color: #f5f5f7; font: 15px/21px Inter, system-ui, sans-serif; }
+      main { max-width: 880px; margin: 0 auto; padding: 24px 16px; }
+      h1 { font-size: 28px; margin: 0 0 4px; }
+      p.muted { color: #a1a1a8; margin: 0 0 16px; }
+      .card { background: #151517; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; }
+      .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .tag { background: #232326; border-radius: 10px; padding: 2px 8px; font-size: 13px; color: #c7c7cc; }
+      pre { white-space: pre-wrap; word-break: break-word; background: #0e0e10; border-radius: 10px; padding: 10px; color: #d6d6db; }
+      button { height: 36px; border: 0; border-radius: 12px; padding: 0 14px; font: inherit; font-weight: 600; cursor: pointer; }
+      .hide { background: rgba(255, 178, 36, 0.14); color: #ffb224; }
+      .suspend { background: #232326; color: #ff6b60; }
+      .dismiss { background: #1c1c1f; color: #f5f5f7; }
+      input { height: 40px; border-radius: 12px; border: 0; background: #232326; color: #f5f5f7; padding: 0 12px; font: inherit; }
+      a { color: #ffb224; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Reports</h1>
+      <p class="muted" id="status">Loading…</p>
+      <div id="signin" hidden class="card">
+        <p>Sign in with an admin email. We’ll send a 6-digit code.</p>
+        <div class="row">
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <button class="hide" id="send">Send code</button>
+          <input id="otp" inputmode="numeric" maxlength="6" placeholder="123456" />
+          <button class="hide" id="verify">Sign in</button>
+        </div>
+      </div>
+      <div id="list"></div>
+    </main>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const statusEl = $('status');
+      const list = $('list');
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, {
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          ...opts,
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw Object.assign(new Error(json?.error?.message || res.statusText), { status: res.status });
+        return json;
+      }
+
+      function el(tag, attrs = {}, ...children) {
+        const node = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === 'onclick') node.addEventListener('click', v);
+          else node.setAttribute(k, v);
+        }
+        for (const c of children) node.append(c instanceof Node ? c : document.createTextNode(String(c)));
+        return node;
+      }
+
+      async function act(id, action) {
+        if (action === 'suspend' && !confirm('Suspend the author of this content?')) return;
+        await api(`/v1/admin/reports/${encodeURIComponent(id)}`, { method: 'POST', body: JSON.stringify({ action }) });
+        await load();
+      }
+
+      async function load() {
+        try {
+          const { reports } = await api('/v1/admin/reports');
+          $('signin').hidden = true;
+          statusEl.textContent = reports.length ? `${reports.length} open report(s). Review within 24 hours.` : 'No open reports.';
+          list.replaceChildren(
+            ...reports.map((r) =>
+              el(
+                'div',
+                { class: 'card' },
+                el('div', { class: 'row' },
+                  el('span', { class: 'tag' }, r.targetType),
+                  el('span', { class: 'tag' }, r.reason),
+                  el('span', { class: 'tag' }, new Date(r.createdAt).toLocaleString()),
+                ),
+                r.details ? el('p', {}, r.details) : '',
+                el('pre', {}, JSON.stringify(r.target, null, 2)),
+                el('div', { class: 'row' },
+                  el('button', { class: 'hide', onclick: () => act(r.id, 'hide') }, 'Hide content'),
+                  el('button', { class: 'suspend', onclick: () => act(r.id, 'suspend') }, 'Suspend user'),
+                  el('button', { class: 'dismiss', onclick: () => act(r.id, 'dismiss') }, 'Dismiss'),
+                ),
+              ),
+            ),
+          );
+        } catch (e) {
+          if (e.status === 401 || e.status === 403) {
+            statusEl.textContent = e.status === 403 ? 'This account is not an admin.' : 'Sign in to continue.';
+            $('signin').hidden = false;
+          } else {
+            statusEl.textContent = e.message;
+          }
+        }
+      }
+
+      $('send').addEventListener('click', async () => {
+        await api('/api/auth/email-otp/send-verification-otp', {
+          method: 'POST',
+          body: JSON.stringify({ email: $('email').value, type: 'sign-in' }),
+        }).catch((e) => (statusEl.textContent = e.message));
+        statusEl.textContent = 'Code sent. Check your inbox.';
+      });
+      $('verify').addEventListener('click', async () => {
+        await api('/api/auth/sign-in/email-otp', {
+          method: 'POST',
+          body: JSON.stringify({ email: $('email').value, otp: $('otp').value }),
+        }).catch((e) => (statusEl.textContent = e.message));
+        await load();
+      });
+      load();
+    </script>
+  </body>
+</html>

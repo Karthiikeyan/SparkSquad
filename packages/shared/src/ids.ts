@@ -1,9 +1,13 @@
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
+interface CryptoLike {
+  getRandomValues(array: Uint8Array): Uint8Array;
+}
+
 function randomBytes(n: number): Uint8Array {
   const bytes = new Uint8Array(n);
-  // globalThis.crypto exists in Workers, Node 20+, and React Native with expo-crypto's polyfill.
-  globalThis.crypto.getRandomValues(bytes);
+  // Present in Workers, Node 20+, and React Native once react-native-get-random-values is loaded.
+  (globalThis as unknown as { crypto: CryptoLike }).crypto.getRandomValues(bytes);
   return bytes;
 }
 

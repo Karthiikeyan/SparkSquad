@@ -142,6 +142,13 @@ export const upsertCheckinSchema = z.object({
   photoKey: z.string().max(200).nullable().optional(),
   /** Indices of tasks verified on the phone (GitHub/LeetCode/Codeforces/steps). */
   verified: z.array(z.number().int().min(0).max(7)).max(8).optional(),
+  /** Personal numeric targets (only honoured when the squad allows personal targets). */
+  targets: z
+    .array(
+      z.object({ t: z.number().int().min(0).max(7), target: z.number().int().min(1).max(10_000) }),
+    )
+    .max(8)
+    .optional(),
 });
 export type UpsertCheckinInput = z.infer<typeof upsertCheckinSchema>;
 
