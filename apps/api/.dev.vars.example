@@ -1,0 +1,30 @@
+# Local secrets for `wrangler dev`. Copy to .dev.vars (git-ignored). Production: `wrangler secret put NAME`.
+
+# Required. Generate with: openssl rand -base64 32
+BETTER_AUTH_SECRET=
+
+# Google OAuth (Google Cloud Console > APIs & Services > Credentials)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_IOS_CLIENT_ID=
+GOOGLE_ANDROID_CLIENT_ID=
+
+# Sign in with Apple (Apple Developer > Certificates, Identifiers & Profiles)
+APPLE_CLIENT_ID=
+APPLE_CLIENT_SECRET=
+APPLE_APP_BUNDLE_IDENTIFIER=com.sparktribe.sparksquad
+
+# Email OTP via Resend (resend.com > API Keys). Without it, codes are logged locally in development only.
+RESEND_API_KEY=
+
+# RevenueCat webhook shared secret (only when payments are on)
+REVENUECAT_WEBHOOK_SECRET=
+
+# Expo push access token (expo.dev > Account settings > Access tokens), optional
+EXPO_ACCESS_TOKEN=
+
+# R2 S3-compatible credentials for presigned uploads/downloads
+# (Cloudflare dashboard > R2 > Manage R2 API Tokens)
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=

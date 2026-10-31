@@ -1,0 +1,16 @@
+node_modules
+dist
+build
+coverage
+.turbo
+.expo
+.wrangler
+pnpm-lock.yaml
+design
+docs
+MASTER_PROMPT.md
+apps/mobile/ios
+apps/mobile/android
+apps/api/src/db/migrations
+*.html
+.github/copilot-instructions.md

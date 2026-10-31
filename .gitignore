@@ -1,0 +1,57 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+.turbo/
+coverage/
+*.tsbuildinfo
+
+# env and secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.pem
+*.p8
+*.p12
+*.key
+*.jks
+*.keystore
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+
+# cloudflare
+.wrangler/
+
+# expo / react native
+.expo/
+.expo-shared/
+web-build/
+expo-env.d.ts
+apps/mobile/ios/
+apps/mobile/android/
+*.ipa
+*.apk
+*.aab
+
+# metro
+.metro-health-check*
+
+# os / editors
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.*
+yarn-error.*
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# large design export (not part of the build kit)
+Momentum App Screens.html
