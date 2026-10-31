@@ -4,6 +4,7 @@ This guide takes you from an empty machine to a running API, a development build
 
 Contents
 
+0. [Zero to full functionality (the short path)](#0-zero-to-full-functionality-the-short-path)
 1. [Prerequisites](#1-prerequisites)
 2. [Environment variables and secrets](#2-environment-variables-and-secrets)
 3. [Accounts and services](#3-accounts-and-services)
@@ -14,6 +15,29 @@ Contents
 8. [Costs and limits](#8-costs-and-limits)
 9. [Troubleshooting](#9-troubleshooting)
 10. [Security incidents and data breaches](#10-security-incidents-and-data-breaches)
+11. [What each feature needs](#11-what-each-feature-needs)
+12. [Full test plan (check everything works)](#12-full-test-plan-check-everything-works)
+
+---
+
+## 0. Zero to full functionality (the short path)
+
+Do these in order. Each step says how to check it worked. Steps 1-4 give you a working app on your phone with **no accounts at all**; steps 5-10 switch on the remaining features.
+
+| Step | What                                                                                                         | Section       | Check                                                         |
+| ---- | ------------------------------------------------------------------------------------------------------------ | ------------- | ------------------------------------------------------------- |
+| 1    | Install tools, clone, `pnpm install`, `pnpm typecheck && pnpm lint && pnpm test`                             | 1             | All green                                                     |
+| 2    | Local API: `.dev.vars` with `BETTER_AUTH_SECRET`, migrate, seed templates, `pnpm dev -- --ip 0.0.0.0`        | 4             | `http://<LAN IP>:8787/v1/config` opens in the phone's browser |
+| 3    | Phone: USB debugging on, `apps/mobile/.env` with `EXPO_PUBLIC_API_URL=http://<LAN IP>:8787`, `pnpm android`  | 4.3           | App opens on the phone                                        |
+| 4    | Sign in with email; the 6-digit code is printed in the API terminal (`[dev] OTP for ...`)                    | 4.4           | You reach Today                                               |
+| 5    | **Resend**: real sign-in emails                                                                              | 3.5           | Code arrives by email                                         |
+| 6    | **Google sign-in** (free, no daily limit; recommended before launch)                                         | 3.3           | "Continue with Google" shows on Welcome and works             |
+| 7    | **Cloudflare deploy**: D1, R2, secrets, `pnpm run deploy`, `db:migrate:remote`, `seed:templates -- --remote` | 3.1, 5        | `https://<worker>/v1/config` returns JSON                     |
+| 8    | **Expo/EAS + push**: `eas init`, FCM v1 key (Android), APNs (iOS), preview build                             | 3.6, 5        | A nudge from a second account arrives as a push               |
+| 9    | **Optional**: PostHog, Sentry, Apple sign-in, Health Connect declaration                                     | 3.4, 3.8, 3.9 | Events / errors show in dashboards                            |
+| 10   | **Later**: RevenueCat payments                                                                               | 3.7           | Sandbox purchase unlocks Plus                                 |
+
+Then run the **full test plan** in section 12.
 
 ---
 
@@ -176,6 +200,7 @@ No account needed. Generate `BETTER_AUTH_SECRET` (section 2) and set it in `.dev
 
 1. https://resend.com > sign up > **API Keys** > create (Sending access) → `RESEND_API_KEY`.
 2. For testing, `onboarding@resend.dev` can only send to your own Resend account email. For real users: **Domains** > add your domain, add the DNS records it shows (SPF, DKIM), wait for _Verified_, then set `EMAIL_FROM` to `SparkSquad <hello@yourdomain.com>`.
+3. The free plan sends 3,000 emails a month but **at most 100 a day**. Turn on Google sign-in (3.3) so most people never need an email code; move to Resend Pro (US$20/month, no daily cap) only if email sign-ins pass ~100 a day.
 
 ### 3.6 Expo / EAS (builds, push, updates)
 
@@ -216,19 +241,21 @@ No account needed. Generate `BETTER_AUTH_SECRET` (section 2) and set it in `.dev
 
 ## 4. Run locally
 
-### API
+### 4.1 API
 
 ```bash
 cp apps/api/.dev.vars.example apps/api/.dev.vars   # set BETTER_AUTH_SECRET at least
 cd apps/api
-pnpm db:migrate:local
+pnpm db:migrate:local         # run again whenever a new migration lands (e.g. 0001_notify_settings)
 pnpm seed:templates           # loads templates/*.sparksquad.json into local D1 + R2
-pnpm dev                      # http://localhost:8787 (wrangler dev, local D1/R2)
+pnpm dev -- --ip 0.0.0.0      # http://<your PC LAN IP>:8787; 0.0.0.0 lets a phone on Wi-Fi reach it
 ```
 
-Check: `curl http://localhost:8787/v1/config` returns limits and features. Without `RESEND_API_KEY`, sign-in codes are printed in the `wrangler dev` log (development only).
+Check: `curl http://localhost:8787/v1/config` returns limits and features. Without `RESEND_API_KEY`, sign-in codes are printed in the `wrangler dev` log (development only). `features.google` is `true` only when the Google client ids are set.
 
-### Mobile (development build)
+Find your LAN IP with `ipconfig` (Windows, "IPv4 Address" of the Wi-Fi adapter) or `ipconfig getifaddr en0` (macOS). The phone and PC must be on the same Wi-Fi. On Windows, allow Node/workerd through the firewall when asked (or for "Private" networks; if your Wi-Fi is set to "Public", either switch it to Private or allow ports 8787 and 8081).
+
+### 4.2 Mobile (development build)
 
 ```bash
 cp apps/mobile/.env.example apps/mobile/.env
@@ -241,9 +268,38 @@ pnpm dev            # later: just start Metro and open the installed dev client
 
 No Mac? `eas build --profile development --platform ios` (simulator build) or `--profile development-device` (real iPhone, needs the device registered with `eas device:create`).
 
-### Test accounts
+You only need to rebuild (`pnpm android`) when native code or `app.config.ts` changes, or after changing a value that is baked into native config (Google iOS client id). For JavaScript changes and other `.env` edits, restart Metro with a clean cache: `pnpm exec expo start --dev-client -c`.
 
-Use email sign-in with any address; in development the code is in the API log. Create two or three accounts (for example on an emulator and a phone) to test squads, nudges and comments. Add your email to `ADMIN_EMAILS` to use `/admin`.
+### 4.3 Real Android phone on Windows (first build)
+
+1. Phone: Settings > About phone > tap **Build number** 7 times > Developer options > turn on **USB debugging**. Connect by USB and accept the "Allow USB debugging" prompt.
+2. PC: `adb devices` lists the phone as `device` (adb is in `%LOCALAPPDATA%\Android\Sdk\platform-tools`; add it to PATH).
+3. Environment: `JAVA_HOME` = a JDK 17 (Android Studio's bundled JBR or Temurin 17), `ANDROID_HOME` = `%LOCALAPPDATA%\Android\Sdk`. In Android Studio > SDK Manager install the NDK and **CMake 3.22.1**.
+4. **Long paths (required on Windows):** enable `LongPathsEnabled` (run as admin: `reg add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f`), **and** replace the old ninja that ships with CMake 3.22.1, because ninja 1.10 ignores that setting:
+   ```powershell
+   $bin = "$env:LOCALAPPDATA\Android\Sdk\cmake\3.22.1\bin"
+   Copy-Item "$bin\ninja.exe" "$bin\ninja.exe.bak"
+   Invoke-WebRequest https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip -OutFile $env:TEMP\ninja.zip
+   Expand-Archive $env:TEMP\ninja.zip $env:TEMP\ninja -Force
+   Copy-Item $env:TEMP\ninja\ninja.exe "$bin\ninja.exe" -Force
+   & "$bin\ninja.exe" --version   # 1.12.1
+   ```
+   Without this the build fails at `:app:buildCMakeDebug` with `ninja: error: mkdir(...): No such file or directory`. Re-do it if Android Studio reinstalls CMake. Delete `apps/mobile/android/app/.cxx` before rebuilding.
+5. Keep the repo in a short path (for example `C:\ss`), not deep inside `Documents`.
+6. Run the API (4.1), then `cd apps/mobile; pnpm android`. The first build takes 5-15 minutes; later builds are about 1 minute.
+7. If the app opens but shows "Cannot connect to Metro", run `adb reverse tcp:8081 tcp:8081` and reload (shake the phone > Reload).
+
+### 4.4 Test accounts
+
+Use email sign-in with any address; in development the code is in the API terminal as `[dev] OTP for you@example.com: 123456` (valid 10 minutes, 5 tries). Create two or three accounts (for example on an emulator and a phone, or sign out and in again) to test squads, nudges, comments and fires. Add your email to `ADMIN_EMAILS` to use `/admin`.
+
+Peek at local data any time:
+
+```bash
+cd apps/api
+pnpm exec wrangler d1 execute sparksquad --local --command "select email, display_name from user"
+pnpm exec wrangler d1 execute sparksquad --local --command "select kind, payload from notifications order by created_at desc limit 10"
+```
 
 ---
 
@@ -343,6 +399,11 @@ Free users are designed to cost about nothing: no sockets, delta sync, local rem
 8. **RevenueCat: "Plans aren't available right now" / no products.** Use a sandbox tester (App Store) or a license tester (Play Console > Setup > License testing); products must be _Active_ and attached to the offerings `plus` / `squad_pro` with Annual/Monthly packages; the build must use the right `EXPO_PUBLIC_REVENUECAT_*` key; both payments flags must be on. After buying, Plus appears once the webhook reaches the API: check the RevenueCat webhook log for 401 (secret mismatch).
 9. **Check-in rejected with `CHECKIN_WINDOW_CLOSED` or days look shifted.** The phone's timezone differs from the profile timezone. The app updates the timezone on launch; check the device's automatic time zone setting. Check-ins are accepted for today and yesterday only.
 10. **EAS build fails.** Run `pnpm install` at the repo root and commit `pnpm-lock.yaml`; make sure `eas.json` pnpm version matches `packageManager`; run `npx expo install --check` in `apps/mobile`; for iOS "provisioning profile doesn't include capability", re-run `eas credentials -p ios` after enabling HealthKit / Sign in with Apple on the App ID.
+11. **Windows: `:app:buildCMakeDebug` fails with `ninja: error: mkdir(...)`.** Path too long for ninja 1.10. Replace ninja (4.3 step 4), delete `apps/mobile/android/app/.cxx`, build again.
+12. **"We couldn't sign you in" / no email arrives.** Without `RESEND_API_KEY` no email is sent: copy the code from the API terminal. With Resend's test sender, mail only goes to your own Resend account address. Over 100 codes in a day on the free plan, sending stops until tomorrow.
+13. **"This squad isn't on your phone yet" right after editing code.** Fast Refresh restarted the local store mid-session (development only). Close the app fully and open it again.
+14. **Started Metro from the wrong folder and a `tsconfig.json` appeared at the repo root.** Delete it and start Metro from `apps/mobile` (or `pnpm --dir apps/mobile exec expo start --dev-client -c`).
+15. **New columns missing (`no such column: notify_comments`).** A migration hasn't been applied: `pnpm db:migrate:local` (and `db:migrate:remote` before deploying).
 
 ---
 
@@ -355,3 +416,105 @@ SparkSquad stores personal data of users in India, so the Digital Personal Data 
 3. **Notify**: inform the Data Protection Board of India and affected users without delay, in the form the DPDP Rules require (what happened, likely impact, what you did, what users should do, contact person: `CONTACT_EMAIL`).
 4. **Record**: keep a written log of the incident, decisions and notifications.
 5. **Fix and review**: patch the cause, add a test, and note it in `docs/DECISIONS.md`.
+
+---
+
+## 11. What each feature needs
+
+Everything not listed works with just the local API (section 4) and costs nothing.
+
+| Feature                                                                         | Needs                                                                                                        | Works without it?                               |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| Email sign-in                                                                   | `RESEND_API_KEY` + verified domain in production                                                             | Locally yes: code is in the API log             |
+| Google sign-in                                                                  | Google Cloud OAuth clients (3.3): `GOOGLE_*` secrets + `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`                    | Button hidden                                   |
+| Apple sign-in (iOS)                                                             | Apple Developer account (3.4)                                                                                | Button hidden                                   |
+| Squads, plans, check-ins, board, leaderboard, comments, fires, badges, Discover | API only                                                                                                     | -                                               |
+| Daily reminder, missed-day note, **streak at risk**, **challenge starting**     | Notification permission on the phone (local, no server)                                                      | -                                               |
+| Nudges, morning/evening squad updates                                           | Push: real device, dev/preview build, `EAS_PROJECT_ID`, FCM v1 key (Android) / APNs (iOS) (3.6)              | Inbox only, no push                             |
+| Inbox: comments, fires, new members, milestones                                 | API + hourly cron (deployed) for milestones; nothing for the rest                                            | Milestones need the cron                        |
+| Templates in Discover / Start a squad                                           | `pnpm seed:templates` (local) / `-- --remote`                                                                | Empty templates list                            |
+| Photo proof                                                                     | Free: on the phone only. Plus/Squad Pro: R2 (3.1) and payments on                                            | Free works                                      |
+| AI plan builder (in app)                                                        | The **user's own** Gemini / OpenAI / Claude key, added in Settings > AI (stays on the phone). Free and Plus. | Copy-prompt flow works with any AI chat, no key |
+| AI weekly recap (Plus)                                                          | On-device model (iOS) or the user's key                                                                      | Template recap                                  |
+| Steps                                                                           | Health Connect (Android) / HealthKit (iOS), allowed in Settings > Connected accounts                         | Enter steps by hand                             |
+| GitHub / LeetCode / Codeforces auto-check                                       | The user's public username in Settings > Connected accounts                                                  | Tick by hand                                    |
+| Plus / Squad Pro purchases                                                      | RevenueCat + store products, both payments flags on (3.7)                                                    | "Coming soon" paywall                           |
+| Analytics / crash reports                                                       | PostHog / Sentry keys (3.8)                                                                                  | Off                                             |
+| Admin moderation                                                                | Your email in `ADMIN_EMAILS`                                                                                 | -                                               |
+
+---
+
+## 12. Full test plan (check everything works)
+
+Use two accounts: **A** (owner, your phone) and **B** (member, an emulator or a second sign-in). Tick each line.
+
+**Setup and health**
+
+- [ ] `pnpm typecheck && pnpm lint && pnpm test` green.
+- [ ] `GET /v1/config` shows the expected `features` (`google`, `paymentsEnabled`).
+- [ ] The phone loads the app with no red error screen; pull to refresh works on Today.
+
+**Sign-in and onboarding (A1-A10)**
+
+- [ ] Email sign-in with the code (from the API log or inbox); wrong code shows an error.
+- [ ] Google sign-in (if set up).
+- [ ] Consent (18+ and Terms), profile (name, username, colour), interests (several categories), reminder time, notification permission.
+- [ ] Sign out and back in keeps your squads.
+
+**Squads (C1-C11)**
+
+- [ ] A: Start a squad (public), pick a template, start the challenge. The squad card shows category icon, day, progress bar and **Invite friends** (only member).
+- [ ] A: Invite screen shows code, link and QR; Share opens the share sheet.
+- [ ] B: Join with code (or from Discover). A gets a **"B joined ..."** inbox item. A's card no longer shows Invite friends.
+- [ ] Private squad: B requests, A approves from Requests; B gets "You're in".
+- [ ] Board shows who checked in; Nudge B from A; B gets a push (if push is set up) and an inbox item.
+- [ ] Leaderboard and Plan tabs; edit a future day as owner; past days are locked.
+- [ ] Squad settings: change name/category/privacy, pin an announcement, transfer ownership, leave (as B).
+
+**Check-ins (B1-B7)**
+
+- [ ] Tap tasks on Today; Check in opens the sheet; submit shows the success screen with streak.
+- [ ] **Long-press the centre button**: "Did it all?" confirm; Mark all done checks in everything waiting (step challenges skipped).
+- [ ] "Couldn't today" (honest miss) shows a neutral grey state, never red.
+- [ ] Yesterday can still be checked in until midnight.
+- [ ] B opens A's check-in: comment and fire. A's inbox shows **"B commented..."** and **"B sent fire..."** (fires group into one item).
+- [ ] Squad card shows your **streak flame** once you have a streak in that challenge.
+
+**Discover (E1-E2)**
+
+- [ ] All shows Popular now, Starting soon, Plan templates, New squads; full squads are hidden.
+- [ ] Pick a category: Popular / Starting soon / Newest switch and Show more.
+- [ ] Search finds squads and templates; recent searches are remembered.
+
+**Create (D1-D11)**
+
+- [ ] Template, Import a plan file, Build it with your AI (copy prompt, paste reply), Start blank.
+- [ ] **Generate in the app** (tag "Your key"): add a Gemini key in Settings > AI, run the interview, the plan opens in Import preview.
+
+**You (F1-F12)**
+
+- [ ] Stats, 18-week heatmap, badge strip (3 badges).
+- [ ] Badges screen: summary with Up next, Streaks / Check-ins / Milestones grids.
+- [ ] History calendar, edit profile, Settings: Notifications, Connected accounts, AI, Appearance (if enabled), Export data, Blocked users, Delete account.
+
+**Notifications (local, on the phone)**
+
+- [ ] Set the reminder a few minutes ahead; it arrives and opens Today. Checking in first cancels today's reminder.
+- [ ] Streak at risk: with a streak of 3+ and no check-in today, a note arrives at 10 PM.
+- [ ] Challenge starting: start a challenge for tomorrow; a note arrives at 7 PM today and 8 AM tomorrow.
+- [ ] Settings > Notifications: each switch turns its notification off.
+
+**Server notifications (deployed API with cron)**
+
+- [ ] 9 AM local: morning update push when you have unread inbox items; milestone item on day 7 / halfway / last day.
+- [ ] 6 PM local: evening update when squadmates checked in and you haven't. At most 2 of these a day.
+
+**Admin and moderation**
+
+- [ ] Report a comment as B; it appears at `<API>/admin` for an admin; Hide removes it.
+
+**Offline**
+
+- [ ] Airplane mode: the offline banner shows, a check-in saves on the phone and syncs when back online.
+
+To shortcut timing tests, temporarily set the reminder time in Settings, or change the phone's clock (turn automatic time back on afterwards).
