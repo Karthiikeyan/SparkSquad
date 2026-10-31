@@ -138,7 +138,7 @@ Without the three R2 credentials the API falls back to HMAC-signed URLs served b
 7. **Rate limiting** is the `[[ratelimits]]` binding in `wrangler.toml` (120 requests/min per user, 300/min per IP). Nothing to click; it deploys with the Worker.
 8. **Cron**: `[triggers] crons = ["0 * * * *"]` deploys with the Worker (hourly digests, streak settling, challenge roll-ups, expiry). Check it under Workers > sparksquad-api > Settings > Triggers.
 9. **Secrets**: for every secret in section 2 run `pnpm exec wrangler secret put NAME` and paste the value.
-10. **Deploy**: `pnpm run deploy` (from `apps/api`; plain `pnpm deploy` is a different, built-in pnpm command). Note the `https://sparksquad-api.<you>.workers.dev` URL and set it as `PUBLIC_API_URL` (wrangler.toml) and `EXPO_PUBLIC_API_URL` (mobile), then deploy again.
+10. **Deploy**: `pnpm run deploy` (from `apps/api`; plain `pnpm deploy` is a different, built-in pnpm command). It applies pending D1 migrations to the remote database first, then deploys. Note the `https://sparksquad-api.<you>.workers.dev` URL and set it as `PUBLIC_API_URL` (wrangler.toml) and `EXPO_PUBLIC_API_URL` (mobile), then deploy again.
 11. **Custom domain (optional, Later)**: Workers > sparksquad-api > Settings > Domains & Routes > Add custom domain. Update `PUBLIC_API_URL` and `EXPO_PUBLIC_API_URL`. With a domain you can add iOS universal links and Android App Links for `https://<domain>/join/CODE` (DECISIONS D5); until then invite links open a landing page that hands off to `sparksquad://join/CODE`.
 
 ### 3.2 Better Auth
@@ -255,10 +255,11 @@ Use email sign-in with any address; in development the code is in the API log. C
 
 ```bash
 cd apps/api
-pnpm db:migrate:remote        # every time a new migration is added
-pnpm run deploy
+pnpm run deploy                   # applies pending D1 migrations (remote), then deploys the Worker
 pnpm seed:templates -- --remote   # first deploy, and whenever templates change
 ```
+
+`pnpm run deploy` runs `scripts/deploy.mjs`: it applies any new files in `src/db/migrations` to the remote database first (non-interactive) and stops without deploying if a migration fails, so new code never runs against an old schema. Keep migrations additive (new tables/columns with defaults) so the currently running Worker keeps working while they apply. `pnpm db:migrate:remote` still exists for applying migrations on their own. If you deploy from CI or Cloudflare Workers Builds, set the deploy command to `pnpm --filter @sparksquad/api run deploy` (not plain `wrangler deploy`), with a `CLOUDFLARE_API_TOKEN` that has D1 edit and Workers deploy permissions.
 
 **Mobile (EAS Build, internal testing)**
 

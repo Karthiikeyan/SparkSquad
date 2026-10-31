@@ -226,4 +226,4 @@ Fixed all 37 leads (DECISIONS E117–E130): R2 file-token key reuse/expiry/key e
 
 Tests: `apps/api/test/security.test.ts` (29 tests) and `packages/shared/test/security.test.ts`; API 83 tests, mobile 199, shared green with 99% coverage. Typecheck and lint green.
 
-**Still needs you:** run `pnpm --filter @sparksquad/api db:migrate:remote` before deploying; keep `APP_ENV=development` only in local `.dev.vars` (it was added to yours); confirm the `IP_LIMITER`/`USER_LIMITER` bindings are active in production; in RevenueCat, keep sandbox events pointed at a staging Worker or leave `REVENUECAT_ALLOW_SANDBOX` unset.
+**Still needs you:** keep `APP_ENV=development` only in local `.dev.vars` (it was added to yours); confirm the `IP_LIMITER`/`USER_LIMITER` bindings are active in production; in RevenueCat, keep sandbox events pointed at a staging Worker or leave `REVENUECAT_ALLOW_SANDBOX` unset. Migration `0001_entitlement_ordering` is applied automatically by the next `pnpm run deploy` (E131).
