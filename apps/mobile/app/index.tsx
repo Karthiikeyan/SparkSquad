@@ -1,9 +1,6 @@
-import { Text, View } from 'react-native';
+import { Redirect } from 'expo-router';
 
+/** Session-aware routing (auth/onboarding) arrives in Phase 4; until then, open Today. */
 export default function Index() {
-  return (
-    <View className="flex-1 items-center justify-center bg-bg">
-      <Text className="text-label">SparkSquad</Text>
-    </View>
-  );
+  return <Redirect href="/today" />;
 }

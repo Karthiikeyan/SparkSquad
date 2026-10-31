@@ -40,6 +40,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     'expo-router',
+    'expo-font',
+    'expo-localization',
+    'expo-secure-store',
+    'expo-sqlite',
     [
       'expo-splash-screen',
       {

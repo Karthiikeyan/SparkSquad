@@ -1,0 +1,114 @@
+{
+  "common": {
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "done": "Done",
+    "save": "Save",
+    "continue": "Continue",
+    "loading": "Loading",
+    "notNow": "Not now",
+    "decrease": "Decrease {{label}}",
+    "increase": "Increase {{label}}",
+    "characterCount": "{{count}} / {{max}}",
+    "pendingSync": "Waiting to sync"
+  },
+  "tabs": {
+    "today": "Today",
+    "squads": "Squads",
+    "checkIn": "Check in",
+    "discover": "Discover",
+    "you": "You"
+  },
+  "offline": {
+    "banner": "Offline. Check-ins will sync when you’re back."
+  },
+  "errorState": {
+    "title": "Something went wrong",
+    "body": "We couldn’t load this. Check your connection and try again."
+  },
+  "maintenance": {
+    "title": "We’ll be right back",
+    "body": "SparkSquad is having a moment. Your check-ins are safe on your phone and will sync when we’re back."
+  },
+  "forceUpdate": {
+    "title": "Update SparkSquad",
+    "body": "This version is too old to sync with your squads. Update the app to keep checking in.",
+    "button": "Open the store"
+  },
+  "taskRow": {
+    "markDone": "Mark done: {{title}}",
+    "markNotDone": "Mark not done: {{title}}"
+  },
+  "avatar": {
+    "checkedIn": "{{name}}, checked in today",
+    "notCheckedIn": "{{name}}, not checked in yet"
+  },
+  "dayStrip": {
+    "label": "Days",
+    "day": "Day {{n}}, {{state}}",
+    "done": "checked in",
+    "missed": "missed",
+    "today": "today",
+    "future": "upcoming",
+    "rest": "review day"
+  },
+  "heatmap": {
+    "label": "Check-in activity for the last {{weeks}} weeks, {{count}} check-ins",
+    "less": "Less",
+    "more": "More"
+  },
+  "phaseBar": {
+    "label": "Phase {{current}} of {{total}}"
+  },
+  "progress": {
+    "label": "{{percent}} percent"
+  },
+  "empty": {
+    "today": "Your squads’ daily tasks show up here",
+    "squads": "You’re not in a squad yet",
+    "discover": "Nothing to show here yet",
+    "you": "Your streaks and badges show up here"
+  },
+  "placeholder": {
+    "comingSoon": "This screen is being built"
+  },
+  "errors": {
+    "BAD_REQUEST": "Something about that request wasn’t right. Try again.",
+    "VALIDATION_FAILED": "Some details need fixing. Check the highlighted fields.",
+    "UNAUTHORIZED": "Your session ended. Sign in again.",
+    "FORBIDDEN": "You don’t have permission to do that.",
+    "NOT_FOUND": "We couldn’t find that. It may have been removed.",
+    "CONFLICT": "That changed on another device. Refresh and try again.",
+    "RATE_LIMITED": "Too many requests. Wait a moment and try again.",
+    "LIMIT_SQUADS_JOINED": "You’re in as many squads as the Free plan allows.",
+    "LIMIT_SQUADS_OWNED": "The Free plan lets you run one squad.",
+    "LIMIT_SQUAD_FULL": "This squad is full.",
+    "LIMIT_COMMENTS_PER_DAY": "You’ve reached today’s comment limit. Try again tomorrow.",
+    "LIMIT_NUDGE_ALREADY_SENT": "You already nudged them today.",
+    "PLUS_REQUIRED": "This is a Plus feature.",
+    "PLAN_INVALID": "This isn’t a SparkSquad plan.",
+    "CHECKIN_WINDOW_CLOSED": "Check-ins for that day are closed.",
+    "CHECKIN_DAY_OUT_OF_RANGE": "That day isn’t part of this challenge.",
+    "CHALLENGE_NOT_ACTIVE": "This challenge has ended.",
+    "CHALLENGE_ALREADY_ACTIVE": "This squad already has an active challenge.",
+    "DAY_LOCKED": "Past days and today can’t be edited.",
+    "CONTENT_NOT_ALLOWED": "That text isn’t allowed. Please rephrase it.",
+    "USERNAME_TAKEN": "That username is taken.",
+    "INVITE_CODE_INVALID": "That invite code doesn’t work. Check it and try again.",
+    "ALREADY_MEMBER": "You’re already in this squad.",
+    "REQUEST_PENDING": "Your request to join is waiting for approval.",
+    "BLOCKED": "You can’t interact with this person.",
+    "OWNER_MUST_TRANSFER": "Hand the squad to someone else before you leave.",
+    "CONSENT_REQUIRED": "Confirm you’re 18 or older and accept the terms first.",
+    "ACCOUNT_SUSPENDED": "This account is suspended. Contact support if you think this is a mistake.",
+    "UPLOAD_TOO_LARGE": "That photo is too large.",
+    "UPLOAD_TYPE_NOT_ALLOWED": "Use a JPEG or WebP photo.",
+    "PAYMENTS_DISABLED": "Plus isn’t available yet.",
+    "APP_UPDATE_REQUIRED": "Update the app to keep syncing.",
+    "INTERNAL": "Something went wrong on our side. Try again.",
+    "NETWORK": "You’re offline. Try again when you’re connected.",
+    "UNKNOWN": "Something went wrong. Try again."
+  }
+}

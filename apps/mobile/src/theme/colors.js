@@ -22,6 +22,13 @@ const dark = {
   onSuccess: '#04140C',
   missed: '#5A5A60',
   danger: '#FF6B60',
+  // Extra neutrals used by the reference designs (design/*.dc.html).
+  strong: '#48484D',
+  onControl: '#D6D6DB',
+  chipLabel: '#C7C7CC',
+  avatarLabel: '#E6E6EA',
+  heatEmpty: '#26262A',
+  scrim: 'rgba(0,0,0,0.55)',
 };
 
 const light = {
@@ -47,6 +54,12 @@ const light = {
   onSuccess: '#FFFFFF',
   missed: '#B5B5BA',
   danger: '#D93025',
+  strong: '#C7C7CC',
+  onControl: '#3A3A3F',
+  chipLabel: '#3A3A3F',
+  avatarLabel: '#1C1C1F',
+  heatEmpty: '#E3E3E8',
+  scrim: 'rgba(0,0,0,0.35)',
 };
 
 const avatarDark = [

@@ -46,3 +46,20 @@ Product-owner decisions (fixed). Append your own below with one line of reasonin
 | E29 | Squad Pro purchases carry the squad id as a RevenueCat subscriber attribute `squad_id`. | Webhooks need to know which squad becomes Pro. |
 | E30 | Seeding uses `wrangler r2 object put` + `wrangler d1 execute` from a Node script. | Works for local and remote with the same credentials as deploys; no admin endpoint needed. |
 | E9 | API tests call `app.request(path, init, env)` with `env` from `cloudflare:workers`. | Fully typed without generating `wrangler types`; still runs inside workerd. |
+| E31 | Mobile UI components use `StyleSheet` + typed tokens (`src/theme/tokens.ts`); NativeWind stays available for screen layout. | Exact design values with type checking; components are easy to test. |
+| E32 | Extra neutral tokens taken from the designs: `strong #48484D`, `onControl #D6D6DB`, `chipLabel #C7C7CC`, `avatarLabel #E6E6EA`, `heatEmpty #26262A`, `scrim`. | The reference screens use them (grabber, stepper glyphs, chips, heatmap) but the token table doesn't name them. |
+| E33 | Local SQLite migrations are hand-written, append-only SQL in `src/lib/db/migrations.ts`; version stored in the `kv` table. | No babel inline-import of `.sql` files, and the same migrator runs on device and in Node tests. |
+| E34 | Screens read SQLite through TanStack Query keys under `['local', …]`, invalidated on `syncCompleted` / `outboxChanged`. | One cache model for local and remote reads; no live-query listeners. |
+| E35 | The sync cursor lives in SQLite `kv`, written in the same transaction as the data (not MMKV). | Cursor and data can never diverge after a crash. |
+| E36 | Outbox is strict FIFO. Network/429/5xx back off 5 s → 10 min and hold later writes; 4xx marks the item failed and reverts optimistic state by refetching the check-in (or unpins it for the next sync if offline). A timer retries the head item when its backoff ends. Check-in, fire and nudge writes coalesce per entity; comments never do. | Keeps write order intact; never retries writes the server rejected. |
+| E37 | Locally, other members' check-ins are kept 14 days, mine indefinitely, notifications 30 days; blocked users' rows are purged on sync. | Small store, history for me, blocks honoured offline. |
+| E38 | Mobile store tests run real SQL with Node's built-in `node:sqlite` behind Drizzle's `sqlite-proxy` driver. | Exercises the real queries without a native build. |
+| E39 | Added `expo-crypto` to polyfill `crypto.getRandomValues`. | Shared ULID/invite helpers need it and Hermes may not provide it. |
+| E40 | Fonts are imported from per-weight subpaths (`@expo-google-fonts/inter/400Regular`). | The package index bundles every weight (~10 MB). |
+| E41 | Validation errors use label-coloured text with an accent alert icon, never red. | Red is reserved for destructive actions; the icon means colour isn't the only signal. |
+| E42 | `TabBar` is presentational; `app/(tabs)/_layout.tsx` adapts Expo Router's vendored tab bar props (`emitter`, `navigateToTab`). | Expo Router 58 vendors react-navigation; keeps the component testable. |
+| E43 | Analytics drops sensitive property names and key-shaped values; Sentry drops request headers/cookies/body and fetch/xhr breadcrumbs. | BYOK keys and auth must never reach analytics or crash reports. |
+| E44 | `@sentry/cli` may run its postinstall (`allowBuilds`). | Needed for source-map upload on EAS builds. |
+| E45 | Numbers in copy use `en-IN` grouping (10,000 / 1,00,000). | Primary audience is in India. |
+| E46 | The centre tab opens `checkin/[challengeId]` with `next`, a transparent modal hosting `BottomSheet`. | Phase 5 resolves `next` to the first pending challenge; the picker lives in the sheet (B4). |
+| E47 | RNTL 14 is async (`await render`, `await fireEvent.press`); TS 6 defaults `types` to `[]`, so the mobile tsconfig lists `jest` and `node`. | Tooling behaviour of the pinned versions. |

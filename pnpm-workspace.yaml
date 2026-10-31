@@ -13,6 +13,7 @@ allowBuilds:
   unrs-resolver: true
   workerd: true
   sharp: true
+  '@sentry/cli': true
 
 minimumReleaseAgeExclude:
   - '@cloudflare/workers-types'
