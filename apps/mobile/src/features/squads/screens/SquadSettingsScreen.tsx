@@ -313,7 +313,7 @@ export function SquadSettingsScreen() {
 
       {owner ? (
         <>
-          <SectionLabel>{t('settings.details')}</SectionLabel>
+          <SectionLabel style={styles.formLabel}>{t('settings.details')}</SectionLabel>
           <DetailsForm squad={sq} onSaved={syncSoon} />
         </>
       ) : null}
@@ -507,6 +507,7 @@ export function SquadSettingsScreen() {
 
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
+  formLabel: { marginHorizontal: 0 },
   form: { gap: 16, marginBottom: 24 },
   label: { marginBottom: 6 },
   help: { marginTop: 6 },

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import {
+  KeyboardAvoidingView,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -75,7 +76,8 @@ export function Screen({
   const padTop = { paddingTop: insets.top + (header ? 8 : 16) };
 
   return (
-    <View style={styles.root}>
+    // Edge-to-edge Android no longer resizes the window for the keyboard, so pad on both platforms.
+    <KeyboardAvoidingView behavior="padding" style={styles.root}>
       {scroll ? (
         <ScrollView
           contentContainerStyle={[
@@ -118,7 +120,9 @@ export function Screen({
           {footer}
         </View>
       ) : null}
-    </View>
+      {/* Edge-to-edge: keep scrolled content from showing behind the status bar. */}
+      <View pointerEvents="none" style={[styles.statusCover, { height: insets.top }]} />
+    </KeyboardAvoidingView>
   );
 }
 
@@ -134,4 +138,5 @@ const styles = StyleSheet.create({
   },
   titleTexts: { gap: 2, flexShrink: 1 },
   footer: { paddingHorizontal: space.screen, paddingTop: 8, backgroundColor: colors.bg },
+  statusCover: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: colors.bg },
 });

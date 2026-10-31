@@ -8,7 +8,7 @@ Goal: **₹0/month infrastructure until ~10,000 monthly users, ~US$7/month at 10
 |---|---|
 | Monorepo | pnpm workspaces (+ Turborepo for task running). Node LTS. |
 | Mobile | React Native + **Expo** (latest stable SDK), **Expo Router**, TypeScript strict, **development builds** (not Expo Go — native modules needed). |
-| Styling | NativeWind (Tailwind) with the tokens from `02_DESIGN_SYSTEM.md` in `tailwind.config.js`, plus a typed `theme.ts` for values used in JS (SVG, shadows). |
+| Styling | React Native `StyleSheet` with the tokens from `02_DESIGN_SYSTEM.md` in `src/theme/colors.js` and a typed `src/theme/tokens.ts` (NativeWind removed, see DECISIONS E117). |
 | Data on phone | TanStack Query (server cache) + **expo-sqlite** with Drizzle ORM for the offline store (boards, my check-ins, outbox queue). MMKV for small prefs. |
 | Secure storage | expo-secure-store (BYOK API keys, auth tokens). |
 | API | **Hono** on **Cloudflare Workers**, zod validation (schemas shared from `packages/shared`). |

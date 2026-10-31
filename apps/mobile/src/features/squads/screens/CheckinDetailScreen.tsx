@@ -217,7 +217,9 @@ export function CheckinDetailScreen() {
                   <View style={styles.flex}>
                     <Text variant="body">{task.title}</Text>
                     <Text variant="footnote" color="label2">
-                      {taskMeta(task, v)}
+                      {task.type === 'check'
+                        ? t(met ? 'checkinDetail.checkDone' : 'checkinDetail.checkNotDone')
+                        : taskMeta(task, v)}
                     </Text>
                   </View>
                 </View>

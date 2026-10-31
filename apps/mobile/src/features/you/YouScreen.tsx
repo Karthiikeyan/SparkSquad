@@ -101,7 +101,7 @@ export function YouScreen() {
               {t('you.weeks')}
             </Text>
             <Text variant="footnote" color="label2">
-              {t('you.checkins', { n: windowCount })}
+              {windowCount === 1 ? t('you.checkinsOne') : t('you.checkins', { n: windowCount })}
             </Text>
           </View>
           <Heatmap levels={levels} weeks={HEATMAP_WEEKS} checkinCount={windowCount} />

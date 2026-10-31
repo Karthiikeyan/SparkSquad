@@ -21,7 +21,7 @@ export function StatTile({ value, label, accent }: StatTileProps) {
       >
         {value}
       </Text>
-      <Text variant="footnote" color="label2" numberOfLines={1}>
+      <Text variant="footnote" color="label2" numberOfLines={2}>
         {label}
       </Text>
     </View>

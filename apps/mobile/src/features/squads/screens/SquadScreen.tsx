@@ -66,14 +66,17 @@ export function SquadScreen() {
   const src = squad.data;
   const board = buildBoard(src, new Date());
   const ch = src.challenge;
+  const count = src.members.length;
+  const members =
+    count === 1 ? t('squad.memberCountOne') : t('squad.memberCountOther', { n: count });
   const meta = ch
     ? t('squad.meta', {
         title: ch.title,
         n: board.dayNumber,
         total: ch.durationDays,
-        members: src.members.length,
+        members,
       })
-    : t('squad.metaNoChallenge', { members: src.members.length });
+    : t('squad.metaNoChallenge', { members });
 
   const nudge = (m: { id: string; name: string }) => {
     if (!ch) return;

@@ -217,3 +217,9 @@ Final audit done: see `docs/AUDIT.md`.
 ### Final audit — done
 
 Results in `docs/AUDIT.md`. Fixed the check-in sheet route (B4) that still rendered the Phase 3 placeholder, member profile streaks and badges (C8, new API fields), the edit-day lock (C5), a root error boundary (G3), permission-denied states with "Open settings" (G5), offline banners on paywalls / AI builder / check-in sheet, billing error state, an Android overlay permission, and the last undocumented env var. Added 23 server tests for product rules (API 54 tests). All checks green.
+
+### Device pass (Android, Galaxy S25) — done
+
+First run on real hardware. Fixed: NativeWind wrapper breaking pressed-state styles (invisible yellow buttons, missing check-in tab button, stacked back chevron), Pressable layout props ignored (unequal button rows, inset links), keyboard covering comment composer and form footers under edge-to-edge, content scrolling behind the status bar, empty check-in sheet taking the full screen and hiding Today behind it, truncated "days shown up" stat, read-only check-in detail saying "Tap to mark done", plurals ("1 members", "1 check-ins"), "Half the tasks count". Windows note: the SDK's ninja 1.10 can't create long paths; replace `cmake/3.22.1/bin/ninja.exe` with ninja 1.12+.
+
+**Known:** Fast Refresh can leave the local store unreadable ("This squad isn't on your phone yet"); a full reload fixes it (dev only).
