@@ -1,0 +1,698 @@
+{
+  "sparksquad_plan": 1,
+  "title": "30 days of DSA",
+  "goal": "Build a solid base for coding interviews in a month",
+  "category": "career",
+  "duration_days": 30,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Arrays, strings, hashing",
+      "from_day": 1,
+      "to_day": 8
+    },
+    {
+      "name": "Pointers, windows, stacks",
+      "from_day": 9,
+      "to_day": 15
+    },
+    {
+      "name": "Search, lists, trees",
+      "from_day": 16,
+      "to_day": 24
+    },
+    {
+      "name": "Graphs",
+      "from_day": 25,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Arrays: the basics",
+      "tasks": [
+        {
+          "title": "Solve 2 easy array problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/array/"
+        },
+        {
+          "title": "Learn array traversal and prefix sums",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on array patterns",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Arrays: prefix sums",
+      "tasks": [
+        {
+          "title": "Solve 2 easy prefix sum problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/prefix-sum/"
+        },
+        {
+          "title": "Watch a prefix sum walkthrough",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/"
+        },
+        {
+          "title": "Write notes on prefix sums",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Arrays: in-place tricks",
+      "tasks": [
+        {
+          "title": "Solve 2 medium array problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/array/"
+        },
+        {
+          "title": "Study in-place swaps and Kadane’s algorithm",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/others/maximum_average_segment.html"
+        },
+        {
+          "title": "Write notes on Kadane’s algorithm",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Strings: the basics",
+      "tasks": [
+        {
+          "title": "Solve 2 easy string problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/string/"
+        },
+        {
+          "title": "Learn string building and character counts",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on string tricks",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Strings: palindromes and anagrams",
+      "tasks": [
+        {
+          "title": "Solve 2 medium string problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/string/"
+        },
+        {
+          "title": "Study palindrome and anagram checks",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on palindrome patterns",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Hashing: maps and sets",
+      "tasks": [
+        {
+          "title": "Solve 2 easy hash table problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/hash-table/"
+        },
+        {
+          "title": "Learn when to reach for a hash map",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on hash map use cases",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Hashing: counting and grouping",
+      "tasks": [
+        {
+          "title": "Solve 2 medium hash table problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/hash-table/"
+        },
+        {
+          "title": "Study group-by-key problems",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on grouping with keys",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Two pointers: opposite ends",
+      "tasks": [
+        {
+          "title": "Solve 2 easy two pointers problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/two-pointers/"
+        },
+        {
+          "title": "Watch the two-pointer lesson",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on two-pointer setups",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Two pointers: same direction",
+      "tasks": [
+        {
+          "title": "Solve 2 medium two pointers problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/two-pointers/"
+        },
+        {
+          "title": "Study fast and slow pointers",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on pointer movement rules",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Sliding window: fixed size",
+      "tasks": [
+        {
+          "title": "Solve 2 easy sliding window problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/sliding-window/"
+        },
+        {
+          "title": "Learn the fixed-size window template",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on window templates",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Sliding window: variable size",
+      "tasks": [
+        {
+          "title": "Solve 2 medium sliding window problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/sliding-window/"
+        },
+        {
+          "title": "Study the shrink-when-invalid window",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on when to shrink a window",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Stack: the basics",
+      "tasks": [
+        {
+          "title": "Solve 2 easy stack problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/stack/"
+        },
+        {
+          "title": "Learn stack operations and bracket matching",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on stack use cases",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Stack: monotonic stack",
+      "tasks": [
+        {
+          "title": "Solve 2 medium monotonic stack problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/monotonic-stack/"
+        },
+        {
+          "title": "Study the monotonic stack pattern",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on next greater element",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Binary search: the template",
+      "tasks": [
+        {
+          "title": "Solve 2 easy binary search problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/binary-search/"
+        },
+        {
+          "title": "Learn a bug-free binary search template",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/num_methods/binary_search.html"
+        },
+        {
+          "title": "Write notes on search boundaries",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Binary search on the answer",
+      "tasks": [
+        {
+          "title": "Solve 2 medium binary search problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/binary-search/"
+        },
+        {
+          "title": "Study binary search on the answer space",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/num_methods/binary_search.html"
+        },
+        {
+          "title": "Write notes on answer-space search",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Linked list: the basics",
+      "tasks": [
+        {
+          "title": "Solve 2 easy linked list problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/linked-list/"
+        },
+        {
+          "title": "Learn reversal and dummy nodes",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on pointer rewiring",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Linked list: fast and slow",
+      "tasks": [
+        {
+          "title": "Solve 2 medium linked list problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/linked-list/"
+        },
+        {
+          "title": "Study cycle detection and middle node",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on Floyd’s cycle detection",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Trees: traversals",
+      "tasks": [
+        {
+          "title": "Solve 2 easy tree problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/tree/"
+        },
+        {
+          "title": "Learn pre, in and post-order traversals",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on traversal orders",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Trees: depth and paths",
+      "tasks": [
+        {
+          "title": "Solve 2 easy depth first search problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/depth-first-search/"
+        },
+        {
+          "title": "Study recursive depth and path sums",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on recursion on trees",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Trees: level order",
+      "tasks": [
+        {
+          "title": "Solve 2 medium breadth first search problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/breadth-first-search/"
+        },
+        {
+          "title": "Learn BFS with a queue",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on level-order tricks",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Binary search trees",
+      "tasks": [
+        {
+          "title": "Solve 2 medium binary search tree problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/binary-search-tree/"
+        },
+        {
+          "title": "Study BST properties and validation",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on BST invariants",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Graphs: representation and DFS",
+      "tasks": [
+        {
+          "title": "Solve 2 easy graph problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/graph/"
+        },
+        {
+          "title": "Learn adjacency lists and DFS",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/graph/depth-first-search.html"
+        },
+        {
+          "title": "Write notes on graph building",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Graphs: BFS and grids",
+      "tasks": [
+        {
+          "title": "Solve 2 medium breadth first search problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/breadth-first-search/"
+        },
+        {
+          "title": "Study BFS on grids",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/graph/breadth-first-search.html"
+        },
+        {
+          "title": "Write notes on grid traversal",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Graphs: connected components",
+      "tasks": [
+        {
+          "title": "Solve 2 medium union find problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/union-find/"
+        },
+        {
+          "title": "Learn union-find basics",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/data_structures/disjoint_set_union.html"
+        },
+        {
+          "title": "Write notes on union-find",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 29,
+      "title": "Graphs: topological sort",
+      "tasks": [
+        {
+          "title": "Solve 2 medium topological sort problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/topological-sort/"
+        },
+        {
+          "title": "Study topological sorting",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://cp-algorithms.com/graph/topological-sort.html"
+        },
+        {
+          "title": "Write notes on dependency ordering",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Final mixed practice",
+      "tasks": [
+        {
+          "title": "Solve 3 medium array problems",
+          "type": "count",
+          "target": 3,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/tag/array/"
+        },
+        {
+          "title": "Take a timed 45-minute mock round",
+          "type": "minutes",
+          "target": 30,
+          "link": "https://neetcode.io/roadmap"
+        },
+        {
+          "title": "Write notes on what to revise next",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 8,
+      "title": "Arrays and hashing done"
+    },
+    {
+      "day": 15,
+      "title": "Pointer patterns done"
+    },
+    {
+      "day": 24,
+      "title": "Trees done"
+    },
+    {
+      "day": 30,
+      "title": "30 days of DSA complete"
+    }
+  ]
+}

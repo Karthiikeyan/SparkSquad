@@ -1,0 +1,569 @@
+{
+  "sparksquad_plan": 1,
+  "title": "30 days of SQL",
+  "goal": "Write interview-ready SQL with joins, aggregates and window functions",
+  "category": "career",
+  "duration_days": 30,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Querying basics",
+      "from_day": 1,
+      "to_day": 13
+    },
+    {
+      "name": "Intermediate SQL",
+      "from_day": 14,
+      "to_day": 21
+    },
+    {
+      "name": "Advanced and interviews",
+      "from_day": 22,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "SELECT basics",
+      "tasks": [
+        {
+          "title": "Study SELECT basics",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_introduction"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Filtering with WHERE",
+      "tasks": [
+        {
+          "title": "Study filtering with WHERE",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_constraints"
+        },
+        {
+          "title": "Solve 1 SQL problems",
+          "type": "count",
+          "target": 1,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Sorting and LIMIT",
+      "tasks": [
+        {
+          "title": "Study sorting and LIMIT",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/filtering_sorting_query_results"
+        },
+        {
+          "title": "Solve 1 SQL problems",
+          "type": "count",
+          "target": 1,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Review of SELECT",
+      "tasks": [
+        {
+          "title": "Study review of SELECT",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_review"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "INNER JOIN",
+      "tasks": [
+        {
+          "title": "Study INNER JOIN",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/multi_table_queries_with_joins"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "OUTER JOINs",
+      "tasks": [
+        {
+          "title": "Study OUTER JOINs",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_outer_joins"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Rest and revisit tricky queries",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Working with NULL",
+      "tasks": [
+        {
+          "title": "Study working with NULL",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_nulls"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Expressions",
+      "tasks": [
+        {
+          "title": "Study expressions",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_expressions"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Aggregates",
+      "tasks": [
+        {
+          "title": "Study aggregates",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_aggregates"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "GROUP BY and HAVING",
+      "tasks": [
+        {
+          "title": "Study GROUP BY and HAVING",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_with_aggregates_pt_2"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Order of execution",
+      "tasks": [
+        {
+          "title": "Study order of execution",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/select_queries_order_of_execution"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "INSERT, UPDATE, DELETE",
+      "tasks": [
+        {
+          "title": "Study INSERT, UPDATE, DELETE",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/inserting_rows"
+        },
+        {
+          "title": "Solve 1 SQL problems",
+          "type": "count",
+          "target": 1,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Rest and revisit tricky queries",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Creating and altering tables",
+      "tasks": [
+        {
+          "title": "Study creating and altering tables",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://sqlbolt.com/lesson/creating_tables"
+        },
+        {
+          "title": "Solve 1 SQL problems",
+          "type": "count",
+          "target": 1,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Subqueries",
+      "tasks": [
+        {
+          "title": "Study subqueries",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-sub-queries"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "CASE expressions",
+      "tasks": [
+        {
+          "title": "Study CASE expressions",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-case"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "String and date functions",
+      "tasks": [
+        {
+          "title": "Study string and date functions",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-string-functions-for-cleaning"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Self joins",
+      "tasks": [
+        {
+          "title": "Study self joins",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-self-joins"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "UNION and set operations",
+      "tasks": [
+        {
+          "title": "Study UNION and set operations",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-union"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Rest and revisit tricky queries",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Window functions: ranking",
+      "tasks": [
+        {
+          "title": "Study window functions: ranking",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://mode.com/sql-tutorial/sql-window-functions"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Window functions: running totals",
+      "tasks": [
+        {
+          "title": "Study window functions: running totals",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://www.postgresql.org/docs/current/tutorial-window.html"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Common table expressions",
+      "tasks": [
+        {
+          "title": "Study common table expressions",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://www.postgresql.org/docs/current/queries-with.html"
+        },
+        {
+          "title": "Solve 2 SQL problems",
+          "type": "count",
+          "target": 2,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Indexes and query plans",
+      "tasks": [
+        {
+          "title": "Study indexes and query plans",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://use-the-index-luke.com/sql/anatomy"
+        },
+        {
+          "title": "Solve 1 SQL problems",
+          "type": "count",
+          "target": 1,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Normalisation",
+      "tasks": [
+        {
+          "title": "Study normalisation",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://www.guru99.com/database-normalization.html"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Interview mix: joins and aggregates",
+      "tasks": [
+        {
+          "title": "Study interview mix: joins and aggregates",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        },
+        {
+          "title": "Solve 3 SQL problems",
+          "type": "count",
+          "target": 3,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Rest and revisit tricky queries",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 29,
+      "title": "Interview mix: windows and CTEs",
+      "tasks": [
+        {
+          "title": "Study interview mix: windows and CTEs",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        },
+        {
+          "title": "Solve 3 SQL problems",
+          "type": "count",
+          "target": 3,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Final review",
+      "tasks": [
+        {
+          "title": "Study final review",
+          "type": "minutes",
+          "target": 25,
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        },
+        {
+          "title": "Solve 3 SQL problems",
+          "type": "count",
+          "target": 3,
+          "unit": "problems",
+          "verify": "leetcode",
+          "link": "https://leetcode.com/studyplan/top-sql-50/"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 12,
+      "title": "Aggregates mastered"
+    },
+    {
+      "day": 24,
+      "title": "Window functions and CTEs done"
+    },
+    {
+      "day": 30,
+      "title": "30 days of SQL complete"
+    }
+  ]
+}

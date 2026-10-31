@@ -1,0 +1,426 @@
+{
+  "sparksquad_plan": 1,
+  "title": "10K steps",
+  "goal": "Walk 10,000 steps a day by the end of the month",
+  "category": "fitness",
+  "duration_days": 30,
+  "days_per_week": 7,
+  "phases": [
+    {
+      "name": "Build up",
+      "from_day": 1,
+      "to_day": 21
+    },
+    {
+      "name": "Hold 10K",
+      "from_day": 22,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Build up: 7,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 7,000 steps",
+          "type": "count",
+          "target": 7000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Easy day",
+      "tasks": [
+        {
+          "title": "Walk 6,000 steps at an easy pace",
+          "type": "count",
+          "target": 6000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Build up: 8,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 8,000 steps",
+          "type": "count",
+          "target": 8000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Easy day",
+      "tasks": [
+        {
+          "title": "Walk 6,000 steps at an easy pace",
+          "type": "count",
+          "target": 6000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Build up: 9,000 steps",
+      "tasks": [
+        {
+          "title": "Walk 9,000 steps",
+          "type": "count",
+          "target": 9000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Easy day",
+      "tasks": [
+        {
+          "title": "Walk 6,000 steps at an easy pace",
+          "type": "count",
+          "target": 6000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 22,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Easy day",
+      "tasks": [
+        {
+          "title": "Walk 6,000 steps at an easy pace",
+          "type": "count",
+          "target": 6000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 29,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "10K day",
+      "tasks": [
+        {
+          "title": "Walk 10,000 steps",
+          "type": "count",
+          "target": 10000,
+          "unit": "steps",
+          "verify": "steps"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "First week done"
+    },
+    {
+      "day": 22,
+      "title": "First 10K day"
+    },
+    {
+      "day": 30,
+      "title": "30 days of walking complete"
+    }
+  ]
+}

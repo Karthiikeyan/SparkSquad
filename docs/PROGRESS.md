@@ -3,7 +3,7 @@
 ## Phases
 
 - [x] 0. Scaffold (pnpm + Turborepo monorepo, Expo app, Hono Worker, shared package, ESLint/Prettier, CI, env examples)
-- [ ] 1. packages/shared (schemas, limits, dates, scoring/streaks, word filter, plan module + tests)
+- [x] 1. packages/shared (schemas, limits, dates, scoring/streaks, word filter, plan module + tests)
 - [ ] 2. apps/api (Drizzle schema + migrations, Better Auth, all endpoints, sync, R2, webhooks, push, cron, moderation, admin, seeding, integration tests)
 - [ ] 3. apps/mobile foundation (tokens, fonts, components, navigation, API client, Query, SQLite + outbox, banners, toasts, i18n, analytics)
 - [ ] 4. Auth and onboarding A1–A10 + invite deep links
@@ -25,7 +25,14 @@
 - `packages/shared`: TypeScript source package, Vitest with v8 coverage thresholds (90%).
 - GitHub Actions CI: install, lint (ESLint + Prettier), typecheck, test.
 
-**Next:** Phase 1 — shared package.
+### Phase 1 — done
+
+- `packages/shared/src`: `limits.ts` (only place for tier numbers), `errors.ts` (stable codes), `ids.ts` (ULID, invite codes), `date.ts` (local dates, day numbers, check-in window ±14 h), `scoring.ts` (status, partial rule, consistency, leaderboard ranking), `streaks.ts` (streaks, freezes, badges), `wordFilter.ts`, `schemas.ts` (zod for every API payload), `types.ts` (wire DTOs incl. `SyncResponse`).
+- Plan module `src/plan/`: schema, `extractJson`, `parsePlan` (fixes + stats, never throws), `parsePlanDay`, `exportPlan`, `mergeDayEdits`, `planHash` (pure SHA-256 over canonical JSON so phone and Worker match), `buildPrompt`, `buildRepairMessage`.
+- Templates: `templates/build.mjs` generates `dsa-30`, `dsa-60`, `aptitude-21`, `sql-30`, `steps-10k`, `system-design-30`; a test asserts each parses with zero fixes and is in canonical export form.
+- 127 tests, coverage 99% lines / 96% branches.
+
+**Next:** Phase 2 — API.
 
 **Known issues:** none.
 

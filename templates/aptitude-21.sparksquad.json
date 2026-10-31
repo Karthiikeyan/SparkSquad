@@ -1,0 +1,364 @@
+{
+  "sparksquad_plan": 1,
+  "title": "21 days of aptitude",
+  "goal": "Clear quant, logical and verbal rounds in placement tests",
+  "category": "career",
+  "duration_days": 21,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Quantitative aptitude",
+      "from_day": 1,
+      "to_day": 10
+    },
+    {
+      "name": "Logical reasoning",
+      "from_day": 11,
+      "to_day": 16
+    },
+    {
+      "name": "Verbal ability and mock",
+      "from_day": 17,
+      "to_day": 21
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Number system",
+      "tasks": [
+        {
+          "title": "Practise 15 number system questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Percentages",
+      "tasks": [
+        {
+          "title": "Practise 15 percentages questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Profit and loss",
+      "tasks": [
+        {
+          "title": "Practise 15 profit and loss questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Ratio and proportion",
+      "tasks": [
+        {
+          "title": "Practise 15 ratio and proportion questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Averages and ages",
+      "tasks": [
+        {
+          "title": "Practise 15 averages and ages questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Time and work",
+      "tasks": [
+        {
+          "title": "Practise 15 time and work questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Review mistakes from this week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Time, speed and distance",
+      "tasks": [
+        {
+          "title": "Practise 15 time, speed and distance questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Simple and compound interest",
+      "tasks": [
+        {
+          "title": "Practise 15 simple and compound interest questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Permutations and probability",
+      "tasks": [
+        {
+          "title": "Practise 15 permutations and probability questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Number and letter series",
+      "tasks": [
+        {
+          "title": "Practise 20 number and letter series questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-reasoning/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Coding and decoding",
+      "tasks": [
+        {
+          "title": "Practise 20 coding and decoding questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-reasoning/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Blood relations and directions",
+      "tasks": [
+        {
+          "title": "Practise 20 blood relations and directions questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-reasoning/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Review mistakes from this week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Seating arrangement",
+      "tasks": [
+        {
+          "title": "Practise 15 seating arrangement questions",
+          "type": "count",
+          "target": 15,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-reasoning/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Syllogisms",
+      "tasks": [
+        {
+          "title": "Practise 20 syllogisms questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-reasoning/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Reading comprehension",
+      "tasks": [
+        {
+          "title": "Practise 10 reading comprehension questions",
+          "type": "count",
+          "target": 10,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-ability/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Sentence correction",
+      "tasks": [
+        {
+          "title": "Practise 20 sentence correction questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-ability/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Para jumbles and vocabulary",
+      "tasks": [
+        {
+          "title": "Practise 20 para jumbles and vocabulary questions",
+          "type": "count",
+          "target": 20,
+          "unit": "questions",
+          "link": "https://www.indiabix.com/verbal-ability/questions-and-answers/"
+        },
+        {
+          "title": "Write down the shortcuts you used",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Full mock test",
+      "tasks": [
+        {
+          "title": "Take a 60-minute timed mock test",
+          "type": "minutes",
+          "target": 60,
+          "link": "https://www.indiabix.com/aptitude/questions-and-answers/"
+        },
+        {
+          "title": "Note your three weakest topics",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Review mistakes from this week",
+      "rest": true,
+      "tasks": []
+    }
+  ],
+  "milestones": [
+    {
+      "day": 10,
+      "title": "Quant topics covered"
+    },
+    {
+      "day": 16,
+      "title": "Reasoning topics covered"
+    },
+    {
+      "day": 20,
+      "title": "First full mock done"
+    }
+  ]
+}

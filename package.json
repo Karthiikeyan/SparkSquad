@@ -12,6 +12,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --write .",
+    "templates:build": "node templates/build.mjs && prettier --write templates",
     "seed:templates": "pnpm --filter @sparksquad/api seed:templates"
   },
   "devDependencies": {

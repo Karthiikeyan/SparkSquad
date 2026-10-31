@@ -1,0 +1,425 @@
+{
+  "sparksquad_plan": 1,
+  "title": "30 days of system design",
+  "goal": "Explain and draw common system designs in an interview",
+  "category": "career",
+  "duration_days": 30,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Foundations",
+      "from_day": 1,
+      "to_day": 7
+    },
+    {
+      "name": "Building blocks",
+      "from_day": 8,
+      "to_day": 21
+    },
+    {
+      "name": "Classic designs",
+      "from_day": 22,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "How to approach a design round",
+      "tasks": [
+        {
+          "title": "Read: how to approach a design round",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#how-to-approach-a-system-design-interview-question"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Performance vs scalability",
+      "tasks": [
+        {
+          "title": "Read: performance vs scalability",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#performance-vs-scalability"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Latency vs throughput",
+      "tasks": [
+        {
+          "title": "Read: latency vs throughput",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#latency-vs-throughput"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "CAP theorem",
+      "tasks": [
+        {
+          "title": "Read: cap theorem",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#cap-theorem"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Consistency patterns",
+      "tasks": [
+        {
+          "title": "Read: consistency patterns",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#consistency-patterns"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Availability patterns",
+      "tasks": [
+        {
+          "title": "Read: availability patterns",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#availability-patterns"
+        },
+        {
+          "title": "Sketch the design of a status page",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Rest and redraw one design from memory",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "DNS",
+      "tasks": [
+        {
+          "title": "Read: dns",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#domain-name-system"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "CDNs",
+      "tasks": [
+        {
+          "title": "Read: cdns",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#content-delivery-network"
+        },
+        {
+          "title": "Sketch the design of image hosting with a CDN",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Load balancers",
+      "tasks": [
+        {
+          "title": "Read: load balancers",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#load-balancer"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Reverse proxies",
+      "tasks": [
+        {
+          "title": "Read: reverse proxies",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Application layer and microservices",
+      "tasks": [
+        {
+          "title": "Read: application layer and microservices",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#application-layer"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Relational databases and replication",
+      "tasks": [
+        {
+          "title": "Read: relational databases and replication",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Rest and redraw one design from memory",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Sharding and federation",
+      "tasks": [
+        {
+          "title": "Read: sharding and federation",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#sharding"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "NoSQL stores",
+      "tasks": [
+        {
+          "title": "Read: nosql stores",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#nosql"
+        },
+        {
+          "title": "Sketch the design of a key-value store",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Caching strategies",
+      "tasks": [
+        {
+          "title": "Read: caching strategies",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#cache"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Message queues",
+      "tasks": [
+        {
+          "title": "Read: message queues",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#asynchronism"
+        },
+        {
+          "title": "Sketch the design of an email sending pipeline",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Communication: HTTP, TCP, RPC, REST",
+      "tasks": [
+        {
+          "title": "Read: communication: http, tcp, rpc, rest",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#communication"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Security basics",
+      "tasks": [
+        {
+          "title": "Read: security basics",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#security"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Rest and redraw one design from memory",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Design a URL shortener",
+      "tasks": [
+        {
+          "title": "Read: design a url shortener",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#design-pastebincom-or-bitly"
+        },
+        {
+          "title": "Sketch the design of a URL shortener",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Design a rate limiter",
+      "tasks": [
+        {
+          "title": "Read: design a rate limiter",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://stripe.com/blog/rate-limiters"
+        },
+        {
+          "title": "Sketch the design of a rate limiter",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Design a news feed",
+      "tasks": [
+        {
+          "title": "Read: design a news feed",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#design-the-twitter-timeline-and-search-or-facebook-feed-and-search"
+        },
+        {
+          "title": "Sketch the design of a news feed",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Design a chat app",
+      "tasks": [
+        {
+          "title": "Read: design a chat app",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://bytebytego.com/courses/system-design-interview/design-a-chat-system"
+        },
+        {
+          "title": "Sketch the design of a chat app",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Design a web crawler",
+      "tasks": [
+        {
+          "title": "Read: design a web crawler",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#design-a-web-crawler"
+        },
+        {
+          "title": "Sketch the design of a web crawler",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Design a key-value store",
+      "tasks": [
+        {
+          "title": "Read: design a key-value store",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries"
+        },
+        {
+          "title": "Sketch the design of a distributed cache",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Rest and redraw one design from memory",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 29,
+      "title": "Mock design round",
+      "tasks": [
+        {
+          "title": "Read: mock design round",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer#system-design-interview-questions-with-solutions"
+        },
+        {
+          "title": "Sketch the design of a ride-hailing app",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Final review",
+      "tasks": [
+        {
+          "title": "Read: final review",
+          "type": "minutes",
+          "target": 40,
+          "link": "https://github.com/donnemartin/system-design-primer"
+        },
+        {
+          "title": "Sketch the design of your favourite system end to end",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "Foundations done"
+    },
+    {
+      "day": 21,
+      "title": "Building blocks done"
+    },
+    {
+      "day": 30,
+      "title": "30 days of system design complete"
+    }
+  ]
+}
