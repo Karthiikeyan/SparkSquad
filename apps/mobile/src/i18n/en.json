@@ -329,6 +329,8 @@
     "requestNote": "The owner approves new members of private squads.",
     "pending": "Request sent",
     "pendingBody": "We’ll let you know when the owner approves it.",
+    "cancelRequest": "Cancel request",
+    "requestCancelled": "Request cancelled.",
     "member": "You’re in this squad",
     "open": "Go to Today",
     "joined": "You joined {{name}}.",

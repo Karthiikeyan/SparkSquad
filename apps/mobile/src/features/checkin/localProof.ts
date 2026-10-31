@@ -45,3 +45,13 @@ function deleteFile(uri: string): void {
     // Already gone.
   }
 }
+
+/** Deletes every locally kept proof photo (sign-out / account switch). */
+export function clearAllLocalProofs(): void {
+  try {
+    const dir = new Directory(Paths.document, 'proofs');
+    if (dir.exists) dir.delete();
+  } catch {
+    // Nothing stored yet.
+  }
+}

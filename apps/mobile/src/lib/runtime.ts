@@ -1,5 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 import { AppState } from 'react-native';
+import { clearAllLocalProofs } from '../features/checkin/localProof';
 import { endpoints } from './api/endpoints';
 import { appEvents } from './appEvents';
 import { openLocalDb } from './db/client';
@@ -8,6 +9,7 @@ import { createOutboxHandlers, revertRejected } from './outbox/handlers';
 import { createOutbox, type Outbox } from './outbox/outbox';
 import { ensurePlans } from './plans';
 import { uploadProof } from './photoUpload';
+import { clearKeyed } from './prefs';
 import { wipeLocalData } from './sync/applySync';
 import { createSyncEngine, type SyncEngine } from './sync/engine';
 
@@ -124,4 +126,8 @@ export function startBackgroundTriggers(): () => void {
 
 export async function clearLocalData(): Promise<void> {
   if (runtime) await wipeLocalData(runtime.db);
+  // Drafts and Free-plan proof photos are keyed by challenge/date only; drop them so the next
+  // account on this phone never sees or uploads them.
+  clearKeyed();
+  clearAllLocalProofs();
 }

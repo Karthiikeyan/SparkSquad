@@ -197,6 +197,45 @@ export async function applySync(db: LocalDb, res: SyncResponse): Promise<void> {
       await upsertCheckinRow(db, c, 0);
     }
 
+    // Moderation-hidden check-ins and members who are gone (left, removed, deleted their account).
+    if (res.removedCheckinIds?.length) {
+      await db.delete(checkins).where(inArray(checkins.id, res.removedCheckinIds));
+    }
+    for (const roster of res.squadMemberIds ?? []) {
+      const keep = [...roster.userIds, res.me.id];
+      const gone = (
+        await db
+          .select({ id: members.userId })
+          .from(members)
+          .where(
+            and(
+              eq(members.squadId, roster.squadId),
+              eq(members.status, 'active'),
+              notInArray(members.userId, keep),
+            ),
+          )
+          .all()
+      ).map((r) => r.id);
+      if (gone.length === 0) continue;
+      await db
+        .delete(members)
+        .where(and(eq(members.squadId, roster.squadId), inArray(members.userId, gone)));
+      const squadChallenges = (
+        await db
+          .select({ id: challenges.id })
+          .from(challenges)
+          .where(eq(challenges.squadId, roster.squadId))
+          .all()
+      ).map((r) => r.id);
+      if (squadChallenges.length) {
+        await db
+          .delete(checkins)
+          .where(
+            and(inArray(checkins.challengeId, squadChallenges), inArray(checkins.userId, gone)),
+          );
+      }
+    }
+
     for (const n of res.nudges) {
       await db.insert(nudges).values(n).onConflictDoNothing();
     }

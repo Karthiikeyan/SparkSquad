@@ -89,6 +89,8 @@ export const endpoints = {
   squadPreview: (squadId: string) => api.get<SquadPreviewDTO>(`/v1/squads/${enc(squadId)}/preview`),
   joinSquad: (input: { code: string } | { squadId: string }) =>
     api.post<JoinSquadResponse>('/v1/squads/join', input),
+  cancelJoinRequest: (squadId: string) =>
+    api.del<{ ok: true }>(`/v1/squads/${enc(squadId)}/request`),
   registerPushToken: (token: string, platform: 'ios' | 'android') =>
     api.put<{ ok: true }>('/v1/push-tokens', { token, platform }),
   removePushToken: (token: string) => api.del<{ ok: true }>(`/v1/push-tokens/${enc(token)}`),

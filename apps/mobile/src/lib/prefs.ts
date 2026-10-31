@@ -74,3 +74,10 @@ export function setKeyed(namespace: 'draft' | 'photo', key: string, value: unkno
 export function removeKeyed(namespace: 'draft' | 'photo', key: string): void {
   mmkv().remove(`${namespace}:${key}`);
 }
+
+/** Removes every draft and local photo path (sign-out / account switch). */
+export function clearKeyed(): void {
+  for (const k of mmkv().getAllKeys()) {
+    if (k.startsWith('draft:') || k.startsWith('photo:')) mmkv().remove(k);
+  }
+}

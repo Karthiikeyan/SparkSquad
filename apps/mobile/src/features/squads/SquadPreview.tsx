@@ -101,6 +101,15 @@ export function SquadPreview({ source }: { source: PreviewSource }) {
     },
   });
 
+  const cancel = useMutation({
+    mutationFn: (squadId: string) => endpoints.cancelJoinRequest(squadId),
+    onSuccess: () => {
+      toast.show({ message: t('preview.requestCancelled'), kind: 'success' });
+      void query.refetch();
+    },
+    onError: (e) => toast.show({ message: errorMessage(e), kind: 'error' }),
+  });
+
   const header = <NavHeader backLabel={t('common.back')} onBack={goHome} />;
 
   if (query.isPending) {
@@ -134,6 +143,13 @@ export function SquadPreview({ source }: { source: PreviewSource }) {
         <Text variant="caption" color="label3" align="center">
           {t('preview.pendingBody')}
         </Text>
+        <Button
+          label={t('preview.cancelRequest')}
+          variant="ghost"
+          onPress={() => cancel.mutate(p.id)}
+          loading={cancel.isPending}
+          testID="preview-cancel-request"
+        />
       </View>
     ) : action === 'closed' ? null : (
       <View style={styles.footerNote}>
