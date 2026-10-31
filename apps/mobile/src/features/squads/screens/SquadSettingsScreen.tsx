@@ -30,6 +30,7 @@ import {
   useToast,
 } from '../../../components/ui';
 import { t } from '../../../i18n';
+import { CATEGORY_ICON } from '../../../lib/categories';
 import { endpoints } from '../../../lib/api/endpoints';
 import { errorMessage, isApiError } from '../../../lib/api/errors';
 import { formatLocalDate } from '../../../lib/format';
@@ -127,6 +128,7 @@ function DetailsForm({ squad, onSaved }: { squad: SquadDTO; onSaved: () => void 
             <ChipToggle
               key={c}
               label={t(`categories.${c}`)}
+              icon={CATEGORY_ICON[c]}
               role="radio"
               selected={category === c}
               onPress={() => setCategory(c)}

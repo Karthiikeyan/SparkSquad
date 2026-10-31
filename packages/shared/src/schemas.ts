@@ -17,7 +17,21 @@ export const checkinStatusSchema = z.enum(['done', 'partial', 'honest_miss']);
 export const platformSchema = z.enum(['ios', 'android']);
 export const integrationProviderSchema = z.enum(['github', 'leetcode', 'codeforces']);
 export const avatarColorSchema = z.number().int().min(0).max(11);
-export const interestSchema = z.enum(['career', 'fitness', 'learning']);
+export const INTERESTS = [
+  'career',
+  'coding',
+  'exams',
+  'fitness',
+  'health',
+  'mindfulness',
+  'reading',
+  'learning',
+  'languages',
+  'productivity',
+  'finance',
+  'creative',
+] as const satisfies readonly (typeof CATEGORIES)[number][];
+export const interestSchema = z.enum(INTERESTS);
 
 const trimmed = (max: number) => z.string().trim().max(max);
 
@@ -47,7 +61,7 @@ export const updateMeSchema = z
     username: usernameSchema,
     avatarColor: avatarColorSchema,
     timezone: timeZoneSchema,
-    interests: z.array(interestSchema).max(3),
+    interests: z.array(interestSchema).max(INTERESTS.length),
     reminderTime: reminderTimeSchema,
     notifyMissedDay: z.boolean(),
     notifySquadUpdates: z.boolean(),
@@ -198,9 +212,13 @@ export const integrationSchema = z.object({
 
 export const adminActionSchema = z.object({ action: z.enum(['hide', 'suspend', 'dismiss']) });
 
+export const DISCOVER_SORTS = ['new', 'popular', 'soon'] as const;
+export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+
 export const discoverQuerySchema = z.object({
   category: categorySchema.optional(),
   q: z.string().trim().max(60).optional(),
+  sort: z.enum(DISCOVER_SORTS).optional(),
   cursor: z.string().max(100).optional(),
 });
 

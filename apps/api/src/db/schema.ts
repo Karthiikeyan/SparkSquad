@@ -1,3 +1,4 @@
+import { CATEGORIES } from '@sparksquad/shared';
 import { sql } from 'drizzle-orm';
 import {
   index,
@@ -108,7 +109,7 @@ export const squads = sqliteTable(
     name: text('name').notNull(),
     description: text('description').notNull().default(''),
     rules: text('rules').notNull().default(''),
-    category: text('category', { enum: ['career', 'fitness', 'learning', 'other'] }).notNull(),
+    category: text('category', { enum: CATEGORIES }).notNull(),
     privacy: text('privacy', { enum: ['public', 'private'] }).notNull(),
     ownerId: text('owner_id')
       .notNull()
@@ -469,7 +470,7 @@ export const templates = sqliteTable('templates', {
   id: text('id').primaryKey(),
   slug: text('slug').notNull().unique(),
   title: text('title').notNull(),
-  category: text('category', { enum: ['career', 'fitness', 'learning', 'other'] }).notNull(),
+  category: text('category', { enum: CATEGORIES }).notNull(),
   durationDays: integer('duration_days').notNull(),
   tasksPerDay: integer('tasks_per_day').notNull(),
   planKey: text('plan_key').notNull(),

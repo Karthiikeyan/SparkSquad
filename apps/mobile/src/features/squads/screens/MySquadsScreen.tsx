@@ -1,42 +1,57 @@
-import { useQueries } from '@tanstack/react-query';
+import { limitsFor, type Category, type SquadPreviewDTO } from '@sparksquad/shared';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { ChevronRight, Users } from 'lucide-react-native';
+import { CheckCircle2, ChevronRight, Clock, Compass, Moon, Users } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import {
+  AvatarRing,
   Button,
-  CountRing,
   EmptyState,
   ErrorState,
+  ProgressBar,
   Pressable,
   Screen,
   SectionLabel,
   SkeletonCard,
   Text,
+  type RingMember,
 } from '../../../components/ui';
 import { t } from '../../../i18n';
 import { endpoints } from '../../../lib/api/endpoints';
+import { CATEGORY_ICON } from '../../../lib/categories';
 import { formatLocalDate } from '../../../lib/format';
 import { useOnline } from '../../../lib/hooks/useOnline';
 import { qk } from '../../../lib/query/keys';
 import { useLocalQuery } from '../../../lib/query/useLocalQuery';
-import { colors, iconStroke, radius } from '../../../theme/tokens';
+import { colors, fonts, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
+import { SquadList } from '../../discover/parts';
 import { useRefresh } from '../../system/useRefresh';
+import { todayFor } from '../../today/model';
 import { buildBoard, canManage } from '../model';
 import { readMySquadIds, readSquadSource } from '../source';
+
+type MyState = 'done' | 'missed' | 'pending' | 'rest' | null;
 
 interface Row {
   id: string;
   name: string;
+  category: Category;
   line: string;
+  challengeId: string | null;
+  running: boolean;
+  dayNumber: number;
+  duration: number;
   checked: number;
   total: number;
-  showRing: boolean;
+  ring: RingMember[];
+  mine: MyState;
+  role: 'owner' | 'admin' | 'member' | null;
   manages: boolean;
   privacy: 'public' | 'private';
 }
 
-/** C1: my squads with today's count ring, start/join buttons and requests to review. */
+/** C1: one card per squad with today's progress and my status, then room-to-grow suggestions. */
 export function MySquadsScreen() {
   const me = useMe();
   const online = useOnline();
@@ -49,23 +64,48 @@ export function MySquadsScreen() {
       if (!src) continue;
       const board = buildBoard(src, now);
       const ch = src.challenge;
+      const running = board.state === 'running';
       const line = !ch
         ? t('squads.noChallenge')
         : board.state === 'upcoming'
           ? t('squads.startsOn', { title: ch.title, date: formatLocalDate(ch.startDate) })
           : t('squads.dayOf', { title: ch.title, n: board.dayNumber, total: ch.durationDays });
+      const myCheckin = src.checkins.find((c) => c.userId === me.id && c.localDate === board.today);
+      const mine: MyState = !running
+        ? null
+        : myCheckin
+          ? myCheckin.status === 'honest_miss'
+            ? 'missed'
+            : 'done'
+          : board.day?.rest
+            ? 'rest'
+            : 'pending';
       rows.push({
         id,
         name: src.squad.name,
+        category: src.squad.category,
         line,
+        challengeId: ch?.id ?? null,
+        running,
+        dayNumber: board.dayNumber,
+        duration: ch?.durationDays ?? 0,
         checked: board.checkedCount,
         total: src.members.length,
-        showRing: board.state === 'running',
+        ring: board.grid.map((m) => ({
+          id: m.id,
+          name: m.name,
+          avatarColor: m.avatarColor,
+          checked: m.checked,
+        })),
+        mine,
+        role: src.myRole,
         manages: canManage(src.myRole),
         privacy: src.squad.privacy,
       });
     }
-    return rows.sort((a, b) => a.name.localeCompare(b.name));
+    // Squads still waiting on me first, then by name.
+    const rank = (r: Row) => (r.mine === 'pending' ? 0 : 1);
+    return rows.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
   });
 
   const managed = (list.data ?? []).filter((r) => r.manages && r.privacy === 'private');
@@ -80,6 +120,10 @@ export function MySquadsScreen() {
   const waiting = managed
     .map((r, i) => ({ row: r, n: requests[i]?.data?.requests.length ?? 0 }))
     .filter((x) => x.n > 0);
+
+  const limit = limitsFor(me.plan).squadsJoined;
+  const count = list.data?.length ?? 0;
+  const hasRoom = count < limit;
 
   const actions = (
     <View style={styles.actions}>
@@ -102,57 +146,31 @@ export function MySquadsScreen() {
   else if (list.isError) body = <ErrorState onRetry={() => void list.refetch()} />;
   else if (list.data.length === 0)
     body = (
-      <EmptyState
-        icon={Users}
-        message={t('empty.squads')}
-        actionLabel={t('squads.join')}
-        onAction={() => router.push('/join')}
-        secondaryLabel={t('squads.start')}
-        onSecondary={() => router.push('/create/basics')}
-      />
+      <>
+        <EmptyState
+          icon={Users}
+          message={t('empty.squads')}
+          actionLabel={t('squads.join')}
+          onAction={() => router.push('/join')}
+          secondaryLabel={t('squads.start')}
+          onSecondary={() => router.push('/create/basics')}
+        />
+        {online ? <Suggestions interests={me.interests} /> : null}
+      </>
     );
   else
     body = (
       <>
-        {actions}
-        <View style={styles.group}>
-          {list.data.map((r, i) => (
-            <Pressable
-              key={r.id}
-              noScale
-              onPress={() => router.push({ pathname: '/squad/[id]', params: { id: r.id } })}
-              accessibilityRole="button"
-              accessibilityLabel={`${r.name}, ${r.line}${
-                r.showRing ? `, ${t('squads.checkedToday', { n: r.checked, total: r.total })}` : ''
-              }`}
-              style={({ pressed }) => [
-                styles.row,
-                i > 0 && styles.separator,
-                pressed && styles.pressed,
-              ]}
-              testID={`squad-${r.id}`}
-            >
-              <View style={styles.texts}>
-                <Text variant="headline" numberOfLines={1}>
-                  {r.name}
-                </Text>
-                <Text variant="footnote" color="label2" numberOfLines={1}>
-                  {r.line}
-                </Text>
-              </View>
-              {r.showRing ? (
-                <CountRing
-                  value={r.checked}
-                  total={r.total}
-                  accessibilityLabel={t('squads.checkedToday', { n: r.checked, total: r.total })}
-                />
-              ) : null}
-              <ChevronRight size={18} color={colors.iconMuted} strokeWidth={iconStroke} />
-            </Pressable>
+        <View style={styles.cards}>
+          {list.data.map((r) => (
+            <SquadCard key={r.id} r={r} />
           ))}
         </View>
+        <Text variant="footnote" color="label2" style={styles.slots}>
+          {t('squads.slots', { n: count, limit })}
+        </Text>
         {waiting.length > 0 ? (
-          <View style={styles.requests}>
+          <View style={styles.block}>
             <SectionLabel>{t('squads.requests')}</SectionLabel>
             <View style={styles.group}>
               {waiting.map(({ row, n }, i) => (
@@ -163,9 +181,9 @@ export function MySquadsScreen() {
                     router.push({ pathname: '/squad/[id]/requests', params: { id: row.id } })
                   }
                   accessibilityRole="button"
-                  style={[styles.row, styles.rowShort, i > 0 && styles.separator]}
+                  style={[styles.reqRow, i > 0 && styles.separator]}
                 >
-                  <Text variant="body" style={styles.texts}>
+                  <Text variant="body" style={styles.flex}>
                     {t('squads.requestsRow', { squad: row.name, n })}
                   </Text>
                   <ChevronRight size={18} color={colors.iconMuted} strokeWidth={iconStroke} />
@@ -173,6 +191,10 @@ export function MySquadsScreen() {
               ))}
             </View>
           </View>
+        ) : null}
+        <View style={styles.block}>{actions}</View>
+        {hasRoom && online ? (
+          <Suggestions interests={me.interests} exclude={list.data.map((r) => r.id)} />
         ) : null}
       </>
     );
@@ -184,14 +206,196 @@ export function MySquadsScreen() {
   );
 }
 
+function StatusPill({ r }: { r: Row }) {
+  if (r.mine === 'pending') {
+    const challengeId = r.challengeId;
+    if (!challengeId) return null;
+    return (
+      <Button
+        label={t('squads.checkIn')}
+        size="sm"
+        onPress={() => router.push({ pathname: '/checkin/[challengeId]', params: { challengeId } })}
+        accessibilityLabel={`${t('squads.checkIn')}, ${r.name}`}
+      />
+    );
+  }
+  if (!r.mine) return null;
+  const map = {
+    done: { icon: CheckCircle2, color: colors.success, label: t('squads.youDone') },
+    missed: { icon: Clock, color: colors.label2, label: t('squads.youMissed') },
+    rest: { icon: Moon, color: colors.label2, label: t('squads.youRest') },
+  } as const;
+  const s = map[r.mine];
+  const Icon = s.icon;
+  return (
+    <View style={styles.pill}>
+      <Icon size={15} color={s.color} strokeWidth={iconStroke} />
+      <Text variant="footnote" style={{ color: s.color }}>
+        {s.label}
+      </Text>
+    </View>
+  );
+}
+
+function SquadCard({ r }: { r: Row }) {
+  const Icon = CATEGORY_ICON[r.category];
+  const roleLabel =
+    r.role === 'owner' ? t('squads.roleOwner') : r.role === 'admin' ? t('squads.roleAdmin') : null;
+  return (
+    <Pressable
+      onPress={() => router.push({ pathname: '/squad/[id]', params: { id: r.id } })}
+      accessibilityRole="button"
+      accessibilityLabel={`${r.name}, ${r.line}${
+        r.running ? `, ${t('squads.checkedToday', { n: r.checked, total: r.total })}` : ''
+      }`}
+      style={styles.card}
+      testID={`squad-${r.id}`}
+    >
+      <View style={styles.cardHead}>
+        <View style={styles.icon}>
+          <Icon size={20} color={colors.accent} strokeWidth={iconStroke} />
+        </View>
+        <View style={styles.texts}>
+          <View style={styles.nameRow}>
+            <Text style={styles.name} numberOfLines={1}>
+              {r.name}
+            </Text>
+            {roleLabel ? (
+              <View style={styles.role}>
+                <Text variant="caption" color="label2">
+                  {roleLabel}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          <Text variant="footnote" color="label2" numberOfLines={1}>
+            {r.line}
+          </Text>
+        </View>
+        <ChevronRight size={18} color={colors.iconMuted} strokeWidth={iconStroke} />
+      </View>
+
+      {r.running ? (
+        <>
+          <ProgressBar
+            value={r.duration ? r.dayNumber / r.duration : 0}
+            accessibilityLabel={t('squads.progress')}
+          />
+          <View style={styles.cardFoot}>
+            <View style={styles.today}>
+              <AvatarRing
+                members={r.ring}
+                max={5}
+                accessibilityLabel={t('squads.checkedToday', { n: r.checked, total: r.total })}
+              />
+              <Text variant="footnote" color="label2" numberOfLines={1} style={styles.flex}>
+                {t('squads.checkedToday', { n: r.checked, total: r.total })}
+              </Text>
+            </View>
+            <StatusPill r={r} />
+          </View>
+        </>
+      ) : null}
+    </Pressable>
+  );
+}
+
+/** Popular public squads in my interests that I'm not in yet. */
+function Suggestions({
+  interests,
+  exclude = [],
+}: {
+  interests: readonly string[];
+  exclude?: readonly string[];
+}) {
+  const me = useMe();
+  const q = useQuery({
+    queryKey: qk.discover(undefined, undefined, 'popular'),
+    queryFn: () => endpoints.discover({ sort: 'popular' }),
+    staleTime: 5 * 60_000,
+  });
+  const today = todayFor(me, new Date());
+  const mine = (s: SquadPreviewDTO) => (interests.includes(s.category) ? 0 : 1);
+  const items: SquadPreviewDTO[] = (q.data?.squads ?? [])
+    .filter((s) => !exclude.includes(s.id) && !s.myStatus)
+    .sort((a, b) => mine(a) - mine(b))
+    .slice(0, 3);
+  const topics = interests
+    .slice(0, 2)
+    .map((i) => t(`categories.${i as Category}`))
+    .join(', ');
+  return (
+    <View style={styles.block}>
+      <View style={styles.suggestHead}>
+        <View style={styles.texts}>
+          <Text variant="headline" accessibilityRole="header">
+            {t('squads.findMore')}
+          </Text>
+          <Text variant="footnote" color="label2">
+            {topics ? t('squads.findMoreBody', { topics }) : t('squads.findMoreAny')}
+          </Text>
+        </View>
+      </View>
+      {items.length > 0 ? <SquadList squads={items} today={today} /> : null}
+      <Button
+        label={t('squads.browse')}
+        variant="soft"
+        size="md"
+        icon={<Compass size={18} color={colors.accent} strokeWidth={iconStroke} />}
+        onPress={() => router.push('/discover')}
+        style={styles.browse}
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  actions: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   flex: { flex: 1 },
+  actions: { flexDirection: 'row', gap: 10 },
+  cards: { gap: 12 },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
+    padding: 16,
+    gap: 14,
+  },
+  cardHead: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  icon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: colors.accentSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  texts: { flex: 1, minWidth: 0, gap: 2 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  name: {
+    fontFamily: fonts.displaySemibold,
+    fontSize: 19,
+    lineHeight: 24,
+    color: colors.label,
+    flexShrink: 1,
+  },
+  role: {
+    backgroundColor: colors.control,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
+  cardFoot: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 34 },
+  today: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 },
+  pill: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  slots: { marginTop: 10, marginHorizontal: 4 },
+  block: { marginTop: 24 },
   group: { backgroundColor: colors.surface, borderRadius: radius.listLarge, paddingHorizontal: 16 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 72, paddingVertical: 10 },
-  rowShort: { minHeight: 52 },
+  reqRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 52 },
   separator: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },
-  pressed: { opacity: 0.7 },
-  texts: { flex: 1, gap: 2, minWidth: 0 },
-  requests: { marginTop: 24 },
+  suggestHead: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 10,
+    marginHorizontal: 4,
+  },
+  browse: { marginTop: 12 },
 });

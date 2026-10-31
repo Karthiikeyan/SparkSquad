@@ -223,3 +223,10 @@ Results in `docs/AUDIT.md`. Fixed the check-in sheet route (B4) that still rende
 First run on real hardware. Fixed: NativeWind wrapper breaking pressed-state styles (invisible yellow buttons, missing check-in tab button, stacked back chevron), Pressable layout props ignored (unequal button rows, inset links), keyboard covering comment composer and form footers under edge-to-edge, content scrolling behind the status bar, empty check-in sheet taking the full screen and hiding Today behind it, truncated "days shown up" stat, read-only check-in detail saying "Tap to mark done", plurals ("1 members", "1 check-ins"), "Half the tasks count". Windows note: the SDK's ninja 1.10 can't create long paths; replace `cmake/3.22.1/bin/ninja.exe` with ninja 1.12+.
 
 **Known:** Fast Refresh can leave the local store unreadable ("This squad isn't on your phone yet"); a full reload fixes it (dev only).
+
+### Discover, Squads and Badges redesign — done
+
+- Discover: All by default; scrolling category chips with icons (interests first); Popular now cards, Starting soon, templates rail, New squads; per-category sort (Popular / Starting soon / Newest) with paging; "Can't find the right one?" card. API `sort` param, full squads hidden (2 API tests).
+- 13 categories across shared, API, app and docs; onboarding interests use them.
+- Squads: rich squad cards (progress, today's avatars, my status / Check in), plan slot count, Find more squads suggestions.
+- Badges: 12 badges with tiers and family icons; summary with Up next; grouped grids; profile strip always shows three.

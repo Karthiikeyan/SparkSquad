@@ -20,7 +20,7 @@ Join or create a squad → challenge with a day-by-day plan → daily check-in (
 ## 3. Concepts and rules
 
 ### Squad
-- Fields: name, description, rules (short text), category (`career` | `fitness` | `learning` | `other`), privacy (`public` | `private`), member limit (default and max 100 in v1), optional WhatsApp/Telegram group URL, invite code (6 chars, rotatable).
+- Fields: name, description, rules (short text), category (`career` | `coding` | `exams` | `fitness` | `health` | `mindfulness` | `reading` | `learning` | `languages` | `productivity` | `finance` | `creative` | `other`), privacy (`public` | `private`), member limit (default and max 100 in v1), optional WhatsApp/Telegram group URL, invite code (6 chars, rotatable).
 - Privacy: **public** = anyone can join from Discover; **private** = join by invite link/code, owner/admin approves.
 - Roles: **Owner**, **Admin**, **Member**. Owner can do everything incl. delete squad and transfer ownership. Admin can approve requests, remove members, pin announcement, edit plan days. Member can check in, react, comment, nudge, leave.
 - One active challenge per squad in v1. Past challenges remain viewable (summary only).

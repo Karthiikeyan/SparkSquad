@@ -2,13 +2,7 @@ import { buildPrompt, limitsFor } from '@sparksquad/shared';
 import { router, useFocusEffect } from 'expo-router';
 import { KeyRound, Send } from 'lucide-react-native';
 import { useCallback, useRef, useState, type ComponentRef } from 'react';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Button,

@@ -16,8 +16,8 @@ export const qk = {
   config: ['config'] as const,
   comments: (checkinId: string) => ['comments', checkinId] as const,
   leaderboard: (challengeId: string, range: string) => ['leaderboard', challengeId, range] as const,
-  discover: (category: string | undefined, q: string | undefined) =>
-    ['discover', category ?? '', q ?? ''] as const,
+  discover: (category: string | undefined, q: string | undefined, sort?: string) =>
+    ['discover', category ?? '', q ?? '', sort ?? ''] as const,
   templates: ['templates'] as const,
   squadPreview: (key: string) => ['squadPreview', key] as const,
 };

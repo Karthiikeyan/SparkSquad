@@ -23,6 +23,7 @@ import {
 } from '../../../components/ui';
 import { openPlusPaywall } from '../../billing/paywallRoute';
 import { t } from '../../../i18n';
+import { CATEGORY_ICON } from '../../../lib/categories';
 import { members } from '../../../lib/db/schema';
 import { qk } from '../../../lib/query/keys';
 import { useLocalQuery } from '../../../lib/query/useLocalQuery';
@@ -135,6 +136,7 @@ export function BasicsScreen() {
               <ChipToggle
                 key={c}
                 label={t(`categories.${c}`)}
+                icon={CATEGORY_ICON[c]}
                 role="radio"
                 selected={category === c}
                 onPress={() => setCategory(c)}

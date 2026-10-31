@@ -82,7 +82,14 @@ describe('badges', () => {
         { totalCheckins: 30, currentStreak: 21, challengeCompleted: true },
         new Set(['first_checkin']),
       ),
-    ).toEqual(['streak_7', 'streak_21', 'challenge_complete']);
+    ).toEqual([
+      'streak_3',
+      'streak_7',
+      'streak_14',
+      'streak_21',
+      'checkins_10',
+      'challenge_complete',
+    ]);
     expect(
       newBadges({ totalCheckins: 0, currentStreak: 0, challengeCompleted: false }, new Set()),
     ).toEqual([]);
@@ -94,5 +101,6 @@ describe('badges', () => {
     expect(badgeProgress('streak_7', facts)).toBe(1);
     expect(badgeProgress('streak_21', facts)).toBeCloseTo(14 / 21);
     expect(badgeProgress('challenge_complete', facts)).toBe(0);
+    expect(badgeProgress('checkins_10', facts)).toBeCloseTo(0.3);
   });
 });

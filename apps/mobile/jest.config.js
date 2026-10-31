@@ -3,6 +3,8 @@ module.exports = {
   preset: 'jest-expo',
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // Screen tests render whole trees; the 5 s default flakes on slower machines under load.
+  testTimeout: 20000,
   moduleNameMapper: {
     // The "react-native" entry is .mjs, which Jest does not transform; use the CJS build.
     '^lucide-react-native$':

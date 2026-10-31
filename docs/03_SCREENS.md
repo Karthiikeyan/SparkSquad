@@ -13,7 +13,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 | A4 | Email code | `(auth)/verify` | 6-digit OTP boxes, resend timer (30 s), paste support. |
 | A5 | Confirm age & terms | `(onboarding)/consent` | "I'm 18 or older" checkbox + Terms/Privacy links + zero-tolerance line. Blocks until checked. |
 | A6 | Your profile | `(onboarding)/profile` | Display name, username (availability check), avatar colour/initials picker. |
-| A7 | What are you working on? | `(onboarding)/interests` | Career / Fitness / Learning chips (multi), used for Discover. |
+| A7 | What are you working on? | `(onboarding)/interests` | Category chips (multi; every category except Other), used to order Discover and Squads suggestions. |
 | A8 | Reminder time | `(onboarding)/reminder` | Time wheel, default 8:00 PM. Explains reminders run on the phone. |
 | A9 | Notifications prime | `(onboarding)/notifications` | Why we ask, then system prompt. "Not now" allowed. |
 | A10 | Join or create | `(onboarding)/start` | Three choices: Join with a code, Browse public squads, Start a squad. Deep-link invite skips here straight to Squad preview. |
@@ -33,7 +33,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 ## C. Squads (tab 2)  `(tabs)/squads`
 | # | Screen | Route | Notes |
 |---|---|---|---|
-| C1 | My squads | `(tabs)/squads` | Large title, list of squads (name, challenge, day, today's count ring), "Start a squad" + "Join with code" buttons. Pending requests section. |
+| C1 | My squads | `(tabs)/squads` | Large title; one card per squad (category icon, name, role, challenge and day, challenge progress, today's avatars and count, my status or a Check in button; squads waiting on me first); "n of limit squads on your plan"; Start a squad + Join with code; pending requests; "Find more squads" suggestions while there's room. |
 | C2 | Squad board **[D] Squad** | `squad/[id]` | Back, share icon, name, meta, segmented Board / Leaderboard / Plan, "6/9 showed up today" + member grid, Still to check in + Nudge, Today's check-ins feed with fire reaction + Comment, pinned announcement banner at top if any, WhatsApp/Telegram button. |
 | C3 | Leaderboard **[D] Leaderboard** | `squad/[id]/leaderboard` (segment) | Chips This challenge / This week, explainer line, ranked rows, "You" highlighted with accentSoft. |
 | C4 | Plan **[D] Plan** | `squad/[id]/plan` (segment) | Phase name + "Phase 1 of 4", phase bar, 7-day strip (swipe for more), selected day card with typed task tiles, milestone row, owner buttons Edit this day / Export plan. Members see read-only. |
@@ -67,7 +67,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 ## E. Discover (tab 3)  `(tabs)/discover`
 | # | Screen | Route | Notes |
 |---|---|---|---|
-| E1 | Discover **[D] Discover** | `(tabs)/discover` | Search, category chips, Squads starting soon (Join), Plan templates grid, Start a squad link. |
+| E1 | Discover **[D] Discover** | `(tabs)/discover` | Search; scrolling category filter (All first, then my interests); All shows Popular now (cards), Starting soon, Plan templates rail, New squads; a category shows Popular / Starting soon / Newest with paging and its templates; Start a squad card. Full squads are hidden. |
 | E2 | Search results | `discover/search` | Squads and templates sections; recent searches when empty. |
 | E3 | Squad preview | `squad/[id]/preview` | Public info before joining: description, rules, plan summary, members count, start date, Join / Request to join. Also the landing for invite deep links (`sparksquad://join/CODE`; https invite links on the API domain `/join/CODE` that redirect to the store if the app is missing, upgradeable to universal links once a custom domain exists). |
 | E4 | Join with code | `join` | 6-char code input → E3. |
@@ -77,7 +77,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 |---|---|---|---|
 | F1 | Profile **[D] Profile** | `(tabs)/you` | Avatar, name, "In 2 squads since October", settings button, stat tiles (day streak, best streak, days shown up %), 18-week heatmap with legend, badges, plan row (Free: "In 2 of 3 squads" + See Plus). |
 | F2 | Edit profile | `you/edit` | Name, username, avatar colour. |
-| F3 | Badges | `you/badges` | Earned + locked with progress. |
+| F3 | Badges | `you/badges` | Summary (earned of total, progress) with Up next; 3-column grids for Streaks, Check-ins and Milestones; locked tiles show progress. |
 | F4 | History | `you/history` | Month calendar of check-ins, tap day → list of that day's check-ins. |
 | F5 | Settings **[D] Settings** | `settings` | Sections: AI plan builder, Reminders, Integrations, Plan & billing, Your data, Help, About. |
 | F6 | AI key setup | `settings/ai` | Provider segmented (Gemini/OpenAI/Claude), key field (paste, masked), Test, daily limit stepper, on-device AI status, how-to-get-a-key links per provider, Remove key. |

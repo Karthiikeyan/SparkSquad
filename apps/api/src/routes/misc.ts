@@ -12,7 +12,7 @@ import {
   type DiscoverResponse,
   type TemplateSummaryDTO,
 } from '@sparksquad/shared';
-import { and, desc, eq, inArray, isNull, like, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, isNull, like, lt } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import {
@@ -56,22 +56,65 @@ discoverRoutes.get('/discover', async (c) => {
   const d = db(c);
   const me = c.get('user');
   const pageSize = 20;
-  const conds = [eq(squads.privacy, 'public'), isNull(squads.archivedAt), isNull(squads.hiddenAt)];
+  const sort = q.sort ?? 'new';
+  const conds = [
+    eq(squads.privacy, 'public'),
+    isNull(squads.archivedAt),
+    isNull(squads.hiddenAt),
+    // Full squads can't be joined, so they never show up.
+    lt(squads.memberCount, squads.memberLimit),
+  ];
   if (q.category) conds.push(eq(squads.category, q.category));
   if (q.q) conds.push(like(squads.name, `%${q.q.replace(/[%_]/g, '')}%`));
-  if (q.cursor) conds.push(lt(squads.createdAt, q.cursor));
   const blockedOwners = await d
     .select({ id: blocks.blockedId })
     .from(blocks)
     .where(eq(blocks.blockerId, me.id))
     .all();
-  const rows = await d
-    .select()
-    .from(squads)
-    .where(and(...conds))
-    .orderBy(desc(squads.createdAt))
-    .limit(pageSize + 1)
-    .all();
+
+  let rows: (typeof squads.$inferSelect)[];
+  let nextCursor: string | null;
+  if (sort === 'new') {
+    if (q.cursor) conds.push(lt(squads.createdAt, q.cursor));
+    rows = await d
+      .select()
+      .from(squads)
+      .where(and(...conds))
+      .orderBy(desc(squads.createdAt))
+      .limit(pageSize + 1)
+      .all();
+    nextCursor = rows.length > pageSize ? (rows[pageSize - 1]?.createdAt ?? null) : null;
+  } else {
+    // Popular and starting-soon pages use an offset cursor.
+    const offset = Math.max(0, Number.parseInt(q.cursor ?? '0', 10) || 0);
+    if (sort === 'popular') {
+      rows = await d
+        .select()
+        .from(squads)
+        .where(and(...conds))
+        .orderBy(desc(squads.memberCount), desc(squads.createdAt))
+        .limit(pageSize + 1)
+        .offset(offset)
+        .all();
+    } else {
+      const today = new Date().toISOString().slice(0, 10);
+      const joined = await d
+        .select({ squad: squads })
+        .from(squads)
+        .innerJoin(
+          challenges,
+          and(eq(challenges.squadId, squads.id), eq(challenges.status, 'active')),
+        )
+        .where(and(...conds, gte(challenges.startDate, today)))
+        .orderBy(asc(challenges.startDate), desc(squads.memberCount))
+        .limit(pageSize + 1)
+        .offset(offset)
+        .all();
+      rows = joined.map((r) => r.squad);
+    }
+    nextCursor = rows.length > pageSize ? String(offset + pageSize) : null;
+  }
+
   const blockedSet = new Set(blockedOwners.map((b) => b.id));
   const page = rows.slice(0, pageSize).filter((r) => !blockedSet.has(r.ownerId));
   const tplConds = [eq(templates.published, true)];
@@ -87,7 +130,7 @@ discoverRoutes.get('/discover', async (c) => {
   const response: DiscoverResponse = {
     squads: await Promise.all(page.map((s) => buildPreview(d, s, me.id))),
     templates: tpls.map(templateSummary),
-    nextCursor: rows.length > pageSize ? (rows[pageSize - 1]?.createdAt ?? null) : null,
+    nextCursor,
   };
   return c.json(response);
 });

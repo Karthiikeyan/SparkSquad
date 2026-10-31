@@ -1,9 +1,9 @@
-import { CATEGORIES, type Category } from '@sparksquad/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import type { Category, DiscoverSort, SquadPreviewDTO } from '@sparksquad/shared';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { Compass, Search } from 'lucide-react-native';
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Compass, LayoutGrid, Search } from 'lucide-react-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Button,
   ChipToggle,
@@ -11,82 +11,56 @@ import {
   ErrorState,
   Pressable,
   Screen,
+  SegmentedControl,
   SkeletonCard,
   Text,
 } from '../../components/ui';
 import { t } from '../../i18n';
 import { endpoints } from '../../lib/api/endpoints';
 import { errorMessage } from '../../lib/api/errors';
+import { CATEGORY_ICON, categoriesFor } from '../../lib/categories';
 import { qk } from '../../lib/query/keys';
 import { colors, iconStroke, radius } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { useRefresh } from '../system/useRefresh';
 import { todayFor } from '../today/model';
-import { defaultCategory, sortStartingSoon } from './model';
-import { SquadList, TemplateGrid } from './parts';
+import { SquadList, SquadRail, StartSquadCard, TemplateGrid, TemplateRail } from './parts';
 
-const SHOWN = CATEGORIES.filter((c) => c !== 'other');
+type Filter = Category | 'all';
 
-/** E1: search, category chips, squads starting soon (Join), plan templates, start a squad. */
+const SORTS: readonly { value: DiscoverSort; label: () => string }[] = [
+  { value: 'popular', label: () => t('discover.sortPopular') },
+  { value: 'soon', label: () => t('discover.sortSoon') },
+  { value: 'new', label: () => t('discover.sortNew') },
+];
+
+function SectionHead({
+  title,
+  action,
+}: {
+  title: string;
+  action?: { label: string; onPress: () => void };
+}) {
+  return (
+    <View style={styles.sectionHead}>
+      <Text variant="headline" accessibilityRole="header">
+        {title}
+      </Text>
+      {action ? (
+        <Button label={action.label} variant="ghost" size="sm" onPress={action.onPress} />
+      ) : null}
+    </View>
+  );
+}
+
+/** E1: search, category filter (All first), curated sections, then templates and Start a squad. */
 export function DiscoverScreen() {
   const me = useMe();
   const today = todayFor(me, new Date());
-  const [category, setCategory] = useState<Category>(defaultCategory(me.interests));
+  const [filter, setFilter] = useState<Filter>('all');
+  const [sort, setSort] = useState<DiscoverSort>('popular');
   const { refreshing, onRefresh } = useRefresh();
-  const list = useInfiniteQuery({
-    queryKey: qk.discover(category, undefined),
-    queryFn: ({ pageParam }) => endpoints.discover({ category, cursor: pageParam }),
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
-    staleTime: 5 * 60_000,
-  });
-
-  const squads = sortStartingSoon(list.data?.pages.flatMap((p) => p.squads) ?? [], today);
-  const templates = list.data?.pages[0]?.templates ?? [];
-
-  let body;
-  if (list.isPending) body = <SkeletonCard />;
-  else if (list.isError)
-    body = <ErrorState message={errorMessage(list.error)} onRetry={() => void list.refetch()} />;
-  else
-    body = (
-      <>
-        <Text variant="headline" style={styles.heading} accessibilityRole="header">
-          {t('discover.startingSoon')}
-        </Text>
-        {squads.length ? (
-          <SquadList squads={squads} today={today} />
-        ) : (
-          <EmptyState
-            icon={Compass}
-            message={t('discover.noSquads')}
-            actionLabel={t('discover.startSquad')}
-            onAction={() => router.push('/create/basics')}
-          />
-        )}
-        {list.hasNextPage ? (
-          <Button
-            label={t('discover.loadMore')}
-            variant="ghost"
-            size="md"
-            loading={list.isFetchingNextPage}
-            onPress={() => void list.fetchNextPage()}
-          />
-        ) : null}
-        <View style={styles.templatesHead}>
-          <Text variant="headline" accessibilityRole="header">
-            {t('discover.templates')}
-          </Text>
-          <Button
-            label={t('discover.startSquad')}
-            variant="ghost"
-            size="sm"
-            onPress={() => router.push('/create/basics')}
-          />
-        </View>
-        <TemplateGrid templates={templates} />
-      </>
-    );
+  const chips = useMemo(() => categoriesFor(me.interests), [me.interests]);
 
   return (
     <Screen title={t('discover.title')} withTabBar refreshing={refreshing} onRefresh={onRefresh}>
@@ -103,23 +77,178 @@ export function DiscoverScreen() {
           {t('discover.search')}
         </Text>
       </Pressable>
-      <View
-        style={styles.chips}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipsScroll}
+        contentContainerStyle={styles.chips}
         accessibilityRole="radiogroup"
         accessibilityLabel={t('discover.categories')}
       >
-        {SHOWN.map((c) => (
+        <ChipToggle
+          label={t('categories.all')}
+          icon={LayoutGrid}
+          role="radio"
+          selected={filter === 'all'}
+          onPress={() => setFilter('all')}
+          testID="discover-all"
+        />
+        {chips.map((c) => (
           <ChipToggle
             key={c}
             label={t(`categories.${c}`)}
+            icon={CATEGORY_ICON[c]}
             role="radio"
-            selected={category === c}
-            onPress={() => setCategory(c)}
+            selected={filter === c}
+            onPress={() => setFilter(c)}
+            testID={`discover-cat-${c}`}
           />
         ))}
-      </View>
-      {body}
+      </ScrollView>
+      {filter === 'all' ? (
+        <AllSections today={today} />
+      ) : (
+        <CategoryView category={filter} sort={sort} onSort={setSort} today={today} />
+      )}
+      <StartSquadCard />
     </Screen>
+  );
+}
+
+function useDiscover(category: Category | undefined, sort: DiscoverSort) {
+  return useQuery({
+    queryKey: qk.discover(category, undefined, sort),
+    queryFn: () => endpoints.discover({ category, sort }),
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** "All": popular rail, starting soon, templates, newest. Sections without squads are skipped. */
+function AllSections({ today }: { today: string }) {
+  const popular = useDiscover(undefined, 'popular');
+  const soon = useDiscover(undefined, 'soon');
+  const fresh = useDiscover(undefined, 'new');
+
+  if (popular.isPending) return <SkeletonCard />;
+  if (popular.isError) {
+    return (
+      <ErrorState message={errorMessage(popular.error)} onRetry={() => void popular.refetch()} />
+    );
+  }
+  const popularList = popular.data.squads.slice(0, 8);
+  const shown = new Set(popularList.map((s) => s.id));
+  const soonList = (soon.data?.squads ?? []).filter((s) => !shown.has(s.id)).slice(0, 5);
+  soonList.forEach((s) => shown.add(s.id));
+  const freshList = (fresh.data?.squads ?? []).filter((s) => !shown.has(s.id)).slice(0, 5);
+  const templates = popular.data.templates;
+
+  return (
+    <>
+      {popularList.length > 0 ? (
+        <>
+          <SectionHead title={t('discover.popular')} />
+          <SquadRail squads={popularList} today={today} />
+        </>
+      ) : (
+        <EmptyState
+          icon={Compass}
+          message={t('discover.noSquads')}
+          actionLabel={t('discover.startSquad')}
+          onAction={() => router.push('/create/basics')}
+        />
+      )}
+      {soonList.length > 0 ? (
+        <>
+          <SectionHead title={t('discover.startingSoon')} />
+          <SquadList squads={soonList} today={today} />
+        </>
+      ) : null}
+      {templates.length > 0 ? (
+        <>
+          <SectionHead
+            title={t('discover.templates')}
+            action={{
+              label: t('discover.seeAll'),
+              onPress: () => router.push('/create/templates'),
+            }}
+          />
+          <TemplateRail templates={templates} />
+        </>
+      ) : null}
+      {freshList.length > 0 ? (
+        <>
+          <SectionHead title={t('discover.newSquads')} />
+          <SquadList squads={freshList} today={today} />
+        </>
+      ) : null}
+    </>
+  );
+}
+
+/** One category: sort control, the full paged list, then its templates. */
+function CategoryView({
+  category,
+  sort,
+  onSort,
+  today,
+}: {
+  category: Category;
+  sort: DiscoverSort;
+  onSort: (s: DiscoverSort) => void;
+  today: string;
+}) {
+  const list = useInfiniteQuery({
+    queryKey: qk.discover(category, undefined, sort),
+    queryFn: ({ pageParam }) => endpoints.discover({ category, sort, cursor: pageParam }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    staleTime: 5 * 60_000,
+  });
+  const squads: SquadPreviewDTO[] = list.data?.pages.flatMap((p) => p.squads) ?? [];
+  const templates = list.data?.pages[0]?.templates ?? [];
+
+  let body;
+  if (list.isPending) body = <SkeletonCard />;
+  else if (list.isError)
+    body = <ErrorState message={errorMessage(list.error)} onRetry={() => void list.refetch()} />;
+  else
+    body = (
+      <>
+        {squads.length ? (
+          <SquadList squads={squads} today={today} />
+        ) : (
+          <EmptyState icon={CATEGORY_ICON[category]} message={t('discover.noSquads')} />
+        )}
+        {list.hasNextPage ? (
+          <Button
+            label={t('discover.loadMore')}
+            variant="ghost"
+            size="md"
+            loading={list.isFetchingNextPage}
+            onPress={() => void list.fetchNextPage()}
+          />
+        ) : null}
+        {templates.length > 0 ? (
+          <>
+            <SectionHead title={t('discover.templates')} />
+            <TemplateGrid templates={templates} />
+          </>
+        ) : null}
+      </>
+    );
+
+  return (
+    <>
+      <SegmentedControl
+        options={SORTS.map((s) => ({ value: s.value, label: s.label() }))}
+        value={sort}
+        onChange={onSort}
+        role="radiogroup"
+        accessibilityLabel={t('discover.sort')}
+        style={styles.sort}
+      />
+      {body}
+    </>
   );
 }
 
@@ -134,14 +263,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 12,
   },
-  chips: { flexDirection: 'row', gap: 8, marginBottom: 20 },
-  heading: { marginHorizontal: 4, marginBottom: 8 },
-  templatesHead: {
+  chipsScroll: { marginHorizontal: -16, marginBottom: 4 },
+  chips: { flexDirection: 'row', gap: 8, paddingHorizontal: 16 },
+  sort: { marginBottom: 12 },
+  sectionHead: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    minHeight: 34,
     marginTop: 20,
-    marginBottom: 4,
+    marginBottom: 8,
     marginHorizontal: 4,
   },
 });

@@ -40,7 +40,7 @@ Implement everything here in `packages/shared/src/plan/` (zod schema, `extractJs
 | `sparksquad_plan` | integer | **Required**, must be `1`. Missing/other → not a plan. |
 | `title` | string | Required, trimmed, 1–80 chars (cut at 80, record a fix). |
 | `goal` | string | Optional, ≤160. |
-| `category` | `career`\|`fitness`\|`learning`\|`other` | Unknown → `other` (fix). |
+| `category` | `career`\|`coding`\|`exams`\|`fitness`\|`health`\|`mindfulness`\|`reading`\|`learning`\|`languages`\|`productivity`\|`finance`\|`creative`\|`other` | Unknown → `other` (fix). |
 | `duration_days` | integer | Required, clamp 1–120 (fix if clamped). If missing, use max `day` found. |
 | `days_per_week` | integer | Optional 1–7, default 7. Informational. |
 | `phases[]` | `{name ≤40, from_day, to_day}` | Optional, ≤12. Drop phases outside range or overlapping (fix). |

@@ -25,6 +25,7 @@ import { useRefresh } from '../system/useRefresh';
 import { todayFor } from '../today/model';
 import {
   badgeRows,
+  badgeStrip,
   heatmapLevels,
   heatmapStart,
   HEATMAP_WEEKS,
@@ -32,6 +33,7 @@ import {
   shownUpPercent,
   weekStats,
 } from './model';
+import { BADGE_GROUP_ICON } from './BadgesScreen';
 import { RecapCard } from './RecapCard';
 import { useYou } from './useYou';
 
@@ -81,10 +83,8 @@ export function YouScreen() {
     const levels = heatmapLevels(d.checkins, today);
     const windowCount = d.checkins.filter((c) => c.localDate >= firstHeatDay(today)).length;
     const shown = shownUpPercent(d.checkins, today, me.createdAt.slice(0, 10));
-    const rows = badgeRows(d.badges, d.best);
-    const earned = rows.filter((r) => r.earned);
-    const nextLocked = rows.find((r) => !r.earned);
-    const strip = [...earned.slice(-(nextLocked ? 2 : 3)), ...(nextLocked ? [nextLocked] : [])];
+    const rows = badgeRows(d.badges, d.best, d.checkins.length);
+    const strip = badgeStrip(rows);
     const limits = limitsFor(me.plan);
     const isPlus = me.plan === 'plus';
     body = (
@@ -124,7 +124,13 @@ export function YouScreen() {
                 key={b.badge}
                 glyph={b.glyph}
                 earned={b.earned}
-                label={b.earned || b.toGo === null ? b.label : t('you.toGo', { n: b.toGo })}
+                tier={b.tier}
+                icon={BADGE_GROUP_ICON[b.group]}
+                label={
+                  b.earned || b.toGo === null
+                    ? b.label
+                    : t(b.group === 'streaks' ? 'you.toGo' : 'you.toGoCheckins', { n: b.toGo })
+                }
               />
             ))}
           </View>
