@@ -82,6 +82,23 @@ export function openHealthConnectInstall(): void {
   );
 }
 
+/** Where the user can grant step access again: Health Connect, or the Health app on iOS. */
+export function openHealthSettings(): void {
+  try {
+    if (Platform.OS === 'android') {
+      healthConnect().openHealthConnectSettings();
+      return;
+    }
+  } catch {
+    // Fall through to the app's own settings.
+  }
+  if (Platform.OS === 'ios') {
+    void Linking.openURL('x-apple-health://').catch(() => Linking.openSettings());
+    return;
+  }
+  void Linking.openSettings();
+}
+
 /** Steps walked on `date` (device-local day), read on the phone; never uploaded. */
 export async function readSteps(date: LocalDate, now = new Date()): Promise<StepsResult> {
   if (!stepsConnected()) return { kind: 'notConnected' };

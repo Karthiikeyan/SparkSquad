@@ -212,4 +212,8 @@ All phases 0–10 are done. Typecheck, lint and tests are green; Android and iOS
 - Light theme is wired but hidden until `EXPO_PUBLIC_LIGHT_THEME=true` (D6).
 - RevenueCat purchases are untested against real store products.
 
-Next step: run the final audit (Prompt 3 in the master prompt) and write `docs/AUDIT.md`.
+Final audit done: see `docs/AUDIT.md`.
+
+### Final audit — done
+
+Results in `docs/AUDIT.md`. Fixed the check-in sheet route (B4) that still rendered the Phase 3 placeholder, member profile streaks and badges (C8, new API fields), the edit-day lock (C5), a root error boundary (G3), permission-denied states with "Open settings" (G5), offline banners on paywalls / AI builder / check-in sheet, billing error state, an Android overlay permission, and the last undocumented env var. Added 23 server tests for product rules (API 54 tests). All checks green.

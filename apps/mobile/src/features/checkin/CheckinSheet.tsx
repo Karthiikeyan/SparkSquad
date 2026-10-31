@@ -11,12 +11,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { BadgeCheck, ImagePlus, X } from 'lucide-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import {
   BottomSheet,
   Button,
   ChipToggle,
   IconButton,
+  OfflineBanner,
   Pressable,
   Stepper,
   Switch,
@@ -26,6 +27,7 @@ import {
 } from '../../components/ui';
 import { t } from '../../i18n';
 import { track } from '../../lib/analytics';
+import { useOnline } from '../../lib/hooks/useOnline';
 import { getRuntime } from '../../lib/runtime';
 import { colors, iconStroke, radius } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
@@ -127,6 +129,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
   const [photo, setPhoto] = useState<string | null>(() => localProofUri(ch.id, date));
   const [saving, setSaving] = useState(false);
   const [prefill, setPrefill] = useState<Prefill | null>(null);
+  const online = useOnline();
   const shareDays = photoRetentionDays(me.plan, card.squad.isPro);
   const canShare = shareDays > 0;
 
@@ -192,7 +195,14 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
       if (res.canceled || !res.assets[0]) return;
       setPhoto(await saveLocalProof(ch.id, date, res.assets[0].uri));
     } catch {
-      toast.show({ message: t('checkin.photoDenied'), kind: 'error' });
+      // G5: explain and offer the phone's settings.
+      Alert.alert(t('checkin.photoDenied'), undefined, [
+        { text: t('common.notNow'), style: 'cancel' },
+        {
+          text: t('notificationsSettings.openSettings'),
+          onPress: () => void Linking.openSettings(),
+        },
+      ]);
     }
   };
 
@@ -266,6 +276,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
 
   return (
     <>
+      {!online ? <OfflineBanner /> : null}
       <View>
         {day.tasks.map((task, i) => (
           <TaskInput

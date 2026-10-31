@@ -66,6 +66,15 @@ export interface MemberDTO {
   updatedAt: string;
 }
 
+/** `GET /v1/squads/:id/members`: public stats only (C7, C8). */
+export interface SquadMemberStatsDTO extends MemberDTO {
+  /** Share of days shown up in the active challenge; null without one. */
+  consistency: number | null;
+  /** Streak in this squad's active challenge; null without one. */
+  streak: { current: number; best: number } | null;
+  badges: BadgeId[];
+}
+
 export interface ChallengeDTO {
   id: string;
   squadId: string;

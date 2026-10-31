@@ -4,8 +4,9 @@ import { Check, X } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, IconButton, Pressable, Text } from '../../components/ui';
+import { Button, IconButton, OfflineBanner, Pressable, Text } from '../../components/ui';
 import { t } from '../../i18n';
+import { useOnline } from '../../lib/hooks/useOnline';
 import { parseJson } from '../../lib/db/helpers';
 import { members, squads } from '../../lib/db/schema';
 import { qk } from '../../lib/query/keys';
@@ -34,6 +35,7 @@ export function SquadProPaywallScreen() {
   const insets = useSafeAreaInsets();
   const me = useMe();
   const { squadId } = useLocalSearchParams<{ squadId?: string }>();
+  const online = useOnline();
   const paywall = usePaywall('squad_pro');
   const [period, setPeriod] = useState<Period>('yearly');
   const owned = useLocalQuery<OwnedSquad[]>([...qk.squads, 'owned', me.id], async (db) => {
@@ -77,6 +79,7 @@ export function SquadProPaywallScreen() {
           onPress={closePaywall}
         />
       </View>
+      {!online ? <OfflineBanner /> : null}
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text variant="largeTitle" accessibilityRole="header" style={styles.title}>
           {t('paywall.proTitle')}
@@ -156,7 +159,9 @@ export function SquadProPaywallScreen() {
           })
         }
         loading={paywall.busy === 'buy'}
-        disabled={!picked || paywall.interested || paywall.unavailable || paywall.busy !== null}
+        disabled={
+          !online || !picked || paywall.interested || paywall.unavailable || paywall.busy !== null
+        }
         testID="pro-start"
       />
       {paywall.live ? (

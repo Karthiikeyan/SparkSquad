@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Avatar,
+  Badge,
   Button,
+  Card,
   ErrorState,
   NavHeader,
   Screen,
@@ -20,6 +22,7 @@ import { useMe } from '../../auth/SessionProvider';
 import { confirmBlock, ReportSheet, type ReportTarget } from '../../safety/ReportSheet';
 import { currentRuns, restChecker } from '../model';
 import { useSquad } from '../useSquad';
+import { badgeRows } from '../../you/model';
 import { todayFor } from '../../today/model';
 
 /** C8: public profile inside a squad: name, avatar, consistency and current run. No private data. */
@@ -46,6 +49,12 @@ export function MemberProfileScreen() {
     ? (currentRuns(src.checkins, today, restChecker(src)).get(id) ?? 0)
     : 0;
   const isMe = id === me.id;
+  const earned = remote
+    ? badgeRows(
+        remote.badges.map((badge) => ({ badge, earnedAt: '' })),
+        0,
+      ).filter((b) => b.earned)
+    : [];
 
   return (
     <Screen header={<NavHeader backLabel={t('common.back')} onBack={() => router.back()} />}>
@@ -69,13 +78,32 @@ export function MemberProfileScreen() {
             label={t('profilePublic.consistency')}
             accent
           />
-          <StatTile value={String(run)} label={t('profilePublic.run')} />
+          <StatTile value={String(remote.streak?.current ?? run)} label={t('you.dayStreak')} />
+          <StatTile value={String(remote.streak?.best ?? run)} label={t('you.bestStreak')} />
         </View>
       ) : (
         <Text variant="body" color="label2">
           {t('profilePublic.noData')}
         </Text>
       )}
+      {remote ? (
+        <Card variant="section" style={styles.badges}>
+          <Text variant="bodySemibold" accessibilityRole="header">
+            {t('profilePublic.badges')}
+          </Text>
+          {earned.length ? (
+            <View style={styles.badgeRow}>
+              {earned.map((b) => (
+                <Badge key={b.badge} glyph={b.glyph} label={b.label} earned />
+              ))}
+            </View>
+          ) : (
+            <Text variant="footnote" color="label2">
+              {t('profilePublic.noBadges')}
+            </Text>
+          )}
+        </Card>
+      ) : null}
       {!isMe ? (
         <View style={styles.actions}>
           <Button
@@ -110,5 +138,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 4, marginBottom: 20 },
   stats: { flexDirection: 'row', gap: 8 },
+  badges: { marginTop: 12, gap: 12 },
+  badgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   actions: { flexDirection: 'row', gap: 10, marginTop: 24 },
 });

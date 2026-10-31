@@ -72,9 +72,6 @@
     "discover": "Nothing to show here yet",
     "you": "Your streaks and badges show up here"
   },
-  "placeholder": {
-    "comingSoon": "This screen is being built"
-  },
   "today": {
     "streak": "{{n}}-day streak",
     "bell": "Notifications",
@@ -563,7 +560,9 @@
     "run": "day run",
     "noData": "Stats show up once the challenge starts.",
     "report": "Report",
-    "block": "Block"
+    "block": "Block",
+    "badges": "Badges",
+    "noBadges": "No badges yet."
   },
   "requests": {
     "title": "Join requests",
@@ -1098,7 +1097,8 @@
     "manage": "Manage subscription",
     "restore": "Restore purchase",
     "seePlus": "See Plus",
-    "squadPro": "Squad Pro for a squad you run"
+    "squadPro": "Squad Pro for a squad you run",
+    "loadFailed": "Couldn’t load your subscription."
   },
   "blocked": {
     "title": "Blocked people",
@@ -1144,5 +1144,9 @@
     "contactBody": "Write to us about anything, including complaints. We reply within 7 days.",
     "email": "Email {{email}}",
     "guidelines": "Community guidelines"
+  },
+  "crash": {
+    "title": "Something went wrong",
+    "body": "This screen hit a problem. Your check-ins are safe on your phone. Try again."
   }
 }

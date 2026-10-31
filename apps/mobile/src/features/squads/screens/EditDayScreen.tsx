@@ -1,9 +1,11 @@
 import { PLAN_LIMITS } from '@sparksquad/shared';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Lock } from 'lucide-react-native';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Button,
+  EmptyState,
   ErrorState,
   NavHeader,
   Screen,
@@ -24,13 +26,16 @@ import {
   type DraftTask,
 } from '../../plan/TaskEditor';
 import { syncSoon } from '../actions';
-import { dayFromSource } from '../model';
+import { canEditDay, dayFromSource } from '../model';
 import { useSquad } from '../useSquad';
+import { useMe } from '../../auth/SessionProvider';
+import { todayFor } from '../../today/model';
 
-/** C5: owner/admin edits a future day (title, review day, tasks). Past days are locked server-side. */
+/** C5: owner/admin edits a future day (title, review day, tasks). Past days and today are locked. */
 export function EditDayScreen() {
   const { id, n: nParam } = useLocalSearchParams<{ id: string; n: string }>();
   const n = Number(nParam) || 1;
+  const me = useMe();
   const toast = useToast();
   const squad = useSquad(id ?? '');
   const day = squad.data ? dayFromSource(squad.data, n) : null;
@@ -52,6 +57,14 @@ export function EditDayScreen() {
     return (
       <Screen header={header}>
         <ErrorState message={t('plan.loading')} onRetry={() => void squad.refetch()} />
+      </Screen>
+    );
+  }
+
+  if (!canEditDay(ch, n, todayFor(me, new Date()))) {
+    return (
+      <Screen header={header}>
+        <EmptyState icon={Lock} message={t('plan.locked')} />
       </Screen>
     );
   }

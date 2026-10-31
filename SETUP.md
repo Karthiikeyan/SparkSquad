@@ -307,7 +307,7 @@ Updates reach builds with the same app version (`runtimeVersion` policy `appVers
 
 ## 7. Templates, admins and moderation
 
-- **Templates** live in `templates/*.sparksquad.json` (same format as user plans, `docs/05_PLAN_FORMAT.md`). Edit or add a file, run `pnpm templates:build` (validates and formats), then `pnpm seed:templates` (local) or `pnpm seed:templates -- --remote`.
+- **Templates** live in `templates/*.sparksquad.json` (same format as user plans, `docs/05_PLAN_FORMAT.md`). Edit or add a file, run `pnpm templates:build` (validates and formats), then `pnpm seed:templates` (local) or `pnpm seed:templates -- --remote`. If your database or bucket isn't called `sparksquad`, set `D1_DATABASE_NAME` and `R2_BUCKET_NAME` in the shell first (for example `D1_DATABASE_NAME=mydb pnpm seed:templates -- --remote`).
 - **First admin**: put your email in `ADMIN_EMAILS` (`wrangler.toml` `[vars]`, comma-separated) and deploy. Open `<PUBLIC_API_URL>/admin`, sign in with an email code.
 - **Moderating reports**: the admin page lists open reports (check-ins, comments, users, squads). Actions: _Hide_ (removes the content), _Suspend_ (blocks the user's account), _Dismiss_. Respond to user complaints sent to `CONTACT_EMAIL` within 7 days (the privacy policy promises this).
 

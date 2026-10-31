@@ -2,7 +2,7 @@ import { integrationSchema, TEXT_LIMITS } from '@sparksquad/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 import {
   Button,
   GroupedList,
@@ -27,6 +27,7 @@ import {
   connectSteps,
   disconnectSteps,
   openHealthConnectInstall,
+  openHealthSettings,
   stepsConnected,
   stepsStatus,
   type StepsStatus,
@@ -133,10 +134,15 @@ function StepsRow() {
     const ok = await connectSteps();
     setBusy(false);
     setConnected(ok);
-    toast.show({
-      message: ok ? t('integrations.stepsConnected', { source }) : t('integrations.stepsDenied'),
-      kind: ok ? 'success' : 'info',
-    });
+    if (ok) {
+      toast.show({ message: t('integrations.stepsConnected', { source }), kind: 'success' });
+      return;
+    }
+    // G5: explain and offer the place to change it.
+    Alert.alert(t('integrations.stepsDenied'), undefined, [
+      { text: t('common.notNow'), style: 'cancel' },
+      { text: t('notificationsSettings.openSettings'), onPress: openHealthSettings },
+    ]);
   };
 
   let accessory = null;

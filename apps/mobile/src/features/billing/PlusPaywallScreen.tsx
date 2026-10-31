@@ -4,8 +4,9 @@ import { X } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, IconButton, Pressable, Text } from '../../components/ui';
+import { Button, IconButton, OfflineBanner, Pressable, Text } from '../../components/ui';
 import { t } from '../../i18n';
+import { useOnline } from '../../lib/hooks/useOnline';
 import { colors, fonts, radius } from '../../theme/tokens';
 import { useConfig } from '../system/useConfig';
 import { comparisonRows, type Period, type PlanPrices } from './model';
@@ -20,6 +21,7 @@ export function closePaywall() {
 export function PlusPaywallScreen() {
   const insets = useSafeAreaInsets();
   const config = useConfig();
+  const online = useOnline();
   const paywall = usePaywall('plus');
   const [period, setPeriod] = useState<Period>('yearly');
   const rows = comparisonRows(config.data?.limits ?? TIER_LIMITS);
@@ -43,6 +45,7 @@ export function PlusPaywallScreen() {
           testID="paywall-close"
         />
       </View>
+      {!online ? <OfflineBanner /> : null}
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text variant="largeTitle" accessibilityRole="header" style={styles.title}>
           {t('paywall.title')}
@@ -69,7 +72,7 @@ export function PlusPaywallScreen() {
           })
         }
         loading={paywall.busy === 'buy'}
-        disabled={paywall.interested || paywall.unavailable || paywall.busy !== null}
+        disabled={!online || paywall.interested || paywall.unavailable || paywall.busy !== null}
         testID="paywall-start"
       />
       {paywall.unavailable ? (

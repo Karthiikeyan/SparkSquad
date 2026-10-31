@@ -9,12 +9,23 @@ import {
   transferSchema,
   ulid,
   updateSquadSchema,
+  type BadgeId,
+  type SquadMemberStatsDTO,
   type SquadPreviewDTO,
 } from '@sparksquad/shared';
 import { and, asc, desc, eq, inArray } from 'drizzle-orm';
 import { Hono } from 'hono';
 import type { Db } from '../db/client';
-import { announcements, challenges, memberSummary, squadMembers, squads, user } from '../db/schema';
+import {
+  announcements,
+  badges,
+  challenges,
+  memberSummary,
+  squadMembers,
+  squads,
+  streaks,
+  user,
+} from '../db/schema';
 import type { AppEnv } from '../env';
 import { ApiError, errors } from '../lib/errors';
 import { body, db, nowIso } from '../lib/http';
@@ -320,14 +331,31 @@ squadRoutes.get('/:id/members', async (c) => {
         rows.map((r) => r.user),
       )
     : new Map<string, number>();
-  return c.json({
-    members: rows
-      .filter((r) => !blocked.has(r.user.id))
-      .map((r) => ({
+  const ids = rows.map((r) => r.user.id);
+  const streakRows =
+    ch && ids.length
+      ? await d
+          .select()
+          .from(streaks)
+          .where(and(eq(streaks.scope, ch.id), inArray(streaks.userId, ids)))
+          .all()
+      : [];
+  const streakOf = new Map(streakRows.map((s) => [s.userId, s]));
+  const badgeRows = ids.length
+    ? await d.select().from(badges).where(inArray(badges.userId, ids)).all()
+    : [];
+  const members: SquadMemberStatsDTO[] = rows
+    .filter((r) => !blocked.has(r.user.id))
+    .map((r) => {
+      const s = streakOf.get(r.user.id);
+      return {
         ...toMember(r.squad_members, r.user),
         consistency: consistency.get(r.user.id) ?? null,
-      })),
-  });
+        streak: ch ? { current: s?.current ?? 0, best: s?.best ?? 0 } : null,
+        badges: badgeRows.filter((b) => b.userId === r.user.id).map((b) => b.badge as BadgeId),
+      };
+    });
+  return c.json({ members });
 });
 
 squadRoutes.get('/:id/requests', async (c) => {

@@ -59,6 +59,19 @@ export function BillingScreen() {
           title={isPlus ? t('billing.plus') : t('billing.free')}
           subtitle={isPlus ? (sub.isPending && live ? t('common.loading') : dateLine) : undefined}
         />
+        {sub.isError ? (
+          <ListRow
+            title={t('billing.loadFailed')}
+            accessory={
+              <Button
+                label={t('common.retry')}
+                variant="secondary"
+                size="sm"
+                onPress={() => void sub.refetch()}
+              />
+            }
+          />
+        ) : null}
         {isPlus ? (
           <ListRow
             title={t('billing.manage')}

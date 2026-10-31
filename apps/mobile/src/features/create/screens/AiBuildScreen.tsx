@@ -16,6 +16,7 @@ import {
   EmptyState,
   IconButton,
   NavHeader,
+  OfflineBanner,
   Pressable,
   ProgressBar,
   Text,
@@ -25,6 +26,7 @@ import { openPlusPaywall } from '../../billing/paywallRoute';
 import { t } from '../../../i18n';
 import { track } from '../../../lib/analytics';
 import { getAiKey, type AiProvider } from '../../../lib/aiKeys';
+import { useOnline } from '../../../lib/hooks/useOnline';
 import { getPref } from '../../../lib/prefs';
 import { colors, fonts, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
@@ -53,6 +55,7 @@ const PROVIDER_LABEL: Record<
 /** D8: BYOK interview → JSON plan → shared parser → one repair round → Import preview (D5). */
 export function AiBuildScreen() {
   const me = useMe();
+  const online = useOnline();
   const insets = useSafeAreaInsets();
   const { flow, update } = useCreateFlow();
   const provider: AiProvider = getPref('aiProvider') ?? 'gemini';
@@ -258,6 +261,7 @@ export function AiBuildScreen() {
             value={questionNumber(assistantTurns) / 6}
             accessibilityLabel={t('aiBuild.progressLabel')}
           />
+          {!online ? <OfflineBanner /> : null}
         </View>
         <ScrollView
           ref={scroll}

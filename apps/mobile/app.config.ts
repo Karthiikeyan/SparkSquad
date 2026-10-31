@@ -48,6 +48,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     blockedPermissions: [
       'android.permission.READ_MEDIA_AUDIO',
       'android.permission.READ_MEDIA_VIDEO',
+      // Added by the React Native template for dev tools; the app never draws over other apps.
+      'android.permission.SYSTEM_ALERT_WINDOW',
     ],
     adaptiveIcon: {
       backgroundColor: '#000000',

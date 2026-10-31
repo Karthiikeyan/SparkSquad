@@ -11,6 +11,7 @@ import type {
   LeaderboardResponse,
   MeDTO,
   MemberDTO,
+  SquadMemberStatsDTO,
   Plan,
   PlanDay,
   PublicUserDTO,
@@ -94,9 +95,7 @@ export const endpoints = {
 
   /* squads (Phase 6) */
   squadMembers: (squadId: string) =>
-    api.get<{ members: (MemberDTO & { consistency: number | null })[] }>(
-      `/v1/squads/${enc(squadId)}/members`,
-    ),
+    api.get<{ members: SquadMemberStatsDTO[] }>(`/v1/squads/${enc(squadId)}/members`),
   squadRequests: (squadId: string) =>
     api.get<{ requests: MemberDTO[] }>(`/v1/squads/${enc(squadId)}/requests`),
   decideRequest: (squadId: string, userId: string, approve: boolean) =>

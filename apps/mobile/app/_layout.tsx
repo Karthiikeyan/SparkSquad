@@ -12,6 +12,10 @@ import { initAnalytics } from '../src/lib/analytics';
 import { setupQueryManagers } from '../src/lib/query/client';
 import { fontAssets } from '../src/theme/fonts';
 import { themeName, themePref } from '../src/theme/tokens';
+import { CrashScreen } from '../src/features/system/CrashScreen';
+
+/** Expo Router renders this when any screen throws while rendering (G3). */
+export { CrashScreen as ErrorBoundary };
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 initAnalytics();
