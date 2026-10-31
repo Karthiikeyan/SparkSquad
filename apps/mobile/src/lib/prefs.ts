@@ -20,6 +20,10 @@ export interface Prefs {
   lastFreezeNoticeDate: string;
   /** Public handles for on-device verification (mirrors the server; usernames only). */
   integrations: Partial<Record<'github' | 'leetcode' | 'codeforces', string>>;
+  /** The user allowed reading steps from Health Connect / HealthKit on this phone. */
+  stepsConnected: boolean;
+  /** Colour theme; dark is the default (Design System). Applied at launch. */
+  theme: 'dark' | 'light' | 'system';
 }
 
 let store: MMKV | null = null;

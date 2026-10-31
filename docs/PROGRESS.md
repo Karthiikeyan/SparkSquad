@@ -11,7 +11,7 @@
 - [x] 6. Squads C1–C15
 - [x] 7. Create and join D1–D11, E1–E4
 - [x] 8. You and settings F1–F16, weekly recap
-- [ ] 9. Polish and hardening
+- [x] 9. Polish and hardening
 - [ ] 10. Documentation (SETUP.md, README, final PROGRESS/DECISIONS)
 
 ## Log
@@ -168,3 +168,25 @@
 - Native features need a development build.
 
 **Notes for the next session:** Phase 9 candidates: Plus photo upload (`POST /v1/uploads/proof` presign, compress to ≤300 KB JPEG/WebP, upload in the check-in outbox handler before the upsert, send `photoKey`), steps via `react-native-health-connect` / `@kingstinct/react-native-healthkit` (config plugins in `app.config.ts`), on-device recap where available, an accessibility and empty/offline-state pass over every screen, a full history backfill endpoint or paging if needed, and a review of performance (UI kit import cost in tests is ~7 s).
+
+### Phase 9 — done
+
+- Plus / Squad Pro photo proof upload: on-device compression, presigned R2 PUT from the outbox, `photoKey` on the check-in; Free photos still never leave the phone.
+- Steps verification: Health Connect (Android) and Apple Health (iOS), connected from Settings › Connected accounts, pre-filling step tasks with "Verified from your … activity".
+- On-device AI (iOS Foundation Models) for the weekly recap rewrite, falling back to the BYOK key; Settings › AI shows its status.
+- Light theme tokens wired (dark default, behind `EXPO_PUBLIC_LIGHT_THEME` per D6) with a contrast-checked light palette; pickers, status bar and native UI follow the theme.
+- Accessibility pass: Switch respects reduced motion, chips grow with Dynamic Type (1.3×) and reach 44 pt touch targets, missing loading / error states added (member profile, integrations, billing).
+- Performance: FlashList via a new `SectionedList` for the inbox and members.
+- EAS config (`eas.json` with development / preview / production), `expo-updates`, runtime version and channels; brand placeholder icons and splash; Health Connect / HealthKit config plugins and usage text; unused media permissions blocked; Expo SDK patch updates applied.
+- Security review against Architecture §10 (E108).
+- 199 mobile tests (photo upload, outbox photo path, steps pre-fill, day bounds, theme resolution, sectioned list). Android and iOS bundles build; `expo install --check` clean.
+
+**Next:** Phase 10 — documentation (SETUP.md, README, final PROGRESS/DECISIONS).
+
+**Known issues:**
+- Native features (sign-in, push, purchases, Health Connect / HealthKit, on-device AI, photo upload, share/save) need a development build and real devices to verify; none were run on hardware in this environment.
+- History and heatmap only cover check-ins on this phone (the first sync returns the last 7 days).
+- RevenueCat purchases are untested against real store products (payments are off for the pilot).
+- Brand icons are placeholders.
+
+**Notes for the next session:** SETUP.md must list every env var: mobile `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `EXPO_PUBLIC_PAYMENTS_ENABLED`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_POSTHOG_KEY`, `EXPO_PUBLIC_POSTHOG_HOST`, `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_IOS_STORE_URL`, `EXPO_PUBLIC_LIGHT_THEME`, `EAS_PROJECT_ID`, `APP_VARIANT`; api vars and secrets from `apps/api/src/env.ts` and `wrangler.toml` (including `PRICE_*`, `REVENUECAT_WEBHOOK_SECRET`, `ADMIN_EMAILS`). RevenueCat names: offerings `plus` and `squad_pro` (annual + monthly packages), entitlements `plus` and `squad_pro`, subscriber attribute `squad_id`. Health: Play Console health permissions declaration for READ_STEPS; HealthKit capability. Follow the SETUP.md spec in the master prompt (sections 1–9), including the breach procedure (DPDP).

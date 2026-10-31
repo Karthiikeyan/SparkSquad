@@ -185,6 +185,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accentSoft,
     borderRadius: 18,
     paddingHorizontal: 14,
-    height: 36,
+    minHeight: 36,
   },
 });

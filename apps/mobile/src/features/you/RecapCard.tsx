@@ -6,32 +6,36 @@ import { t } from '../../i18n';
 import { getAiKey, type AiProvider } from '../../lib/aiKeys';
 import { getPref } from '../../lib/prefs';
 import { colors, iconStroke } from '../../theme/tokens';
+import { onDeviceAvailable, onDeviceText } from '../ai/onDevice';
 import { sendChat } from '../ai/providers';
 import { dailyLimit, takeRequest } from '../ai/session';
 
 interface Props {
   summary: string;
   today: string;
-  /** Plus users may rewrite with their own AI key. */
+  /** Plus users may have it rewritten by AI (on-device first, then their own key). */
   canRewrite: boolean;
   onError: (message: string) => void;
 }
 
-/** Weekly recap: template text for everyone; Plus + a BYOK key can rewrite it in 3 sentences. */
+type Engine = { kind: 'device' } | { kind: 'byok'; provider: AiProvider; key: string };
+
+/** Weekly recap: template text for everyone; Plus can rewrite it in 3 short sentences. */
 export function RecapCard({ summary, today, canRewrite, onError }: Props) {
-  const [provider, setProvider] = useState<AiProvider | null>(null);
-  const [key, setKey] = useState<string | null>(null);
+  const [engine, setEngine] = useState<Engine | null>(null);
   const [rewritten, setRewritten] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!canRewrite) return;
+    if (onDeviceAvailable()) {
+      setEngine({ kind: 'device' });
+      return;
+    }
     let alive = true;
-    const p = getPref('aiProvider') ?? 'gemini';
-    getAiKey(p).then((k) => {
-      if (!alive) return;
-      setProvider(p);
-      setKey(k);
+    const provider = getPref('aiProvider') ?? 'gemini';
+    getAiKey(provider).then((key) => {
+      if (alive && key) setEngine({ kind: 'byok', provider, key });
     });
     return () => {
       alive = false;
@@ -42,17 +46,20 @@ export function RecapCard({ summary, today, canRewrite, onError }: Props) {
   useEffect(() => setRewritten(null), [summary]);
 
   const rewrite = async () => {
-    if (!provider || !key) return;
-    if (!takeRequest(today)) {
+    if (!engine) return;
+    const prompt = t('recap.prompt', { summary });
+    // On-device costs nothing, so only the user's own key counts toward the daily cap.
+    if (engine.kind === 'byok' && !takeRequest(today)) {
       onError(t('aiBuild.limit', { n: dailyLimit() }));
       return;
     }
     setBusy(true);
     try {
-      const text = await sendChat(provider, key, [
-        { role: 'user', text: t('recap.prompt', { summary }) },
-      ]);
-      setRewritten(text);
+      setRewritten(
+        engine.kind === 'device'
+          ? await onDeviceText(prompt)
+          : await sendChat(engine.provider, engine.key, [{ role: 'user', text: prompt }]),
+      );
     } catch {
       onError(t('you.recapFailed'));
     } finally {
@@ -65,10 +72,10 @@ export function RecapCard({ summary, today, canRewrite, onError }: Props) {
       <Text variant="headline" accessibilityRole="header">
         {t('you.recapTitle')}
       </Text>
-      <Text variant="body" color="label2" style={styles.body}>
+      <Text variant="body" color="label2" style={styles.body} accessibilityLiveRegion="polite">
         {rewritten ?? summary}
       </Text>
-      {canRewrite && key && !rewritten ? (
+      {canRewrite && engine && !rewritten ? (
         <Button
           label={busy ? t('you.recapRewriting') : t('you.recapRewrite')}
           variant="secondary"

@@ -11,6 +11,7 @@ import {
   NavHeader,
   Pressable,
   Screen,
+  SectionedList,
   SkeletonCard,
   Text,
   useToast,
@@ -18,7 +19,6 @@ import {
 import { t } from '../../../i18n';
 import { endpoints } from '../../../lib/api/endpoints';
 import { errorMessage } from '../../../lib/api/errors';
-import { colors, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
 import { confirmBlock, ReportSheet, type ReportTarget } from '../../safety/ReportSheet';
 import { syncSoon } from '../actions';
@@ -96,61 +96,67 @@ export function MembersScreen() {
     ]);
   };
 
-  let body;
-  if (list.isPending) body = <SkeletonCard />;
+  let state = null;
+  if (list.isPending) state = <SkeletonCard />;
   else if (list.isError)
-    body = <ErrorState message={errorMessage(list.error)} onRetry={() => void list.refetch()} />;
-  else
-    body = (
-      <View style={styles.group}>
-        {list.data.members.map((m, i) => {
-          const isMe = m.user.id === me.id;
-          const name = isMe ? t('squad.you') : m.user.displayName;
-          const sub = [
-            t(ROLE_KEY[m.role]),
-            t('members.joined', { date: monthYear.format(new Date(m.joinedAt)) }),
-          ].join(', ');
-          return (
-            <Pressable
-              key={m.user.id}
-              noScale
-              onPress={() => setActive(m)}
-              accessibilityRole="button"
-              accessibilityLabel={`${name}, ${sub}${m.consistency !== null ? `, ${t('members.consistency', { n: m.consistency })}` : ''}`}
-              accessibilityHint={t('members.actions', { name })}
-              style={[styles.row, i > 0 && styles.separator]}
-            >
-              <Avatar
-                name={m.user.displayName}
-                id={m.user.id}
-                color={m.user.avatarColor}
-                size={32}
-                decorative
-              />
-              <View style={styles.texts}>
-                <Text variant="bodyMedium" numberOfLines={1}>
-                  {name}
-                </Text>
-                <Text variant="caption" color="label2">
-                  {sub}
-                </Text>
-              </View>
-              {m.consistency !== null ? (
-                <Text variant="bodySemibold" tabular>{`${m.consistency}%`}</Text>
-              ) : null}
-            </Pressable>
-          );
-        })}
-      </View>
+    state = <ErrorState message={errorMessage(list.error)} onRetry={() => void list.refetch()} />;
+  const renderMember = (m: Member) => {
+    const isMe = m.user.id === me.id;
+    const name = isMe ? t('squad.you') : m.user.displayName;
+    const sub = [
+      t(ROLE_KEY[m.role]),
+      t('members.joined', { date: monthYear.format(new Date(m.joinedAt)) }),
+    ].join(', ');
+    return (
+      <Pressable
+        noScale
+        onPress={() => setActive(m)}
+        accessibilityRole="button"
+        accessibilityLabel={`${name}, ${sub}${m.consistency !== null ? `, ${t('members.consistency', { n: m.consistency })}` : ''}`}
+        accessibilityHint={t('members.actions', { name })}
+        style={styles.row}
+      >
+        <Avatar
+          name={m.user.displayName}
+          id={m.user.id}
+          color={m.user.avatarColor}
+          size={32}
+          decorative
+        />
+        <View style={styles.texts}>
+          <Text variant="bodyMedium" numberOfLines={1}>
+            {name}
+          </Text>
+          <Text variant="caption" color="label2">
+            {sub}
+          </Text>
+        </View>
+        {m.consistency !== null ? (
+          <Text variant="bodySemibold" tabular>{`${m.consistency}%`}</Text>
+        ) : null}
+      </Pressable>
     );
+  };
 
   const acts = active ? memberActions(myRole, active, active.user.id === me.id) : null;
   return (
-    <Screen header={<NavHeader backLabel={t('common.back')} onBack={() => router.back()} />}>
-      <Text variant="title1" accessibilityRole="header" style={styles.title}>
-        {t('members.title')}
-      </Text>
-      {body}
+    <Screen
+      scroll={false}
+      header={<NavHeader backLabel={t('common.back')} onBack={() => router.back()} />}
+    >
+      <SectionedList
+        sections={list.data ? [{ key: 'members', data: list.data.members }] : []}
+        keyOf={(m) => m.user.id}
+        renderRow={renderMember}
+        header={
+          <>
+            <Text variant="title1" accessibilityRole="header" style={styles.title}>
+              {t('members.title')}
+            </Text>
+            {state}
+          </>
+        }
+      />
       <BottomSheet
         visible={!!active}
         onClose={() => setActive(null)}
@@ -226,9 +232,7 @@ export function MembersScreen() {
 
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
-  group: { backgroundColor: colors.surface, borderRadius: radius.list, paddingHorizontal: 16 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 56 },
-  separator: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },
   texts: { flex: 1, gap: 1, minWidth: 0 },
   sheet: { gap: 10, paddingBottom: 8 },
 });

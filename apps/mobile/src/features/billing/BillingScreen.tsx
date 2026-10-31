@@ -57,7 +57,7 @@ export function BillingScreen() {
       <GroupedList style={styles.group}>
         <ListRow
           title={isPlus ? t('billing.plus') : t('billing.free')}
-          subtitle={isPlus ? dateLine : undefined}
+          subtitle={isPlus ? (sub.isPending && live ? t('common.loading') : dateLine) : undefined}
         />
         {isPlus ? (
           <ListRow

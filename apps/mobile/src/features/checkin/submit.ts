@@ -64,6 +64,8 @@ export interface SubmitArgs {
   existing: CheckinDTO | null;
   /** Task indices whose value came from GitHub/LeetCode/Codeforces on this phone. */
   verified?: readonly number[];
+  /** Local photo to upload with the check-in; only passed when the plan allows sharing. */
+  sharePhotoUri?: string | null;
   now?: Date;
 }
 
@@ -113,9 +115,16 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     honestMiss: a.honestMiss,
     hasPhoto: a.hasPhoto,
     ...(verified.length ? { verified } : {}),
+    // Removing a shared photo on edit clears it on the server too.
+    ...(!a.hasPhoto && a.existing?.photoUrl ? { photoKey: null } : {}),
   };
+  const photoUri = a.hasPhoto && a.sharePhotoUri ? a.sharePhotoUri : undefined;
 
   await withWriteLock(() => upsertCheckinRow(a.db, checkin, 1));
-  await a.outbox.enqueue('checkin', `checkin:${a.challengeId}:${a.localDate}`, { id, input });
+  await a.outbox.enqueue('checkin', `checkin:${a.challengeId}:${a.localDate}`, {
+    id,
+    input,
+    ...(photoUri ? { photoUri } : {}),
+  });
   return { checkin, countsDone: countsAsDone(status, fraction, a.partialCounts) };
 }

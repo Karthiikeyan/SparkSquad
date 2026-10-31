@@ -1,11 +1,17 @@
-import { isValidTimeZone, rawDayNumber, TEXT_LIMITS, type PlanTask } from '@sparksquad/shared';
+import {
+  isValidTimeZone,
+  photoRetentionDays,
+  rawDayNumber,
+  TEXT_LIMITS,
+  type PlanTask,
+} from '@sparksquad/shared';
 import { getCalendars } from 'expo-localization';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { BadgeCheck, ImagePlus, X } from 'lucide-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import {
   BottomSheet,
   Button,
@@ -121,6 +127,8 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
   const [photo, setPhoto] = useState<string | null>(() => localProofUri(ch.id, date));
   const [saving, setSaving] = useState(false);
   const [prefill, setPrefill] = useState<Prefill | null>(null);
+  const shareDays = photoRetentionDays(me.plan, card.squad.isPro);
+  const canShare = shareDays > 0;
 
   // Fill in what GitHub / LeetCode / Codeforces already show; never blocks a manual check-in.
   const tasks = day && !day.rest ? day.tasks : null;
@@ -154,10 +162,15 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
     if (!prefill) return null;
     const source = prefill.sources[i];
     if (source && draft[i] === prefill.values[i]) {
-      return {
-        text: t('integrations.verified', { source: t(`integrations.name_${source}`) }),
-        verified: true,
-      };
+      const name =
+        source === 'steps'
+          ? t(
+              Platform.OS === 'ios'
+                ? 'integrations.name_appleHealth'
+                : 'integrations.name_healthConnect',
+            )
+          : t(`integrations.name_${source}`);
+      return { text: t('integrations.verified', { source: name }), verified: true };
     }
     return prefill.failed.includes(i)
       ? { text: t('integrations.couldNot'), verified: false }
@@ -202,6 +215,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
         note,
         honestMiss,
         hasPhoto: !honestMiss && !!photo,
+        sharePhotoUri: canShare ? photo : null,
         partialCounts: card.squad.partialCounts,
         existing,
         verified: prefill ? verifiedIndices(prefill, draft) : [],
@@ -287,7 +301,9 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
           <View style={styles.photoTexts}>
             <Text variant="bodyMedium">{t('checkin.photoAdded')}</Text>
             <Text variant="caption" color="label2">
-              {t('checkin.photoAddedBody')}
+              {canShare
+                ? t('checkin.photoAddedShared', { n: shareDays })
+                : t('checkin.photoAddedBody')}
             </Text>
           </View>
           <IconButton
@@ -307,7 +323,9 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
           onPress={() => void pickPhoto()}
           accessibilityRole="button"
           accessibilityLabel={t('checkin.photoAdd')}
-          accessibilityHint={t('checkin.photoFree')}
+          accessibilityHint={
+            canShare ? t('checkin.photoShared', { n: shareDays }) : t('checkin.photoFree')
+          }
           style={styles.photoButton}
           testID="checkin-photo"
         >
@@ -315,7 +333,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
           <View style={styles.photoTexts}>
             <Text variant="bodyMedium">{t('checkin.photoAdd')}</Text>
             <Text variant="caption" color="label2">
-              {t('checkin.photoFree')}
+              {canShare ? t('checkin.photoShared', { n: shareDays }) : t('checkin.photoFree')}
             </Text>
           </View>
         </Pressable>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet } from 'react-native';
+import { useReducedMotion } from '../../lib/hooks/useReducedMotion';
 import { colors, motion } from '../../theme/tokens';
 
 export interface SwitchProps {
@@ -23,14 +24,19 @@ export function Switch({
   testID,
 }: SwitchProps) {
   const x = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const reduceMotion = useReducedMotion();
   useEffect(() => {
+    if (reduceMotion) {
+      x.setValue(value ? 1 : 0);
+      return;
+    }
     Animated.timing(x, {
       toValue: value ? 1 : 0,
       duration: motion.fast,
       easing: Easing.out(Easing.quad),
       useNativeDriver: false,
     }).start();
-  }, [value, x]);
+  }, [value, x, reduceMotion]);
 
   const bg = x.interpolate({ inputRange: [0, 1], outputRange: [colors.strong, colors.success] });
   const left = x.interpolate({ inputRange: [0, 1], outputRange: [2, W - THUMB - 2] });

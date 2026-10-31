@@ -5,14 +5,17 @@ import { StyleSheet, View } from 'react-native';
 import {
   Avatar,
   Button,
+  ErrorState,
   NavHeader,
   Screen,
+  SkeletonCard,
   StatTile,
   Text,
   useToast,
 } from '../../../components/ui';
 import { t } from '../../../i18n';
 import { endpoints } from '../../../lib/api/endpoints';
+import { errorMessage } from '../../../lib/api/errors';
 import { useMe } from '../../auth/SessionProvider';
 import { confirmBlock, ReportSheet, type ReportTarget } from '../../safety/ReportSheet';
 import { currentRuns, restChecker } from '../model';
@@ -55,7 +58,11 @@ export function MemberProfileScreen() {
           {username ? <Text variant="footnote" color="label2">{`@${username}`}</Text> : null}
         </View>
       </View>
-      {remote?.consistency !== undefined && remote?.consistency !== null ? (
+      {members.isPending && !remote ? (
+        <SkeletonCard />
+      ) : members.isError && !remote ? (
+        <ErrorState message={errorMessage(members.error)} onRetry={() => void members.refetch()} />
+      ) : remote?.consistency !== undefined && remote?.consistency !== null ? (
         <View style={styles.stats}>
           <StatTile
             value={`${remote.consistency}%`}

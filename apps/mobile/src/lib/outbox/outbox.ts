@@ -6,7 +6,8 @@ import { outbox } from '../db/schema';
 import type { LocalDb } from '../db/types';
 
 export interface OutboxPayloads {
-  checkin: { id: string; input: UpsertCheckinInput };
+  /** `photoUri` is set only when the photo may be shared (Plus or a Squad Pro squad). */
+  checkin: { id: string; input: UpsertCheckinInput; photoUri?: string };
   fire: { checkinId: string; on: boolean };
   comment: { checkinId: string; body: string };
   nudge: { challengeId: string; toUserId: string };

@@ -62,3 +62,6 @@ jest.mock('./src/lib/auth', () => ({
   },
   authCookie: jest.fn(async () => ''),
 }));
+
+// FlashList measures its parent natively; give it a fixed viewport in tests.
+require('@shopify/flash-list/jestSetup');

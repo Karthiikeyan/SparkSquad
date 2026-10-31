@@ -125,7 +125,7 @@ export function DiscoverScreen() {
 
 const styles = StyleSheet.create({
   search: {
-    height: 40,
+    minHeight: 44,
     borderRadius: radius.button,
     backgroundColor: colors.control,
     flexDirection: 'row',

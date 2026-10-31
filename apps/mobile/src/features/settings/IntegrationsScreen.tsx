@@ -2,7 +2,7 @@ import { integrationSchema, TEXT_LIMITS } from '@sparksquad/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import {
   Button,
   GroupedList,
@@ -23,6 +23,14 @@ import { getPref, setPref } from '../../lib/prefs';
 import { colors, radius } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { clearVerifyCache } from '../verify/prefill';
+import {
+  connectSteps,
+  disconnectSteps,
+  openHealthConnectInstall,
+  stepsConnected,
+  stepsStatus,
+  type StepsStatus,
+} from '../verify/steps';
 import { checkHandle } from '../verify/verifiers';
 
 const PROVIDERS: readonly { id: IntegrationProvider; label: TKey; site: TKey }[] = [
@@ -64,6 +72,19 @@ export function IntegrationsScreen() {
       <Text variant="body" color="label2" style={styles.body}>
         {t('integrations.body')}
       </Text>
+      {list.isError ? (
+        <View style={styles.loadError} accessibilityLiveRegion="polite">
+          <Text variant="footnote" color="label2" style={styles.flex}>
+            {errorMessage(list.error)}
+          </Text>
+          <Button
+            label={t('common.retry')}
+            variant="secondary"
+            size="sm"
+            onPress={() => void list.refetch()}
+          />
+        </View>
+      ) : null}
       {PROVIDERS.map((p) => (
         <HandleCard
           key={p.id}
@@ -82,11 +103,89 @@ export function IntegrationsScreen() {
         />
       ))}
       <SectionLabel>{t('integrations.steps')}</SectionLabel>
-      <GroupedList>
-        <ListRow title={t('integrations.steps')} />
-      </GroupedList>
-      <GroupFooter>{t('integrations.stepsBody')}</GroupFooter>
+      <StepsRow />
     </Screen>
+  );
+}
+
+/** Health Connect (Android) / Apple Health (iOS) steps: connect, open install page, or explain. */
+function StepsRow() {
+  const toast = useToast();
+  const [status, setStatus] = useState<StepsStatus | null>(null);
+  const [connected, setConnected] = useState(stepsConnected());
+  const [busy, setBusy] = useState(false);
+  const source = t(
+    Platform.OS === 'ios' ? 'integrations.name_appleHealth' : 'integrations.name_healthConnect',
+  );
+
+  useEffect(() => {
+    let alive = true;
+    stepsStatus().then((s) => {
+      if (alive) setStatus(s);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const connect = async () => {
+    setBusy(true);
+    const ok = await connectSteps();
+    setBusy(false);
+    setConnected(ok);
+    toast.show({
+      message: ok ? t('integrations.stepsConnected', { source }) : t('integrations.stepsDenied'),
+      kind: ok ? 'success' : 'info',
+    });
+  };
+
+  let accessory = null;
+  let footer = t('integrations.stepsBody', { source });
+  if (status === 'available') {
+    accessory = connected ? (
+      <Button
+        label={t('integrations.remove')}
+        variant="destructive"
+        size="sm"
+        onPress={() => {
+          disconnectSteps();
+          setConnected(false);
+        }}
+      />
+    ) : (
+      <Button
+        label={t('integrations.connect')}
+        size="sm"
+        loading={busy}
+        onPress={() => void connect()}
+        testID="steps-connect"
+      />
+    );
+  } else if (status === 'needsInstall') {
+    footer = t('integrations.stepsInstall');
+    accessory = (
+      <Button
+        label={t('integrations.install')}
+        variant="secondary"
+        size="sm"
+        onPress={openHealthConnectInstall}
+      />
+    );
+  } else if (status === 'unsupported') {
+    footer = t('integrations.stepsUnsupported');
+  }
+
+  return (
+    <>
+      <GroupedList>
+        <ListRow
+          title={source}
+          subtitle={connected && status === 'available' ? t('integrations.stepsOn') : undefined}
+          accessory={accessory}
+        />
+      </GroupedList>
+      <GroupFooter>{footer}</GroupFooter>
+    </>
   );
 }
 
@@ -214,4 +313,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10 },
+  flex: { flex: 1 },
+  loadError: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
 });

@@ -148,6 +148,12 @@ export const endpoints = {
   discover: (params: { category?: string; q?: string; cursor?: string }) =>
     api.get<DiscoverResponse>('/v1/discover', { query: params }),
 
+  proofUpload: (checkinId: string, contentType: 'image/jpeg' | 'image/webp', size: number) =>
+    api.post<{ url: string; key: string; headers: Record<string, string>; expiresAt: string }>(
+      '/v1/uploads/proof',
+      { checkinId, contentType, size },
+    ),
+
   /* you & settings (Phase 8) */
   blocks: () => api.get<{ blocked: { user: PublicUserDTO; createdAt: string }[] }>('/v1/blocks'),
   unblock: (userId: string) => api.del<{ ok: true }>(`/v1/blocks/${enc(userId)}`),

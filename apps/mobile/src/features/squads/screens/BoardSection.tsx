@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   actions: { flexDirection: 'row', gap: 8, marginTop: 4 },
   pill: {
-    height: 30,
+    minHeight: 30,
     borderRadius: 15,
     paddingHorizontal: 10,
     flexDirection: 'row',

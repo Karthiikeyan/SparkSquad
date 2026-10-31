@@ -201,6 +201,29 @@ describe('outbox handlers', () => {
     expect((await db.select().from(badges).all()).map((b) => b.badge)).toEqual(['first_checkin']);
   });
 
+  it('uploads a shareable photo first and sends its key', async () => {
+    const { db } = await createTestDb();
+    const a = api();
+    const upload = jest.fn(async () => 'proof-30d/U_ME/K1.jpg');
+    const h = createOutboxHandlers(db, a, upload);
+    await h.checkin({ id: 'K1', input: { ...input, hasPhoto: true }, photoUri: 'file:///p.jpg' });
+    expect(upload).toHaveBeenCalledWith('K1', 'file:///p.jpg');
+    expect(a.upsertCheckin).toHaveBeenCalledWith(
+      'K1',
+      expect.objectContaining({ photoKey: 'proof-30d/U_ME/K1.jpg' }),
+    );
+
+    // No key (not allowed any more): the check-in still goes through without one.
+    const b = api();
+    await createOutboxHandlers(db, b, async () => null).checkin({
+      id: 'K1',
+      input: { ...input, hasPhoto: true },
+      photoUri: 'file:///p.jpg',
+    });
+    const sent = (b.upsertCheckin.mock.calls[0] as unknown[] | undefined)?.[1];
+    expect(sent).not.toHaveProperty('photoKey');
+  });
+
   it('updates reaction counts from the server answer', async () => {
     const { db } = await createTestDb();
     await upsertCheckinRow(db, checkin('K1', 'C1', 'U2'));

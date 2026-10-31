@@ -1,6 +1,9 @@
 import type { PlanTask } from '@sparksquad/shared';
 import { clearVerifyCache, prefillFromVerification, verifiedIndices } from '../prefill';
+import { dayBounds, type StepsResult } from '../steps';
 import { verifyCodeforces, verifyGithub, verifyLeetcode } from '../verifiers';
+
+const notConnected = async (): Promise<StepsResult> => ({ kind: 'notConnected' });
 
 const TZ = 'Asia/Kolkata';
 const DATE = '2026-10-31';
@@ -150,7 +153,11 @@ describe('prefillFromVerification', () => {
         ],
       },
     });
-    const p = await prefillFromVerification(tasks, DATE, TZ, { leetcode: 'k', github: 'k' }, fn);
+    const p = await prefillFromVerification(tasks, DATE, TZ, {
+      handles: { leetcode: 'k', github: 'k' },
+      doFetch: fn,
+      steps: notConnected,
+    });
     expect(p.values).toEqual({ 0: 3 });
     expect(p.sources).toEqual({ 0: 'leetcode' });
     expect(p.failed).toEqual([1]);
@@ -158,11 +165,17 @@ describe('prefillFromVerification', () => {
 
   it('skips sources without a handle and caches successful lookups', async () => {
     const { fn, calls } = routed([{ type: 'PushEvent', created_at: '2026-10-31T06:00:00Z' }], {});
-    const first = await prefillFromVerification(tasks, DATE, TZ, { github: 'k' }, fn, 1000);
+    const at = (now: number) => ({
+      handles: { github: 'k' },
+      doFetch: fn,
+      steps: notConnected,
+      now,
+    });
+    const first = await prefillFromVerification(tasks, DATE, TZ, at(1000));
     expect(first.values).toEqual({ 1: true });
-    await prefillFromVerification(tasks, DATE, TZ, { github: 'k' }, fn, 2000);
+    await prefillFromVerification(tasks, DATE, TZ, at(2000));
     expect(calls()).toBe(1);
-    await prefillFromVerification(tasks, DATE, TZ, { github: 'k' }, fn, 1000 + 6 * 60_000);
+    await prefillFromVerification(tasks, DATE, TZ, at(1000 + 6 * 60_000));
     expect(calls()).toBe(2);
   });
 
@@ -170,5 +183,30 @@ describe('prefillFromVerification', () => {
     const prefill = { values: { 0: 3, 1: true } };
     expect(verifiedIndices(prefill, { 0: 3, 1: true })).toEqual([0, 1]);
     expect(verifiedIndices(prefill, { 0: 4, 1: true })).toEqual([1]);
+  });
+
+  it('fills step tasks from the phone and stays quiet when steps are not connected', async () => {
+    const stepTasks = [tasks[3]!];
+    const walked = await prefillFromVerification(stepTasks, DATE, TZ, {
+      steps: async () => ({ kind: 'ok', count: 6400 }),
+    });
+    expect(walked).toEqual({ values: { 0: 6400 }, sources: { 0: 'steps' }, failed: [] });
+    const quiet = await prefillFromVerification(stepTasks, DATE, TZ, { steps: notConnected });
+    expect(quiet).toEqual({ values: {}, sources: {}, failed: [] });
+    const broken = await prefillFromVerification(stepTasks, DATE, TZ, {
+      steps: async () => ({ kind: 'error' }),
+    });
+    expect(broken.failed).toEqual([0]);
+  });
+});
+
+describe('dayBounds', () => {
+  it('runs from local midnight to the next midnight, or now for today', () => {
+    const now = new Date(2026, 9, 31, 15, 0);
+    const today = dayBounds('2026-10-31', now);
+    expect(today.start).toEqual(new Date(2026, 9, 31));
+    expect(today.end).toEqual(now);
+    const yesterday = dayBounds('2026-10-30', now);
+    expect(yesterday.end).toEqual(new Date(2026, 9, 31));
   });
 });

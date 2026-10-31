@@ -10,7 +10,8 @@ import {
   NavHeader,
   Pressable,
   Screen,
-  SectionLabel,
+  SectionedList,
+  type ListSection,
   SkeletonCard,
   Text,
   useToast,
@@ -20,7 +21,7 @@ import { endpoints } from '../../lib/api/endpoints';
 import { appEvents } from '../../lib/appEvents';
 import { formatLocalDate, formatTime } from '../../lib/format';
 import { getRuntime } from '../../lib/runtime';
-import { colors, radius } from '../../theme/tokens';
+import { colors } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { timeZoneOf, todayFor } from '../today/model';
 import { useNotificationsList } from '../today/useToday';
@@ -36,12 +37,10 @@ async function markRead(ids?: string[]): Promise<void> {
 
 function Row({
   n,
-  first,
   showTime,
   onPress,
 }: {
   n: NotificationDTO;
-  first: boolean;
   showTime: string;
   onPress: () => void;
 }) {
@@ -55,7 +54,7 @@ function Row({
       accessibilityLabel={
         unread ? `${t('inbox.unread')}, ${text}, ${showTime}` : `${text}, ${showTime}`
       }
-      style={({ pressed }) => [styles.row, !first && styles.separator, pressed && { opacity: 0.7 }]}
+      style={({ pressed }) => [styles.row, pressed && { opacity: 0.7 }]}
     >
       <View style={[styles.dot, unread && styles.dotOn]} />
       <View style={styles.texts}>
@@ -97,47 +96,37 @@ export function InboxScreen() {
     router.navigate(notificationRoute(n) as never);
   };
 
-  let body;
-  if (list.isPending) body = <SkeletonCard />;
-  else if (list.isError) body = <ErrorState onRetry={() => void list.refetch()} />;
-  else if (list.data.length === 0) body = <EmptyState icon={BellOff} message={t('inbox.empty')} />;
+  const title = (
+    <Text variant="title1" accessibilityRole="header" style={styles.title}>
+      {t('inbox.title')}
+    </Text>
+  );
+
+  let state = null;
+  let sections: ListSection<{ n: NotificationDTO; todayGroup: boolean }>[] = [];
+  if (list.isPending) state = <SkeletonCard />;
+  else if (list.isError) state = <ErrorState onRetry={() => void list.refetch()} />;
+  else if (list.data.length === 0) state = <EmptyState icon={BellOff} message={t('inbox.empty')} />;
   else {
     const groups = groupByDay(list.data, today, tz);
-    const section = (title: string, items: NotificationDTO[], todayGroup: boolean) =>
-      items.length === 0 ? null : (
-        <View style={styles.section}>
-          <SectionLabel>{title}</SectionLabel>
-          <View style={styles.group}>
-            {items.map((n, i) => (
-              <Row
-                key={n.id}
-                n={n}
-                first={i === 0}
-                showTime={
-                  todayGroup
-                    ? formatTime(new Date(n.createdAt))
-                    : formatLocalDate(
-                        new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(
-                          new Date(n.createdAt),
-                        ),
-                      )
-                }
-                onPress={() => open(n)}
-              />
-            ))}
-          </View>
-        </View>
-      );
-    body = (
-      <>
-        {section(t('inbox.today'), groups.today, true)}
-        {section(t('inbox.earlier'), groups.earlier, false)}
-      </>
-    );
+    sections = [
+      {
+        key: 'today',
+        title: t('inbox.today'),
+        data: groups.today.map((n) => ({ n, todayGroup: true })),
+      },
+      {
+        key: 'earlier',
+        title: t('inbox.earlier'),
+        data: groups.earlier.map((n) => ({ n, todayGroup: false })),
+      },
+    ];
   }
+  const dayFmt = new Intl.DateTimeFormat('en-CA', { timeZone: tz });
 
   return (
     <Screen
+      scroll={false}
       header={
         <NavHeader
           backLabel={t('tabs.today')}
@@ -155,21 +144,35 @@ export function InboxScreen() {
           }
         />
       }
-      refreshing={refreshing}
-      onRefresh={onRefresh}
     >
-      <Text variant="title1" accessibilityRole="header" style={styles.title}>
-        {t('inbox.title')}
-      </Text>
-      {body}
+      <SectionedList
+        sections={sections}
+        keyOf={(x) => x.n.id}
+        header={
+          <>
+            {title}
+            {state}
+          </>
+        }
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        renderRow={({ n, todayGroup }) => (
+          <Row
+            n={n}
+            showTime={
+              todayGroup
+                ? formatTime(new Date(n.createdAt))
+                : formatLocalDate(dayFmt.format(new Date(n.createdAt)))
+            }
+            onPress={() => open(n)}
+          />
+        )}
+      />
     </Screen>
   );
 }
-
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
-  section: { marginBottom: 20 },
-  group: { backgroundColor: colors.surface, borderRadius: radius.list, paddingHorizontal: 16 },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -177,7 +180,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     minHeight: 56,
   },
-  separator: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },
   dot: { width: 8, height: 8, borderRadius: 4, marginTop: 7 },
   dotOn: { backgroundColor: colors.accent },
   texts: { flex: 1, gap: 2 },

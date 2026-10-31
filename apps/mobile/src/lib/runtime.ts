@@ -7,6 +7,7 @@ import type { LocalDb } from './db/types';
 import { createOutboxHandlers, revertRejected } from './outbox/handlers';
 import { createOutbox, type Outbox } from './outbox/outbox';
 import { ensurePlans } from './plans';
+import { uploadProof } from './photoUpload';
 import { wipeLocalData } from './sync/applySync';
 import { createSyncEngine, type SyncEngine } from './sync/engine';
 
@@ -37,7 +38,7 @@ export function startRuntime(): Promise<Runtime> {
     });
     const outbox = createOutbox({
       db,
-      handlers: createOutboxHandlers(db, endpoints),
+      handlers: createOutboxHandlers(db, endpoints, (id, uri) => uploadProof(id, uri)),
       onChange: () => appEvents.emit('outboxChanged'),
       onPermanentFailure: (item) => revertRejected(db, endpoints, item),
     });

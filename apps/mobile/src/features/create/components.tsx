@@ -7,7 +7,7 @@ import { Platform, Pressable as RNPressable, StyleSheet, View } from 'react-nati
 import { BottomSheet, Button, Pressable, Text } from '../../components/ui';
 import { formatNumber, t } from '../../i18n';
 import { formatLongDate } from '../../lib/format';
-import { colors, fonts, iconStroke, radius } from '../../theme/tokens';
+import { colors, fonts, iconStroke, radius, themeName } from '../../theme/tokens';
 
 /** "Cancel · Step n of 3" with a 3-segment progress bar (design CreateSquad). */
 export function CreateHeader({ step, onCancel }: { step: 1 | 2 | 3; onCancel?: () => void }) {
@@ -105,7 +105,7 @@ export function StartDateRow({
             value={localDateToDate(value)}
             mode="date"
             display="inline"
-            themeVariant="dark"
+            themeVariant={themeName}
             accentColor={colors.accent}
             minimumDate={min}
             maximumDate={max}

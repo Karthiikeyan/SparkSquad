@@ -33,10 +33,19 @@ async function patchCheckin(db: LocalDb, id: string, patch: Partial<CheckinDTO>)
 }
 
 /** Delivers each outbox kind and writes the server's canonical answer locally. */
-export function createOutboxHandlers(db: LocalDb, api: Api): OutboxHandlers {
+export function createOutboxHandlers(
+  db: LocalDb,
+  api: Api,
+  uploadPhoto: (checkinId: string, uri: string) => Promise<string | null> = async () => null,
+): OutboxHandlers {
   return {
-    async checkin({ id, input }) {
-      const res = await api.upsertCheckin(id, input);
+    async checkin({ id, input, photoUri }) {
+      let body = input;
+      if (photoUri && input.hasPhoto && input.photoKey === undefined) {
+        const key = await uploadPhoto(id, photoUri);
+        if (key) body = { ...input, photoKey: key };
+      }
+      const res = await api.upsertCheckin(id, body);
       const now = new Date().toISOString();
       await withWriteLock(async () => {
         await upsertCheckinRow(db, res.checkin, 0);

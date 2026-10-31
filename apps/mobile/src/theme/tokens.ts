@@ -1,13 +1,43 @@
-import type { TextStyle } from 'react-native';
+import { Appearance, type ColorSchemeName, type TextStyle } from 'react-native';
+import { getPref, type Prefs } from '../lib/prefs';
 import palette from './colors';
 
 export type ColorToken = keyof typeof palette.dark;
+export type ThemeName = 'dark' | 'light';
 
-/** Dark is the default (and only shipped) theme in v1 (D6). */
-export const colors: Record<ColorToken, string> = palette.dark;
+/** Dark is the default (D6); "system" follows the phone. */
+export function resolveTheme(
+  pref: Prefs['theme'] | undefined,
+  system: ColorSchemeName | null | undefined,
+): ThemeName {
+  if (pref === 'light') return 'light';
+  if (pref === 'system') return system === 'light' ? 'light' : 'dark';
+  return 'dark';
+}
+
+function readThemePref(): Prefs['theme'] | undefined {
+  try {
+    return getPref('theme');
+  } catch {
+    return undefined;
+  }
+}
+
+/** Light theme ships later (D6): the choice is only honoured in builds with the flag on. */
+export const lightThemeEnabled = process.env.EXPO_PUBLIC_LIGHT_THEME === 'true';
+
+/** Saved choice, read once at launch. */
+export const themePref: Prefs['theme'] = lightThemeEnabled ? (readThemePref() ?? 'dark') : 'dark';
+
+/** Picked once at launch; changing the theme restarts the app (styles are static). */
+export const themeName: ThemeName = resolveTheme(themePref, Appearance.getColorScheme());
+
+export const colors: Record<ColorToken, string> =
+  themeName === 'light' ? palette.light : palette.dark;
 export const lightColors: Record<ColorToken, string> = palette.light;
 
-export const avatarColors: readonly string[] = palette.avatarDark;
+export const avatarColors: readonly string[] =
+  themeName === 'light' ? palette.avatarLight : palette.avatarDark;
 
 export function avatarColor(index: number): string {
   const i = ((Math.trunc(index) % avatarColors.length) + avatarColors.length) % avatarColors.length;

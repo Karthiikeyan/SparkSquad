@@ -139,7 +139,9 @@
     "nothingPending": "You’re all checked in for today.",
     "restDay": "Today is a rest day. Nothing to check in.",
     "planMissing": "Today’s tasks haven’t downloaded yet. Connect to the internet and try again.",
-    "saveFailed": "We couldn’t save your check-in. Try again."
+    "saveFailed": "We couldn’t save your check-in. Try again.",
+    "photoShared": "Shared with your squad and kept for {{n}} days.",
+    "photoAddedShared": "Your squad sees this photo for {{n}} days."
   },
   "success": {
     "done": "Day {{n}} done.",
@@ -878,7 +880,8 @@
     "howToOpenai": "platform.openai.com → API keys",
     "howToAnthropic": "console.anthropic.com → API keys",
     "remove": "Remove key",
-    "removed": "Key removed."
+    "removed": "Key removed.",
+    "onDeviceReady": "Ready on this phone"
   },
   "planPreview": {
     "goal": "Goal: {{goal}}",
@@ -980,7 +983,14 @@
     "version": "Version",
     "signOut": "Sign out",
     "signOutConfirm": "Sign out of SparkSquad?",
-    "signOutBody": "Check-ins waiting to sync on this phone will be lost."
+    "signOutBody": "Check-ins waiting to sync on this phone will be lost.",
+    "appearance": "Appearance",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "themeSystem": "Match phone",
+    "themeRestart": "Restart SparkSquad to change the look?",
+    "themeRestartNow": "Restart now",
+    "themeLater": "Later"
   },
   "editProfile": {
     "title": "Edit profile",
@@ -1002,12 +1012,21 @@
     "notFound": "We couldn’t find that public profile. Check the spelling.",
     "unreachable": "We couldn’t reach {{site}} right now. Saved anyway.",
     "steps": "Steps",
-    "stepsBody": "Step tasks are entered by hand for now.",
+    "stepsBody": "Let SparkSquad read your step count from {{source}} so step tasks fill in. Steps stay on this phone.",
     "verified": "Verified from your {{source}} activity",
     "couldNot": "Couldn’t verify, mark it yourself",
     "name_github": "GitHub",
     "name_leetcode": "LeetCode",
-    "name_codeforces": "Codeforces"
+    "name_codeforces": "Codeforces",
+    "name_healthConnect": "Health Connect",
+    "name_appleHealth": "Apple Health",
+    "connect": "Connect",
+    "install": "Get Health Connect",
+    "stepsOn": "Connected",
+    "stepsConnected": "Step tasks now fill in from {{source}}.",
+    "stepsDenied": "No access to steps. Step tasks stay manual; you can allow it later.",
+    "stepsInstall": "Install or update Health Connect from the Play Store to fill in step tasks.",
+    "stepsUnsupported": "Step counts aren’t available on this phone. Enter steps by hand."
   },
   "notificationsSettings": {
     "title": "Notifications",

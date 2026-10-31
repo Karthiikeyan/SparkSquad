@@ -239,6 +239,7 @@ export function CheckinDetailScreen() {
         ) : null}
         <Pressable
           onPress={fire}
+          hitSlop={{ top: 7, bottom: 7 }}
           accessibilityRole="button"
           accessibilityState={{ selected: checkin.reactedByMe }}
           accessibilityLabel={t(checkin.reactedByMe ? 'squad.fireOn' : 'squad.fire', {
@@ -373,7 +374,7 @@ const styles = StyleSheet.create({
   photo: { width: '100%', aspectRatio: 4 / 3, borderRadius: radius.button },
   fire: {
     alignSelf: 'flex-start',
-    height: 30,
+    minHeight: 30,
     borderRadius: 15,
     paddingHorizontal: 10,
     flexDirection: 'row',

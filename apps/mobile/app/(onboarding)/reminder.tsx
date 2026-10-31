@@ -16,7 +16,7 @@ import { t } from '../../src/i18n';
 import { endpoints } from '../../src/lib/api/endpoints';
 import { errorMessage } from '../../src/lib/api/errors';
 import { setPref } from '../../src/lib/prefs';
-import { colors, fonts, iconStroke, radius } from '../../src/theme/tokens';
+import { colors, fonts, iconStroke, radius, themeName } from '../../src/theme/tokens';
 
 /** A8: reminder time (default 8:00 PM); explains reminders run on the phone. */
 export default function Reminder() {
@@ -76,7 +76,7 @@ export default function Reminder() {
             value={reminderToDate(time)}
             mode="time"
             display="spinner"
-            themeVariant="dark"
+            themeVariant={themeName}
             textColor={colors.label}
             onValueChange={(_e, date) => setTime(dateToReminder(date))}
             accessibilityLabel={t('reminder.label')}

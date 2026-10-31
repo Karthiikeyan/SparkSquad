@@ -19,6 +19,7 @@ function reversedClientId(clientId: string | undefined): string | null {
 }
 
 const googleIosScheme = reversedClientId(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID);
+const easProjectId = process.env.EAS_PROJECT_ID;
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -26,9 +27,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'sparksquad',
   scheme: 'sparksquad',
   version: '1.0.0',
+  // Updates only reach builds with the same app version (EAS Update channels per profile).
+  runtimeVersion: { policy: 'appVersion' },
+  ...(easProjectId ? { updates: { url: `https://u.expo.dev/${easProjectId}` } } : {}),
   orientation: 'portrait',
   icon: './assets/images/icon.png',
-  userInterfaceStyle: 'dark',
+  // The app picks dark (default), light or the phone's look at launch (see theme/tokens.ts).
+  userInterfaceStyle: 'automatic',
   backgroundColor: '#000000',
   ios: {
     bundleIdentifier: bundleId,
@@ -37,6 +42,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: bundleId,
+    // Only steps are read; nothing is written to Health Connect.
+    permissions: ['android.permission.health.READ_STEPS'],
+    // Pulled in by expo-media-library; SparkSquad never reads audio or video.
+    blockedPermissions: [
+      'android.permission.READ_MEDIA_AUDIO',
+      'android.permission.READ_MEDIA_VIDEO',
+    ],
     adaptiveIcon: {
       backgroundColor: '#000000',
       foregroundImage: './assets/images/android-icon-foreground.png',
@@ -73,6 +85,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     '@react-native-community/datetimepicker',
+    // Health Connect needs Android 8+ (API 26).
+    ['expo-build-properties', { android: { minSdkVersion: 26 } }],
+    'react-native-health-connect',
+    [
+      '@kingstinct/react-native-healthkit',
+      {
+        NSHealthShareUsageDescription:
+          'SparkSquad reads your step count so step tasks can tick themselves off. Steps stay on this phone.',
+        NSHealthUpdateUsageDescription: false,
+        background: false,
+      },
+    ],
     [
       'expo-notifications',
       {
@@ -103,6 +127,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8787',
-    eas: { projectId: process.env.EAS_PROJECT_ID },
+    eas: { projectId: easProjectId },
   },
 });

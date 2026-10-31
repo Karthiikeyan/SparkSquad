@@ -235,6 +235,7 @@ export function AiBuildScreen() {
             right={
               <Pressable
                 onPress={() => router.push('/settings/ai')}
+                hitSlop={{ top: 8, bottom: 8 }}
                 accessibilityRole="button"
                 style={styles.keyChip}
               >
@@ -280,6 +281,7 @@ export function AiBuildScreen() {
                 <Pressable
                   key={c}
                   onPress={() => send(c)}
+                  hitSlop={{ top: 4, bottom: 4 }}
                   accessibilityRole="button"
                   style={styles.choice}
                 >
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
   goal: { gap: 16, marginTop: 12 },
   head: { gap: 6, paddingBottom: 8 },
   keyChip: {
-    height: 28,
+    minHeight: 28,
     paddingHorizontal: 10,
     borderRadius: 14,
     backgroundColor: colors.control,

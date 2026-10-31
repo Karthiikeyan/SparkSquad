@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import {
   Button,
   GroupedList,
@@ -9,15 +9,18 @@ import {
   NavHeader,
   Screen,
   SectionLabel,
+  SegmentedControl,
   Text,
 } from '../../components/ui';
 import { t, type TKey } from '../../i18n';
 import { getAiKey, type AiProvider } from '../../lib/aiKeys';
 import { env } from '../../lib/env';
-import { getPref } from '../../lib/prefs';
+import { getPref, type Prefs } from '../../lib/prefs';
 import { getRuntime } from '../../lib/runtime';
 import { useMe, useSession } from '../auth/SessionProvider';
 import { formatReminder } from '../onboarding/time';
+import { colors, lightThemeEnabled, radius } from '../../theme/tokens';
+import { changeTheme } from './theme';
 import { useMePatch } from './useMePatch';
 
 const PROVIDER_LABEL: Record<AiProvider, TKey> = {
@@ -39,6 +42,7 @@ export function SettingsScreen() {
   const { signOut } = useSession();
   const patch = useMePatch();
   const [aiProvider, setAiProvider] = useState<AiProvider | null>(null);
+  const [theme, setTheme] = useState<Prefs['theme']>(getPref('theme') ?? 'dark');
 
   useEffect(() => {
     let alive = true;
@@ -110,6 +114,29 @@ export function SettingsScreen() {
           onPress={() => router.push('/settings/notifications')}
         />
       </GroupedList>
+
+      {lightThemeEnabled ? (
+        <>
+          <SectionLabel>{t('settingsMain.appearance')}</SectionLabel>
+          <View style={styles.segment}>
+            <SegmentedControl
+              role="radiogroup"
+              tone="surface"
+              accessibilityLabel={t('settingsMain.appearance')}
+              value={theme}
+              onChange={(v) => {
+                setTheme(v);
+                changeTheme(v);
+              }}
+              options={[
+                { value: 'dark', label: t('settingsMain.themeDark') },
+                { value: 'light', label: t('settingsMain.themeLight') },
+                { value: 'system', label: t('settingsMain.themeSystem') },
+              ]}
+            />
+          </View>
+        </>
+      ) : null}
 
       <SectionLabel>{t('settingsMain.integrations')}</SectionLabel>
       <GroupedList style={styles.group}>
@@ -186,4 +213,10 @@ export function SettingsScreen() {
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
   group: { marginBottom: 20 },
+  segment: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.list,
+    padding: 12,
+    marginBottom: 20,
+  },
 });

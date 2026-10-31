@@ -190,6 +190,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       removePref('onboardedUserId');
       removePref('pendingInvite');
       removePref('integrations');
+      removePref('stepsConnected');
       setPendingInviteState(null);
       setPendingRoute(null);
       pushRegistered.current = null;

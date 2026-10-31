@@ -14,7 +14,7 @@ import {
 import { t } from '../../i18n';
 import { notificationPermission, type PermissionState } from '../../lib/notifications';
 import { setPref } from '../../lib/prefs';
-import { colors } from '../../theme/tokens';
+import { colors, themeName } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { dateToReminder, formatReminder, reminderToDate } from '../onboarding/time';
 import { useMePatch } from './useMePatch';
@@ -80,7 +80,7 @@ export function NotificationsSettingsScreen() {
                 value={reminderToDate(me.reminderTime)}
                 mode="time"
                 display="compact"
-                themeVariant="dark"
+                themeVariant={themeName}
                 onValueChange={(_e, date) => saveTime(date)}
                 accessibilityLabel={t('notificationsSettings.reminderTime')}
               />

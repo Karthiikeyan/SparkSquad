@@ -23,6 +23,7 @@ import { maskSecret } from '../../lib/format';
 import { getPref, setPref } from '../../lib/prefs';
 import { colors, iconStroke } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
+import { onDeviceAvailable } from '../ai/onDevice';
 import { sendChat } from '../ai/providers';
 import { dailyLimit, takeRequest } from '../ai/session';
 import { todayFor } from '../today/model';
@@ -208,7 +209,12 @@ export function AiSettingsScreen() {
               />
             }
           />
-          <ListRow title={t('aiSettings.onDevice')} value={t('aiSettings.onDeviceNone')} />
+          <ListRow
+            title={t('aiSettings.onDevice')}
+            value={
+              onDeviceAvailable() ? t('aiSettings.onDeviceReady') : t('aiSettings.onDeviceNone')
+            }
+          />
         </GroupedList>
       </View>
       <GroupFooter>{t('aiSettings.note')}</GroupFooter>
