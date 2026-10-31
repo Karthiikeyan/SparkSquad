@@ -111,7 +111,7 @@ Indexes on every foreign key and on `(challengeId, localDate)`, `(userId, update
 - Check-ins: `PUT /v1/checkins/:id` (idempotent upsert keyed by client ULID; validates local date window), `GET /v1/checkins/:id`, reactions `PUT/DELETE /v1/checkins/:id/reactions/fire`, comments `GET/POST /v1/checkins/:id/comments`, `DELETE /v1/comments/:id`.
 - `POST /v1/nudges` `{challengeId, toUserId}`.
 - `GET /v1/challenges/:id/leaderboard?range=challenge|week`.
-- `POST /v1/uploads/proof` → presigned R2 PUT (Plus or Pro squad only; max 300 KB; image/jpeg|webp).
+- `POST /v1/uploads/proof` → signed PUT URL to the Worker's `/files/*` proxy (Plus or Pro squad only; max 300 KB; image/jpeg|webp; the Worker enforces type and size, see DECISIONS E118).
 - `PUT /v1/push-tokens`, `DELETE /v1/push-tokens/:token`.
 - Safety: `POST /v1/reports`, `PUT/DELETE /v1/blocks/:userId`, `GET /v1/blocks`.
 - Integrations: `PUT/DELETE /v1/integrations/:provider` (stores public handle only).
@@ -126,12 +126,12 @@ Errors: `{ error: { code, message } }` with stable codes (`LIMIT_SQUADS_JOINED`,
 2. **Delta sync** with cursors; phones never refetch whole boards.
 3. **Reminders are local notifications** (expo-notifications scheduled on device).
 4. **Server pushes batched**: cron builds at most 2 digest pushes per user per day; nudges are the only immediate push.
-5. **Photos**: Free never uploads. Plus compresses on device (expo-image-manipulator, max 1080 px, ~100 KB) and uploads straight to R2 with a presigned URL; R2 lifecycle deletes.
+5. **Photos**: Free never uploads. Plus compresses on device (expo-image-manipulator, max 1080 px, ~100 KB) and uploads through a short-lived signed Worker URL that enforces type and size (reads may use R2 presigned URLs); R2 lifecycle deletes.
 6. **Images made on device** (share card, commitment card) with react-native-view-shot.
 7. **Verification runs on the phone** using the user's public handles; the server never polls third-party APIs.
 8. **AI costs SparkSquad nothing**: template recap → on-device (iOS Foundation Models via `@react-native-ai/apple` when available) → BYOK (phone calls provider directly; key in secure store; daily cap in settings).
 9. **Data expiry**: comments 30/90 days, notifications 30 days, exports 1 day, roll-ups at challenge end.
-10. **Hard caps**: 1 check-in per challenge per day, 20 comments/user/day, 1 nudge per pair per day, 100 members, 300 KB uploads, request rate limit per user and per IP (Workers Rate Limiting binding).
+10. **Hard caps**: 1 check-in per challenge per day, 20 comments/user/day, 1 nudge per pair per day, 100 members, 300 KB uploads, request rate limit per user and per IP (Workers Rate Limiting binding), plus the abuse caps in `HARD_CAPS` (sign-in codes per email, request body sizes, challenges/reports per user per day, announcements per squad per day, notifications per sync).
 
 ## 6. Offline & sync (mobile)
 - Local SQLite mirrors what the user needs: my squads, members (light), active challenges, cached plan JSON by hash, check-ins for today/last 7 days, my history.
@@ -164,3 +164,4 @@ Errors: `{ error: { code, message } }` with stable codes (`LIMIT_SQUADS_JOINED`,
 - PII minimum: email, name, username, timezone. No phone numbers. 18+ confirmation timestamp stored.
 - DPDP readiness: export + delete, privacy notice, grievance contact in settings, breach procedure noted in SETUP.md.
 - Secrets only in Wrangler secrets / EAS secrets; `.env.example` files committed, real `.env` ignored.
+- Only the Better Auth endpoints the app uses are reachable (`lib/authGate.ts`); file URLs are signed with a key derived from, never equal to, `BETTER_AUTH_SECRET`; admin access needs a verified email; suspension revokes all sessions.

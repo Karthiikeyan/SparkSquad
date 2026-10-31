@@ -217,3 +217,13 @@ Final audit done: see `docs/AUDIT.md`.
 ### Final audit — done
 
 Results in `docs/AUDIT.md`. Fixed the check-in sheet route (B4) that still rendered the Phase 3 placeholder, member profile streaks and badges (C8, new API fields), the edit-day lock (C5), a root error boundary (G3), permission-denied states with "Open settings" (G5), offline banners on paywalls / AI builder / check-in sheet, billing error state, an Android overlay permission, and the last undocumented env var. Added 23 server tests for product rules (API 54 tests). All checks green.
+
+### Security audit and fixes — done
+
+Ran Cloudflare's `security-audit` skill (github.com/cloudflare/security-audit-skill; installed copy verified byte-identical to upstream) in full-audit mode, standard profile: reconnaissance, 8 hunter waves over 41 coverage units, coverage critics to two clean passes, a fresh verifier per candidate, schema-validated `findings.json`, then fresh record verifiers. The audit itself was source-only (no OS sandbox on the Windows host), so results are `needs_validation` leads rather than confirmed findings; reports are in `~/security-audit-skill/sparksquad/run-1` (REPORT.md, NEEDS-VALIDATION.md).
+
+Fixed all 37 leads (DECISIONS E117–E130): R2 file-token key reuse/expiry/key escape and safe `/files` responses; Better Auth endpoint allowlist, per-email OTP limits, verified-only account linking and admin, production `APP_ENV` default, session revocation on suspend; RevenueCat ordering/sandbox/transfer/Squad Pro binding; sync leaks (hidden squads, pending members, tombstones, blocked notifications); block checks on joins; tier limits on transfer, deletion and races; withdraw-request; body-size and per-day caps; chunked D1 lists; byte-bounded plan cache; linear fence parsing; local drafts/photos cleared on sign-out. New migration `0001_entitlement_ordering`.
+
+Tests: `apps/api/test/security.test.ts` (29 tests) and `packages/shared/test/security.test.ts`; API 83 tests, mobile 199, shared green with 99% coverage. Typecheck and lint green.
+
+**Still needs you:** run `pnpm --filter @sparksquad/api db:migrate:remote` before deploying; keep `APP_ENV=development` only in local `.dev.vars` (it was added to yours); confirm the `IP_LIMITER`/`USER_LIMITER` bindings are active in production; in RevenueCat, keep sandbox events pointed at a staging Worker or leave `REVENUECAT_ALLOW_SANDBOX` unset.
