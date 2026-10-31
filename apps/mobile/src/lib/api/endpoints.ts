@@ -5,6 +5,9 @@ import type {
   CheckinDTO,
   CommentDTO,
   ConfigResponse,
+  CreateChallengeInput,
+  CreateSquadInput,
+  DiscoverResponse,
   LeaderboardResponse,
   MeDTO,
   MemberDTO,
@@ -16,6 +19,7 @@ import type {
   SquadPreviewDTO,
   StreakDTO,
   SyncResponse,
+  TemplateSummaryDTO,
   UpdateMeInput,
   UpdateSquadInput,
   UpsertCheckinInput,
@@ -131,6 +135,18 @@ export const endpoints = {
   deleteComment: (commentId: string) => api.del<{ ok: true }>(`/v1/comments/${enc(commentId)}`),
   report: (input: ReportInput) => api.post<{ ok: true }>('/v1/reports', input),
   block: (userId: string) => api.put<{ ok: true }>(`/v1/blocks/${enc(userId)}`),
+
+  /* create & discover (Phase 7) */
+  createSquad: (input: CreateSquadInput) => api.post<SquadDTO>('/v1/squads', input),
+  createChallenge: (squadId: string, input: CreateChallengeInput) =>
+    api.post<{ challenge: ChallengeDTO; fixes: string[] }>(
+      `/v1/squads/${enc(squadId)}/challenges`,
+      input,
+    ),
+  templates: () => api.get<{ templates: TemplateSummaryDTO[] }>('/v1/templates'),
+  template: (slug: string) => api.get<unknown>(`/v1/templates/${enc(slug)}`),
+  discover: (params: { category?: string; q?: string; cursor?: string }) =>
+    api.get<DiscoverResponse>('/v1/discover', { query: params }),
 };
 
 export interface EditDayInput {

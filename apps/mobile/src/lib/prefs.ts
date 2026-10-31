@@ -13,6 +13,8 @@ export interface Prefs {
   pushToken: string;
   reminderTime: string;
   aiDailyLimit: number;
+  aiUsage: { date: string; count: number };
+  aiProvider: 'gemini' | 'openai' | 'anthropic';
   analyticsOptOut: boolean;
   recentSearches: string[];
   lastFreezeNoticeDate: string;

@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from 'react';
 import { identify, resetAnalytics } from '../../lib/analytics';
+import { clearAiKeys } from '../../lib/aiKeys';
 import { endpoints } from '../../lib/api/endpoints';
 import { appEvents } from '../../lib/appEvents';
 import { authClient } from '../../lib/auth';
@@ -182,6 +183,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       }
       await signOutGoogle();
       await clearReminders();
+      await clearAiKeys();
       await clearLocalData();
       removePref('onboardedUserId');
       removePref('pendingInvite');

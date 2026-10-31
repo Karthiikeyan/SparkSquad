@@ -7,7 +7,7 @@ import { challenge, checkin, me, ME_ID, squad } from '../../../test/fixtures';
 import { createTestDb } from '../../../test/testDb';
 import { needsTasks } from '../screens/LeaderboardSection';
 import { memberActions } from '../screens/MembersScreen';
-import { moveItem, toPayloadTasks, toDraftTask } from '../screens/EditDayScreen';
+import { moveItem, toPayloadTasks, toDraftTask } from '../../plan/TaskEditor';
 import { squadChanges } from '../screens/SquadSettingsScreen';
 import { longestStreaks } from '../screens/ShareCardScreen';
 import { sendNudge, toggleFire } from '../actions';

@@ -24,6 +24,19 @@ describe('i18n', () => {
     expect(/\p{Extended_Pictographic}/u.test(text)).toBe(false);
   });
 
+  it('has no mangled punctuation (apostrophes or ellipses turned into "?")', () => {
+    const bad: string[] = [];
+    (function walk(node: object, path: string) {
+      for (const [k, v] of Object.entries(node)) {
+        const p = path ? `${path}.${k}` : k;
+        if (typeof v === 'string') {
+          if (/\w\?\w|\}\}\?\w|\uFFFD/.test(v)) bad.push(p);
+        } else if (v && typeof v === 'object') walk(v as object, p);
+      }
+    })(en, '');
+    expect(bad).toEqual([]);
+  });
+
   it('formats numbers with Indian grouping', () => {
     expect(formatNumber(10000)).toBe('10,000');
     expect(formatNumber(100000)).toBe('1,00,000');

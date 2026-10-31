@@ -320,6 +320,13 @@ export function SquadSettingsScreen() {
 
       <SectionLabel>{t('settings.manage')}</SectionLabel>
       <GroupedList style={styles.group}>
+        {manager && !src.challenge ? (
+          <ListRow
+            title={t('settings.setupPlan')}
+            chevron
+            onPress={() => router.push({ pathname: '/create/plan', params: { squadId: id } })}
+          />
+        ) : null}
         {manager ? (
           <ListRow
             title={t('settings.announcement')}

@@ -57,7 +57,9 @@ export function RootNavigator() {
           <Stack.Screen name="join/index" />
           <Stack.Screen name="invite/[code]" />
           <Stack.Screen name="squad/[id]/preview" />
-          <Stack.Screen name="create/basics" />
+          <Stack.Screen name="create" options={{ presentation: 'fullScreenModal' }} />
+          <Stack.Screen name="discover/search" options={{ animation: 'fade' }} />
+          <Stack.Screen name="settings/ai" />
         </Stack.Protected>
       </Stack>
     </>

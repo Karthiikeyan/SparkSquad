@@ -11,6 +11,8 @@ export interface BoardSectionProps {
   board: Board;
   onNudge: (member: { id: string; name: string }) => void;
   onFire: (checkinId: string) => void;
+  /** Owners/admins of a squad with no challenge can set one up. */
+  onSetUpPlan?: () => void;
 }
 
 function feedLine(item: FeedItem): string {
@@ -123,12 +125,14 @@ function FeedRow({
 }
 
 /** C2 board body: count + member grid, still to check in (nudge), today's feed. */
-export function BoardSection({ board, onNudge, onFire }: BoardSectionProps) {
+export function BoardSection({ board, onNudge, onFire, onSetUpPlan }: BoardSectionProps) {
   if (board.state === 'none') {
     return (
       <EmptyState
         icon={CalendarDays}
         message={`${t('squad.noChallengeTitle')}. ${t('squad.noChallengeBody')}`}
+        actionLabel={onSetUpPlan ? t('squad.setupPlan') : undefined}
+        onAction={onSetUpPlan}
       />
     );
   }

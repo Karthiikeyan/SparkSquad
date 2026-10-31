@@ -20,7 +20,7 @@ import { colors, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
 import { useRefresh } from '../../system/useRefresh';
 import { sendNudge, toggleFire } from '../actions';
-import { buildBoard } from '../model';
+import { buildBoard, canManage } from '../model';
 import { useSquad } from '../useSquad';
 import { BoardSection } from './BoardSection';
 import { LeaderboardSection } from './LeaderboardSection';
@@ -182,7 +182,16 @@ export function SquadScreen() {
       ) : null}
 
       {section === 'board' || !ch ? (
-        <BoardSection board={board} onNudge={nudge} onFire={fire} />
+        <BoardSection
+          board={board}
+          onNudge={nudge}
+          onFire={fire}
+          onSetUpPlan={
+            canManage(src.myRole)
+              ? () => router.push({ pathname: '/create/plan', params: { squadId: src.squad.id } })
+              : undefined
+          }
+        />
       ) : section === 'leaderboard' ? (
         <LeaderboardSection challengeId={ch.id} />
       ) : (
