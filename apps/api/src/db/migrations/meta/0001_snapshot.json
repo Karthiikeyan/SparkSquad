@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a31554fc-2fec-4182-8f8e-7c498325b09e",
+  "id": "953b606b-e421-45c9-8344-ac233dde0e7e",
   "prevId": "2fbe8059-a918-4beb-b4f3-5b66c3b840bc",
   "tables": {
     "account": {
@@ -851,28 +851,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
-        },
-        "entitlement_ids": {
-          "name": "entitlement_ids",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "''"
-        },
-        "subscription_key": {
-          "name": "subscription_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "event_at": {
-          "name": "event_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         }
       },
       "indexes": {
@@ -887,20 +865,6 @@
           "name": "entitlements_user_idx",
           "columns": [
             "user_id"
-          ],
-          "isUnique": false
-        },
-        "entitlements_sub_idx": {
-          "name": "entitlements_sub_idx",
-          "columns": [
-            "subscription_key"
-          ],
-          "isUnique": false
-        },
-        "entitlements_squad_idx": {
-          "name": "entitlements_squad_idx",
-          "columns": [
-            "squad_id"
           ],
           "isUnique": false
         }
@@ -2310,6 +2274,46 @@
         },
         "notify_nudges": {
           "name": "notify_nudges",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "notify_comments": {
+          "name": "notify_comments",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "notify_members": {
+          "name": "notify_members",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "notify_milestones": {
+          "name": "notify_milestones",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "notify_streak_risk": {
+          "name": "notify_streak_risk",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "notify_challenge_start": {
+          "name": "notify_challenge_start",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,

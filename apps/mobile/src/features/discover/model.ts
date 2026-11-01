@@ -1,4 +1,4 @@
-import { compareLocalDates, type Category, type SquadPreviewDTO } from '@sparksquad/shared';
+import { compareLocalDates, diffDays, type SquadPreviewDTO } from '@sparksquad/shared';
 import { router } from 'expo-router';
 import { t } from '../../i18n';
 import { formatLocalDate } from '../../lib/format';
@@ -37,9 +37,22 @@ export function sortStartingSoon(
   );
 }
 
-export function defaultCategory(interests: readonly string[]): Category {
-  const first = interests[0];
-  return first === 'fitness' || first === 'learning' ? first : 'career';
+/** Short timeline for cards: "Starts Tuesday 3 November", "Day 12 of 60", "Plan coming soon". */
+export function squadTimeline(s: SquadPreviewDTO, today: string): string {
+  const ch = s.challenge;
+  if (!ch) return t('discover.noPlan');
+  if (compareLocalDates(ch.startDate, today) > 0) {
+    return t('discover.startsOn', { date: formatLocalDate(ch.startDate) });
+  }
+  const n = Math.min(diffDays(ch.startDate, today) + 1, ch.durationDays);
+  return t('discover.runningDay', { n, total: ch.durationDays });
+}
+
+/** Join button copy: members open the squad, pending requests say so. */
+export function joinLabel(s: SquadPreviewDTO): string {
+  if (s.myStatus === 'active') return t('discover.open');
+  if (s.myStatus === 'pending') return t('discover.requested');
+  return t('discover.join');
 }
 
 export function openSquadPreview(id: string): void {

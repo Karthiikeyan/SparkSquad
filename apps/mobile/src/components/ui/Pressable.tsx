@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -16,9 +16,12 @@ export interface PressableProps extends Omit<RNPressableProps, 'style'> {
   noScale?: boolean;
 }
 
+const AnimatedPressable = Animated.createAnimatedComponent(RNPressable);
+
 /** Pressable with the design-system press feedback (scale ~0.98, 140 ms ease-out). */
 export function Pressable({ style, noScale, onPressIn, onPressOut, ...rest }: PressableProps) {
   const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
   const reduced = useReducedMotion();
   const animate = (to: number) => {
     if (noScale || reduced) return;
@@ -29,20 +32,22 @@ export function Pressable({ style, noScale, onPressIn, onPressOut, ...rest }: Pr
       useNativeDriver: true,
     }).start();
   };
+  // One element so layout styles (flex, margins, alignSelf) apply to the button itself.
+  const resolved = typeof style === 'function' ? style({ pressed }) : style;
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
-      <RNPressable
-        {...rest}
-        style={style}
-        onPressIn={(e) => {
-          animate(motion.pressScale);
-          onPressIn?.(e);
-        }}
-        onPressOut={(e) => {
-          animate(1);
-          onPressOut?.(e);
-        }}
-      />
-    </Animated.View>
+    <AnimatedPressable
+      {...rest}
+      style={[resolved, { transform: [{ scale }] }]}
+      onPressIn={(e) => {
+        setPressed(true);
+        animate(motion.pressScale);
+        onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        setPressed(false);
+        animate(1);
+        onPressOut?.(e);
+      }}
+    />
   );
 }

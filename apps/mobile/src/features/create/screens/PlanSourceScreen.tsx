@@ -3,7 +3,7 @@ import {
   ChevronRight,
   FileUp,
   LayoutGrid,
-  Lock,
+  KeyRound,
   MessageCircle,
   Plus,
   type LucideIcon,
@@ -57,11 +57,11 @@ const OPTIONS: Option[] = [
   },
   {
     key: 'ai-build',
-    icon: Lock,
+    icon: KeyRound,
     title: t('create.optAiBuild'),
     body: t('create.optAiBuildBody'),
     route: '/create/ai-build',
-    tag: { label: t('create.tagPlus'), tone: 'plus' },
+    tag: { label: t('create.tagOwnKey'), tone: 'free' },
   },
   {
     key: 'blank',

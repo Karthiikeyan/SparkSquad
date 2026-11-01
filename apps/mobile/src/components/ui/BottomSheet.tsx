@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
   Easing,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   StyleSheet,
@@ -69,24 +70,27 @@ export function BottomSheet({
           accessibilityLabel={t('common.close')}
         />
       </Animated.View>
-      <Animated.View
-        accessibilityViewIsModal
-        accessibilityLabel={accessibilityLabel}
-        style={[
-          styles.sheet,
-          top !== undefined ? { top } : { maxHeight: height - insets.top - 24 },
-          { paddingBottom: Math.max(insets.bottom, 16) + 18, transform: [{ translateY }] },
-        ]}
-      >
-        <View style={styles.grabber} />
-        {children}
-      </Animated.View>
+      <KeyboardAvoidingView behavior="height" style={styles.fill} pointerEvents="box-none">
+        <Animated.View
+          accessibilityViewIsModal
+          accessibilityLabel={accessibilityLabel}
+          style={[
+            styles.sheet,
+            top !== undefined ? { top } : { maxHeight: height - insets.top - 24 },
+            { paddingBottom: Math.max(insets.bottom, 16) + 18, transform: [{ translateY }] },
+          ]}
+        >
+          <View style={styles.grabber} />
+          {children}
+        </Animated.View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   scrim: { backgroundColor: colors.scrim },
+  fill: { flex: 1 },
   sheet: {
     position: 'absolute',
     left: 0,

@@ -82,17 +82,35 @@ export function replayStreak(
 
 export const BADGES = [
   'first_checkin',
+  'streak_3',
   'streak_7',
+  'streak_14',
   'streak_21',
   'streak_30',
+  'streak_60',
+  'streak_100',
+  'checkins_10',
+  'checkins_50',
+  'checkins_100',
   'challenge_complete',
 ] as const;
 export type BadgeId = (typeof BADGES)[number];
 
 export const STREAK_BADGES: readonly { badge: BadgeId; days: number }[] = [
+  { badge: 'streak_3', days: 3 },
   { badge: 'streak_7', days: 7 },
+  { badge: 'streak_14', days: 14 },
   { badge: 'streak_21', days: 21 },
   { badge: 'streak_30', days: 30 },
+  { badge: 'streak_60', days: 60 },
+  { badge: 'streak_100', days: 100 },
+];
+
+/** Lifetime check-in milestones (honest misses count: showing up is the habit). */
+export const COUNT_BADGES: readonly { badge: BadgeId; count: number }[] = [
+  { badge: 'checkins_10', count: 10 },
+  { badge: 'checkins_50', count: 50 },
+  { badge: 'checkins_100', count: 100 },
 ];
 
 /** Badges newly earned given the current facts and what the user already has. */
@@ -103,6 +121,7 @@ export function newBadges(
   const earned: BadgeId[] = [];
   if (facts.totalCheckins >= 1) earned.push('first_checkin');
   for (const s of STREAK_BADGES) if (facts.currentStreak >= s.days) earned.push(s.badge);
+  for (const c of COUNT_BADGES) if (facts.totalCheckins >= c.count) earned.push(c.badge);
   if (facts.challengeCompleted) earned.push('challenge_complete');
   return earned.filter((b) => !owned.has(b));
 }
@@ -112,14 +131,10 @@ export function badgeProgress(
   badge: BadgeId,
   facts: { totalCheckins: number; bestStreak: number; challengesCompleted: number },
 ): number {
-  switch (badge) {
-    case 'first_checkin':
-      return Math.min(facts.totalCheckins, 1);
-    case 'challenge_complete':
-      return Math.min(facts.challengesCompleted, 1);
-    default: {
-      const days = STREAK_BADGES.find((s) => s.badge === badge)?.days ?? 1;
-      return Math.min(facts.bestStreak / days, 1);
-    }
-  }
+  if (badge === 'first_checkin') return Math.min(facts.totalCheckins, 1);
+  if (badge === 'challenge_complete') return Math.min(facts.challengesCompleted, 1);
+  const count = COUNT_BADGES.find((c) => c.badge === badge)?.count;
+  if (count) return Math.min(facts.totalCheckins / count, 1);
+  const days = STREAK_BADGES.find((s) => s.badge === badge)?.days ?? 1;
+  return Math.min(facts.bestStreak / days, 1);
 }

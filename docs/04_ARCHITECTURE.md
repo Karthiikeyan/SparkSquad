@@ -8,7 +8,7 @@ Goal: **₹0/month infrastructure until ~10,000 monthly users, ~US$7/month at 10
 |---|---|
 | Monorepo | pnpm workspaces (+ Turborepo for task running). Node LTS. |
 | Mobile | React Native + **Expo** (latest stable SDK), **Expo Router**, TypeScript strict, **development builds** (not Expo Go — native modules needed). |
-| Styling | NativeWind (Tailwind) with the tokens from `02_DESIGN_SYSTEM.md` in `tailwind.config.js`, plus a typed `theme.ts` for values used in JS (SVG, shadows). |
+| Styling | React Native `StyleSheet` with the tokens from `02_DESIGN_SYSTEM.md` in `src/theme/colors.js` and a typed `src/theme/tokens.ts` (NativeWind removed, see DECISIONS E117). |
 | Data on phone | TanStack Query (server cache) + **expo-sqlite** with Drizzle ORM for the offline store (boards, my check-ins, outbox queue). MMKV for small prefs. |
 | Secure storage | expo-secure-store (BYOK API keys, auth tokens). |
 | API | **Hono** on **Cloudflare Workers**, zod validation (schemas shared from `packages/shared`). |
@@ -111,7 +111,7 @@ Indexes on every foreign key and on `(challengeId, localDate)`, `(userId, update
 - Check-ins: `PUT /v1/checkins/:id` (idempotent upsert keyed by client ULID; validates local date window), `GET /v1/checkins/:id`, reactions `PUT/DELETE /v1/checkins/:id/reactions/fire`, comments `GET/POST /v1/checkins/:id/comments`, `DELETE /v1/comments/:id`.
 - `POST /v1/nudges` `{challengeId, toUserId}`.
 - `GET /v1/challenges/:id/leaderboard?range=challenge|week`.
-- `POST /v1/uploads/proof` → signed PUT URL to the Worker's `/files/*` proxy (Plus or Pro squad only; max 300 KB; image/jpeg|webp; the Worker enforces type and size, see DECISIONS E118).
+- `POST /v1/uploads/proof` → signed PUT URL to the Worker's `/files/*` proxy (Plus or Pro squad only; max 300 KB; image/jpeg|webp; the Worker enforces type and size, see DECISIONS E130).
 - `PUT /v1/push-tokens`, `DELETE /v1/push-tokens/:token`.
 - Safety: `POST /v1/reports`, `PUT/DELETE /v1/blocks/:userId`, `GET /v1/blocks`.
 - Integrations: `PUT/DELETE /v1/integrations/:provider` (stores public handle only).
@@ -124,7 +124,7 @@ Errors: `{ error: { code, message } }` with stable codes (`LIMIT_SQUADS_JOINED`,
 
 1. **No realtime sockets** for free users. Board refreshes on app open, pull-to-refresh, after own actions, and when a push arrives. (Paid chat in v2 = Durable Objects with WebSocket hibernation — not now.)
 2. **Delta sync** with cursors; phones never refetch whole boards.
-3. **Reminders are local notifications** (expo-notifications scheduled on device).
+3. **Reminders are local notifications** (expo-notifications scheduled on device): daily reminder, missed-day note (8 AM), streak at risk (10 PM, or 11 PM after a late reminder; streak of 3+), challenge starting (7 PM the day before, 8 AM on the day).
 4. **Server pushes batched**: cron builds at most 2 digest pushes per user per day; nudges are the only immediate push.
 5. **Photos**: Free never uploads. Plus compresses on device (expo-image-manipulator, max 1080 px, ~100 KB) and uploads through a short-lived signed Worker URL that enforces type and size (reads may use R2 presigned URLs); R2 lifecycle deletes.
 6. **Images made on device** (share card, commitment card) with react-native-view-shot.

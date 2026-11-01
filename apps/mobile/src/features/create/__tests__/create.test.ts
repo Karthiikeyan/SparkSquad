@@ -1,5 +1,11 @@
 import type { SquadPreviewDTO } from '@sparksquad/shared';
-import { addRecent, defaultCategory, sortStartingSoon, squadMeta } from '../../discover/model';
+import {
+  addRecent,
+  joinLabel,
+  sortStartingSoon,
+  squadMeta,
+  squadTimeline,
+} from '../../discover/model';
 import { afterPlanRoute, buildBlankPlan, clampStartDate, defaultStartDate } from '../flow';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
@@ -87,7 +93,13 @@ describe('discover helpers', () => {
     expect(addRecent(['dsa', 'sql'], 'SQL')).toEqual(['SQL', 'dsa']);
     expect(addRecent(['a', 'b', 'c', 'd', 'e', 'f'], 'g')).toHaveLength(6);
     expect(addRecent(['a'], '  ')).toEqual(['a']);
-    expect(defaultCategory(['fitness'])).toBe('fitness');
-    expect(defaultCategory([])).toBe('career');
+  });
+
+  it('describes a squad on a card and labels the join button', () => {
+    expect(squadTimeline(s('a', '2026-11-03'), '2026-10-31')).toBe('Starts Tuesday 3 November');
+    expect(squadTimeline(s('a', '2026-10-20'), '2026-10-31')).toBe('Day 12 of 60');
+    expect(squadTimeline(s('a', null), '2026-10-31')).toBe('Plan coming soon');
+    expect(joinLabel(s('a', null))).toBe('Join');
+    expect(joinLabel({ ...s('a', null), myStatus: 'active' })).toBe('Open');
   });
 });

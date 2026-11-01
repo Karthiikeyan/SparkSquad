@@ -17,11 +17,13 @@ export interface TabBarProps {
   active: TabName;
   onNavigate: (tab: TabName) => void;
   onCheckIn: () => void;
+  /** Long-press: mark everything waiting today as done (after a confirm). */
+  onCheckInLong?: () => void;
   bottomInset: number;
 }
 
 /** 5 slots: Today, Squads, centre Check-in button (raised, accent), Discover, You. */
-export function TabBar({ active, onNavigate, onCheckIn, bottomInset }: TabBarProps) {
+export function TabBar({ active, onNavigate, onCheckIn, onCheckInLong, bottomInset }: TabBarProps) {
   const left = TABS.slice(0, 2);
   const right = TABS.slice(2);
   const renderTab = (tab: (typeof TABS)[number]) => {
@@ -59,7 +61,14 @@ export function TabBar({ active, onNavigate, onCheckIn, bottomInset }: TabBarPro
           testID="tab-checkin"
           accessibilityRole="button"
           accessibilityLabel={t('tabs.checkIn')}
+          accessibilityHint={onCheckInLong ? t('tabs.checkInHint') : undefined}
+          accessibilityActions={onCheckInLong ? [{ name: 'longpress' }] : undefined}
+          onAccessibilityAction={(e) => {
+            if (e.nativeEvent.actionName === 'longpress') onCheckInLong?.();
+          }}
           onPress={onCheckIn}
+          onLongPress={onCheckInLong}
+          delayLongPress={450}
           style={({ pressed }) => [
             styles.center,
             { backgroundColor: pressed ? colors.accentPressed : colors.accent },

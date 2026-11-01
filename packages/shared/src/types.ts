@@ -22,6 +22,16 @@ export interface MeDTO {
   notifyMissedDay: boolean;
   notifySquadUpdates: boolean;
   notifyNudges: boolean;
+  /** Comments and fires on my check-ins (inbox + digest). */
+  notifyComments: boolean;
+  /** New members in squads I run (inbox + digest). */
+  notifyMembers: boolean;
+  /** Squad milestone days (inbox + digest). */
+  notifyMilestones: boolean;
+  /** Local "streak ends at midnight" reminder. */
+  notifyStreakRisk: boolean;
+  /** Local notes the day before and the morning a challenge starts. */
+  notifyChallengeStart: boolean;
   plan: UserPlan;
   planExpiresAt: string | null;
   ageConfirmedAt: string | null;
@@ -159,7 +169,10 @@ export type NotificationKind =
   | 'freeze_used'
   | 'digest'
   | 'challenge_ended'
-  | 'role_changed';
+  | 'role_changed'
+  | 'comment'
+  | 'fires'
+  | 'member_joined';
 
 export interface NotificationDTO {
   id: string;

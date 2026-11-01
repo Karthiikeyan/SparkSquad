@@ -13,7 +13,7 @@ import { errorMessage } from '../../src/lib/api/errors';
 type Interest = z.infer<typeof interestSchema>;
 const OPTIONS = interestSchema.options;
 
-/** A7: Career / Fitness / Learning (multi), used to rank Discover. */
+/** A7: interest chips (multi), used to rank Discover. */
 export default function Interests() {
   const me = useMe();
   const { setMe } = useSession();
@@ -65,7 +65,7 @@ export default function Interests() {
         {OPTIONS.map((i) => (
           <ChipToggle
             key={i}
-            label={t(`interests.${i}`)}
+            label={t(`categories.${i}`)}
             selected={selected.includes(i)}
             role="checkbox"
             onPress={() => toggle(i)}

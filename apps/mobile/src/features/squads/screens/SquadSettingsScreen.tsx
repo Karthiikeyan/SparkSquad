@@ -30,6 +30,7 @@ import {
   useToast,
 } from '../../../components/ui';
 import { t } from '../../../i18n';
+import { CATEGORY_ICON } from '../../../lib/categories';
 import { endpoints } from '../../../lib/api/endpoints';
 import { errorMessage, isApiError } from '../../../lib/api/errors';
 import { formatLocalDate } from '../../../lib/format';
@@ -127,6 +128,7 @@ function DetailsForm({ squad, onSaved }: { squad: SquadDTO; onSaved: () => void 
             <ChipToggle
               key={c}
               label={t(`categories.${c}`)}
+              icon={CATEGORY_ICON[c]}
               role="radio"
               selected={category === c}
               onPress={() => setCategory(c)}
@@ -313,7 +315,7 @@ export function SquadSettingsScreen() {
 
       {owner ? (
         <>
-          <SectionLabel>{t('settings.details')}</SectionLabel>
+          <SectionLabel style={styles.formLabel}>{t('settings.details')}</SectionLabel>
           <DetailsForm squad={sq} onSaved={syncSoon} />
         </>
       ) : null}
@@ -507,6 +509,7 @@ export function SquadSettingsScreen() {
 
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
+  formLabel: { marginHorizontal: 0 },
   form: { gap: 16, marginBottom: 24 },
   label: { marginBottom: 6 },
   help: { marginTop: 6 },

@@ -146,7 +146,7 @@ export const endpoints = {
     ),
   templates: () => api.get<{ templates: TemplateSummaryDTO[] }>('/v1/templates'),
   template: (slug: string) => api.get<unknown>(`/v1/templates/${enc(slug)}`),
-  discover: (params: { category?: string; q?: string; cursor?: string }) =>
+  discover: (params: { category?: string; q?: string; sort?: string; cursor?: string }) =>
     api.get<DiscoverResponse>('/v1/discover', { query: params }),
 
   proofUpload: (checkinId: string, contentType: 'image/jpeg' | 'image/webp', size: number) =>

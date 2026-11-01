@@ -403,7 +403,7 @@ export function CheckinSheetScreen() {
       visible={open}
       onClose={() => close()}
       onClosed={() => after.current()}
-      top={128}
+      top={card ? 128 : undefined}
       accessibilityLabel={card ? t('checkin.title', { n }) : t('tabs.checkIn')}
     >
       {!today.data ? null : !card ? (

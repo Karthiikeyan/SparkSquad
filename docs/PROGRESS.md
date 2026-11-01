@@ -222,8 +222,29 @@ Results in `docs/AUDIT.md`. Fixed the check-in sheet route (B4) that still rende
 
 Ran Cloudflare's `security-audit` skill (github.com/cloudflare/security-audit-skill; installed copy verified byte-identical to upstream) in full-audit mode, standard profile: reconnaissance, 8 hunter waves over 41 coverage units, coverage critics to two clean passes, a fresh verifier per candidate, schema-validated `findings.json`, then fresh record verifiers. The audit itself was source-only (no OS sandbox on the Windows host), so results are `needs_validation` leads rather than confirmed findings; reports are in `~/security-audit-skill/sparksquad/run-1` (REPORT.md, NEEDS-VALIDATION.md).
 
-Fixed all 37 leads (DECISIONS E117–E130): R2 file-token key reuse/expiry/key escape and safe `/files` responses; Better Auth endpoint allowlist, per-email OTP limits, verified-only account linking and admin, production `APP_ENV` default, session revocation on suspend; RevenueCat ordering/sandbox/transfer/Squad Pro binding; sync leaks (hidden squads, pending members, tombstones, blocked notifications); block checks on joins; tier limits on transfer, deletion and races; withdraw-request; body-size and per-day caps; chunked D1 lists; byte-bounded plan cache; linear fence parsing; local drafts/photos cleared on sign-out. New migration `0001_entitlement_ordering`.
+Fixed all 37 leads (DECISIONS E129–E142): R2 file-token key reuse/expiry/key escape and safe `/files` responses; Better Auth endpoint allowlist, per-email OTP limits, verified-only account linking and admin, production `APP_ENV` default, session revocation on suspend; RevenueCat ordering/sandbox/transfer/Squad Pro binding; sync leaks (hidden squads, pending members, tombstones, blocked notifications); block checks on joins; tier limits on transfer, deletion and races; withdraw-request; body-size and per-day caps; chunked D1 lists; byte-bounded plan cache; linear fence parsing; local drafts/photos cleared on sign-out. New migration `0002_entitlement_ordering`.
 
 Tests: `apps/api/test/security.test.ts` (29 tests) and `packages/shared/test/security.test.ts`; API 83 tests, mobile 199, shared green with 99% coverage. Typecheck and lint green.
 
-**Still needs you:** keep `APP_ENV=development` only in local `.dev.vars` (it was added to yours); confirm the `IP_LIMITER`/`USER_LIMITER` bindings are active in production; in RevenueCat, keep sandbox events pointed at a staging Worker or leave `REVENUECAT_ALLOW_SANDBOX` unset. Migration `0001_entitlement_ordering` is applied automatically by the next `pnpm run deploy` (E131).
+**Still needs you:** keep `APP_ENV=development` only in local `.dev.vars` (it was added to yours); confirm the `IP_LIMITER`/`USER_LIMITER` bindings are active in production; in RevenueCat, keep sandbox events pointed at a staging Worker or leave `REVENUECAT_ALLOW_SANDBOX` unset. Pending migrations (`0001_notify_settings`, `0002_entitlement_ordering`) are applied automatically by the next `pnpm run deploy` (E143).
+
+### Device pass (Android, Galaxy S25) — done
+
+First run on real hardware. Fixed: NativeWind wrapper breaking pressed-state styles (invisible yellow buttons, missing check-in tab button, stacked back chevron), Pressable layout props ignored (unequal button rows, inset links), keyboard covering comment composer and form footers under edge-to-edge, content scrolling behind the status bar, empty check-in sheet taking the full screen and hiding Today behind it, truncated "days shown up" stat, read-only check-in detail saying "Tap to mark done", plurals ("1 members", "1 check-ins"), "Half the tasks count". Windows note: the SDK's ninja 1.10 can't create long paths; replace `cmake/3.22.1/bin/ninja.exe` with ninja 1.12+.
+
+**Known:** Fast Refresh can leave the local store unreadable ("This squad isn't on your phone yet"); a full reload fixes it (dev only).
+
+### Discover, Squads and Badges redesign — done
+
+- Discover: All by default; scrolling category chips with icons (interests first); Popular now cards, Starting soon, templates rail, New squads; per-category sort (Popular / Starting soon / Newest) with paging; "Can't find the right one?" card. API `sort` param, full squads hidden (2 API tests).
+- 13 categories across shared, API, app and docs; onboarding interests use them.
+- Squads: rich squad cards (progress, today's avatars, my status / Check in), plan slot count, Find more squads suggestions.
+- Badges: 12 badges with tiers and family icons; summary with Up next; grouped grids; profile strip always shows three.
+
+### Notifications N1–N6 — done
+
+Comments and grouped fires (inbox), streak at risk and challenge starting (local), new members and milestone days (inbox), and a Notifications screen split into "From this phone" and "From your squads" with a switch per type. Migration `0001_notify_settings` (applied automatically by `pnpm run deploy`, E143).
+
+### Quick check-in, squad streaks, invite prompt, free BYOK builder — done
+
+Long-press the centre button to mark everything done (confirm first); streak flame on squad cards; Invite friends on solo squads; AI builder open to Free with the user's key (tag "Your key").

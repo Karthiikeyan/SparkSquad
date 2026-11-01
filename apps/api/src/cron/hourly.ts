@@ -1,4 +1,11 @@
-import { HARD_CAPS, addDays, endDate, localDateInZone, localHour } from '@sparksquad/shared';
+import {
+  HARD_CAPS,
+  addDays,
+  diffDays,
+  endDate,
+  localDateInZone,
+  localHour,
+} from '@sparksquad/shared';
 import { and, eq, inArray, isNotNull, isNull, like, lt, sql } from 'drizzle-orm';
 import { createDb, type Db } from '../db/client';
 import {
@@ -17,7 +24,7 @@ import {
 import type { Bindings } from '../env';
 import { chunks } from '../lib/chunk';
 import { expireLapsedSquadPro } from '../routes/webhooks';
-import { addNotification, sendPush } from '../services/notify';
+import { addNotification, addNotificationIf, sendPush } from '../services/notify';
 import { recomputeChallengeStreak, recomputeGlobalStreak } from '../services/streaks';
 import { finishChallenge } from './rollup';
 
@@ -33,6 +40,9 @@ const DIGEST_KINDS = [
   'challenge_ended',
   'badge',
   'role_changed',
+  'comment',
+  'fires',
+  'member_joined',
 ];
 
 async function usersInTimezones(db: Db, zones: string[]) {
@@ -82,6 +92,38 @@ async function settleStreaks(db: Db, zones: string[], now: Date): Promise<void> 
       }
     }
     await recomputeGlobalStreak(db, u.id, today);
+  }
+}
+
+/** Squad milestone days: fixed marks, plus halfway and the last day of any length. */
+export const MILESTONE_DAYS = [7, 21, 30, 50, 100];
+
+export function isMilestoneDay(n: number, duration: number): boolean {
+  if (n < 2 || n > duration) return false;
+  return MILESTONE_DAYS.includes(n) || n === Math.ceil(duration / 2) || n === duration;
+}
+
+/** Runs once per local day (digest hour), just before the digest so it's counted. */
+async function squadMilestones(db: Db, zones: string[], now: Date): Promise<void> {
+  for (const u of await usersInTimezones(db, zones)) {
+    const today = localDateInZone(now, u.timezone);
+    for (const { ch } of await activeChallengesFor(db, u.id)) {
+      const n = diffDays(ch.startDate, today) + 1;
+      if (!isMilestoneDay(n, ch.durationDays)) continue;
+      const sq = await db
+        .select({ name: squads.name })
+        .from(squads)
+        .where(eq(squads.id, ch.squadId))
+        .get();
+      await addNotificationIf(db, u.id, 'notifyMilestones', 'milestone', {
+        squadId: ch.squadId,
+        squadName: sq?.name ?? '',
+        challengeId: ch.id,
+        title: ch.title,
+        day: n,
+        total: ch.durationDays,
+      });
+    }
   }
 }
 
@@ -250,6 +292,7 @@ export async function runHourly(env: Bindings, now: Date = new Date()): Promise<
 
   const steps: [string, () => Promise<void>][] = [
     ['streaks', () => settleStreaks(db, at(STREAK_HOUR), now)],
+    ['milestones', () => squadMilestones(db, at(MORNING_DIGEST_HOUR), now)],
     ['morning', () => morningDigest(env, db, at(MORNING_DIGEST_HOUR), now)],
     ['evening', () => eveningDigest(env, db, at(EVENING_DIGEST_HOUR), now)],
     ['end', () => endFinishedChallenges(env, db, now)],

@@ -57,10 +57,10 @@ describe('Import plan (D5/D6)', () => {
 });
 
 describe('Plan source (D2)', () => {
-  it('lists the five ways to start with free/Plus tags', async () => {
+  it('lists the five ways to start with Free / Your key tags', async () => {
     await render(wrap(<PlanSourceScreen />));
     expect(screen.getByRole('button', { name: 'Build it with your AI, Free' })).toBeTruthy();
-    await fireEvent.press(screen.getByRole('button', { name: 'Generate in the app, Plus' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Generate in the app, Your key' }));
     expect(mockPush).toHaveBeenCalledWith('/create/ai-build');
     await fireEvent.press(screen.getByRole('button', { name: 'Start blank' }));
     expect(mockPush).toHaveBeenCalledWith('/create/blank');

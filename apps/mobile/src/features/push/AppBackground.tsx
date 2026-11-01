@@ -22,7 +22,7 @@ export function routeForNotification(data: Record<string, unknown> | undefined):
   const type = typeof data?.type === 'string' ? data.type : '';
   const squadId = typeof data?.squadId === 'string' ? data.squadId : '';
   if (type === 'inbox') return '/notifications';
-  if (type === 'digest' && squadId) return `/squad/${squadId}`;
+  if ((type === 'digest' || type === 'start') && squadId) return `/squad/${squadId}`;
   return '/today';
 }
 
@@ -61,12 +61,28 @@ export function AppBackground() {
       activeTitles: active.map((c) => c.challenge.title),
       todayDone: active.length > 0 && pendingCards(active).length === 0,
       notifyMissedDay: me.notifyMissedDay,
+      streak: today.data.streak,
+      notifyStreakRisk: me.notifyStreakRisk,
+      upcoming: today.data.cards
+        .filter((c) => c.state === 'upcoming')
+        .map((c) => ({
+          title: c.challenge.title,
+          startDate: c.challenge.startDate,
+          squadId: c.squad.id,
+        })),
+      notifyChallengeStart: me.notifyChallengeStart,
     });
     const timer = setTimeout(() => {
       applyReminders(planned).catch(() => undefined);
     }, 800);
     return () => clearTimeout(timer);
-  }, [today.data, me.reminderTime, me.notifyMissedDay]);
+  }, [
+    today.data,
+    me.reminderTime,
+    me.notifyMissedDay,
+    me.notifyStreakRisk,
+    me.notifyChallengeStart,
+  ]);
 
   useEffect(() => {
     const n = notifications();

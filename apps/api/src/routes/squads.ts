@@ -44,7 +44,7 @@ import {
   takeUsage,
 } from '../services/access';
 import { displayNameOf, toChallenge, toMember, toPublicUser, toSquad } from '../services/dto';
-import { addNotification } from '../services/notify';
+import { addNotification, addNotificationIf } from '../services/notify';
 import { activeChallenge, managerIds, recountMembers, uniqueInviteCode } from '../services/squads';
 import { memberConsistency } from '../services/leaderboard';
 
@@ -239,16 +239,27 @@ squadRoutes.post('/join', async (c) => {
     }
     throw await joinLimitError(d, me.id);
   }
+  // Notifications show the public display name, never the provider's account name.
+  const meRow = await d.select().from(user).where(eq(user.id, me.id)).get();
+  const myName = meRow ? displayNameOf(meRow) : 'Member';
   if (status === 'active') {
     await recountMembers(d, [sq.id]);
+    for (const id of managers) {
+      if (id === me.id) continue;
+      await addNotificationIf(d, id, 'notifyMembers', 'member_joined', {
+        squadId: sq.id,
+        squadName: sq.name,
+        userId: me.id,
+        name: myName,
+      });
+    }
   } else {
-    const meRow = await d.select().from(user).where(eq(user.id, me.id)).get();
     for (const id of managers) {
       await addNotification(d, id, 'join_request', {
         squadId: sq.id,
         squadName: sq.name,
         userId: me.id,
-        name: meRow ? displayNameOf(meRow) : 'Member',
+        name: myName,
       });
     }
   }

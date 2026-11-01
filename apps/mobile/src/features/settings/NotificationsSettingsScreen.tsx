@@ -9,6 +9,7 @@ import {
   ListRow,
   NavHeader,
   Screen,
+  SectionLabel,
   Text,
 } from '../../components/ui';
 import { t } from '../../i18n';
@@ -19,7 +20,7 @@ import { useMe } from '../auth/SessionProvider';
 import { dateToReminder, formatReminder, reminderToDate } from '../onboarding/time';
 import { useMePatch } from './useMePatch';
 
-/** F8: reminder time and the three notification switches; shows when the OS has them off. */
+/** F8: reminder time, phone reminders and squad notifications; shows when the OS has them off. */
 export function NotificationsSettingsScreen() {
   const me = useMe();
   const patch = useMePatch();
@@ -71,6 +72,7 @@ export function NotificationsSettingsScreen() {
         </View>
       ) : null}
 
+      <SectionLabel>{t('notificationsSettings.onPhone')}</SectionLabel>
       <GroupedList style={styles.group}>
         {Platform.OS === 'ios' ? (
           <ListRow
@@ -103,12 +105,26 @@ export function NotificationsSettingsScreen() {
           }}
         />
         <ListRow
-          title={t('notificationsSettings.squadUpdates')}
+          title={t('notificationsSettings.streakRisk')}
+          subtitle={t('notificationsSettings.streakRiskBody')}
           toggle={{
-            value: me.notifySquadUpdates,
-            onValueChange: (v) => void patch({ notifySquadUpdates: v }),
+            value: me.notifyStreakRisk,
+            onValueChange: (v) => void patch({ notifyStreakRisk: v }),
+          }}
+          testID="toggle-streak-risk"
+        />
+        <ListRow
+          title={t('notificationsSettings.challengeStart')}
+          subtitle={t('notificationsSettings.challengeStartBody')}
+          toggle={{
+            value: me.notifyChallengeStart,
+            onValueChange: (v) => void patch({ notifyChallengeStart: v }),
           }}
         />
+      </GroupedList>
+
+      <SectionLabel style={styles.section}>{t('notificationsSettings.fromSquad')}</SectionLabel>
+      <GroupedList style={styles.group}>
         <ListRow
           title={t('notificationsSettings.nudges')}
           toggle={{
@@ -116,8 +132,37 @@ export function NotificationsSettingsScreen() {
             onValueChange: (v) => void patch({ notifyNudges: v }),
           }}
         />
+        <ListRow
+          title={t('notificationsSettings.squadUpdates')}
+          subtitle={t('notificationsSettings.squadUpdatesBody')}
+          toggle={{
+            value: me.notifySquadUpdates,
+            onValueChange: (v) => void patch({ notifySquadUpdates: v }),
+          }}
+        />
+        <ListRow
+          title={t('notificationsSettings.comments')}
+          toggle={{
+            value: me.notifyComments,
+            onValueChange: (v) => void patch({ notifyComments: v }),
+          }}
+        />
+        <ListRow
+          title={t('notificationsSettings.members')}
+          toggle={{
+            value: me.notifyMembers,
+            onValueChange: (v) => void patch({ notifyMembers: v }),
+          }}
+        />
+        <ListRow
+          title={t('notificationsSettings.milestones')}
+          toggle={{
+            value: me.notifyMilestones,
+            onValueChange: (v) => void patch({ notifyMilestones: v }),
+          }}
+        />
       </GroupedList>
-      <GroupFooter>{t('notificationsSettings.squadUpdatesBody')}</GroupFooter>
+      <GroupFooter>{t('notificationsSettings.inboxNote')}</GroupFooter>
     </Screen>
   );
 }
@@ -125,6 +170,7 @@ export function NotificationsSettingsScreen() {
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
   group: { marginBottom: 0 },
+  section: { marginTop: 24 },
   banner: {
     backgroundColor: colors.surface,
     borderRadius: 16,

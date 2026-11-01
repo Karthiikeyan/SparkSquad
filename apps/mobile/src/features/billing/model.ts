@@ -39,7 +39,7 @@ export function comparisonRows(limits: Record<UserPlan, TierLimits>): Comparison
       plus: t('paywall.rowRecapPlus'),
     },
     { label: t('paywall.rowBuilder'), free: builder(free), plus: builder(plus) },
-  ];
+  ].filter((r) => r.free !== r.plus);
 }
 
 /** First number in a display price ("₹799", "$9.99", "1.299,00 €") as a JS number. */

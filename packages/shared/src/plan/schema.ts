@@ -3,7 +3,21 @@ import { z } from 'zod';
 export const PLAN_VERSION = 1 as const;
 export const PLAN_MAX_INPUT_BYTES = 512 * 1024;
 
-export const CATEGORIES = ['career', 'fitness', 'learning', 'other'] as const;
+export const CATEGORIES = [
+  'career',
+  'coding',
+  'exams',
+  'fitness',
+  'health',
+  'mindfulness',
+  'reading',
+  'learning',
+  'languages',
+  'productivity',
+  'finance',
+  'creative',
+  'other',
+] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export const TASK_TYPES = ['check', 'count', 'minutes'] as const;

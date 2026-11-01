@@ -1,3 +1,4 @@
+import { CATEGORIES } from '@sparksquad/shared';
 import { sql } from 'drizzle-orm';
 import {
   index,
@@ -34,6 +35,13 @@ export const user = sqliteTable(
       .notNull()
       .default(true),
     notifyNudges: integer('notify_nudges', { mode: 'boolean' }).notNull().default(true),
+    notifyComments: integer('notify_comments', { mode: 'boolean' }).notNull().default(true),
+    notifyMembers: integer('notify_members', { mode: 'boolean' }).notNull().default(true),
+    notifyMilestones: integer('notify_milestones', { mode: 'boolean' }).notNull().default(true),
+    notifyStreakRisk: integer('notify_streak_risk', { mode: 'boolean' }).notNull().default(true),
+    notifyChallengeStart: integer('notify_challenge_start', { mode: 'boolean' })
+      .notNull()
+      .default(true),
     ageConfirmedAt: text('age_confirmed_at'),
     termsAcceptedAt: text('terms_accepted_at'),
     plan: text('plan', { enum: ['free', 'plus'] })
@@ -108,7 +116,7 @@ export const squads = sqliteTable(
     name: text('name').notNull(),
     description: text('description').notNull().default(''),
     rules: text('rules').notNull().default(''),
-    category: text('category', { enum: ['career', 'fitness', 'learning', 'other'] }).notNull(),
+    category: text('category', { enum: CATEGORIES }).notNull(),
     privacy: text('privacy', { enum: ['public', 'private'] }).notNull(),
     ownerId: text('owner_id')
       .notNull()
@@ -479,7 +487,7 @@ export const templates = sqliteTable('templates', {
   id: text('id').primaryKey(),
   slug: text('slug').notNull().unique(),
   title: text('title').notNull(),
-  category: text('category', { enum: ['career', 'fitness', 'learning', 'other'] }).notNull(),
+  category: text('category', { enum: CATEGORIES }).notNull(),
   durationDays: integer('duration_days').notNull(),
   tasksPerDay: integer('tasks_per_day').notNull(),
   planKey: text('plan_key').notNull(),

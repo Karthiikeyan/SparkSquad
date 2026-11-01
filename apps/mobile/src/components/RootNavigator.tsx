@@ -32,7 +32,11 @@ export function RootNavigator() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
             name="checkin/[challengeId]"
-            options={{ presentation: 'transparentModal', animation: 'none' }}
+            options={{
+              presentation: 'transparentModal',
+              animation: 'none',
+              contentStyle: { backgroundColor: 'transparent' },
+            }}
           />
           <Stack.Screen
             name="checkin/success"

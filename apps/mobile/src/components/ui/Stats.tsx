@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { t } from '../../i18n';
 import { colors, fonts, radius } from '../../theme/tokens';
@@ -21,7 +22,7 @@ export function StatTile({ value, label, accent }: StatTileProps) {
       >
         {value}
       </Text>
-      <Text variant="footnote" color="label2" numberOfLines={1}>
+      <Text variant="footnote" color="label2" numberOfLines={2}>
         {label}
       </Text>
     </View>
@@ -85,13 +86,17 @@ export interface BadgeProps {
   glyph: string;
   label: string;
   earned: boolean;
+  /** 1–3: soft disc, ringed disc, solid amber disc. */
+  tier?: 1 | 2 | 3;
+  /** Small corner icon naming the badge family (streak, check-ins, milestone). */
+  icon?: LucideIcon;
 }
 
-/** Earned = soft amber disc; locked = dashed outline with progress copy. */
-export function Badge({ glyph, label, earned }: BadgeProps) {
+/** Earned = amber disc by tier; locked = dashed outline with progress copy. */
+export function Badge({ glyph, label, earned, tier, icon }: BadgeProps) {
   return (
     <View style={styles.badge} accessible accessibilityLabel={label}>
-      <BadgeDisc glyph={glyph} earned={earned} />
+      <BadgeDisc glyph={glyph} earned={earned} tier={tier} icon={icon} />
       <Text
         variant="caption"
         align="center"
@@ -104,17 +109,46 @@ export function Badge({ glyph, label, earned }: BadgeProps) {
   );
 }
 
-/** Just the 48 px disc (decorative; the row around it carries the label). */
-export function BadgeDisc({ glyph, earned }: Pick<BadgeProps, 'glyph' | 'earned'>) {
+/** Just the disc (decorative; the row around it carries the label). */
+export function BadgeDisc({
+  glyph,
+  earned,
+  tier = 1,
+  icon: Icon,
+  size = 48,
+}: Pick<BadgeProps, 'glyph' | 'earned' | 'tier' | 'icon'> & { size?: number }) {
+  const solid = earned && tier === 3;
+  const glyphColor = !earned ? colors.label3 : solid ? colors.onAccent : colors.accent;
   return (
     <View
-      style={[styles.badgeDisc, earned ? styles.badgeEarned : styles.badgeLocked]}
+      style={[
+        styles.badgeDisc,
+        { width: size, height: size, borderRadius: size / 2 },
+        !earned
+          ? styles.badgeLocked
+          : solid
+            ? styles.badgeSolid
+            : tier === 2
+              ? styles.badgeRinged
+              : styles.badgeEarned,
+      ]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <Text style={[styles.badgeGlyph, { color: earned ? colors.accent : colors.label3 }]} tabular>
+      <Text
+        style={[
+          styles.badgeGlyph,
+          { color: glyphColor, fontSize: size * 0.38, lineHeight: size * 0.46 },
+        ]}
+        tabular
+      >
         {glyph}
       </Text>
+      {Icon ? (
+        <View style={[styles.badgeIcon, { borderColor: colors.surface }]}>
+          <Icon size={11} color={earned ? colors.accent : colors.label3} strokeWidth={2.2} />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -141,13 +175,24 @@ const styles = StyleSheet.create({
   legendCell: { width: 10, height: 10, borderRadius: 3 },
   badge: { flex: 1, alignItems: 'center', gap: 6 },
   badgeDisc: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeEarned: { backgroundColor: colors.accentSoft },
+  badgeRinged: { backgroundColor: colors.accentSoft, borderWidth: 2, borderColor: colors.accent },
+  badgeSolid: { backgroundColor: colors.accent },
   badgeLocked: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: colors.strong },
   badgeGlyph: { fontFamily: fonts.display, fontSize: 18, lineHeight: 22 },
+  badgeIcon: {
+    position: 'absolute',
+    right: -3,
+    bottom: -3,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    backgroundColor: colors.surface2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

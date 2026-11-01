@@ -55,6 +55,8 @@ export function Button({
   const s = SIZE[size];
   const inactive = disabled || loading;
   const fg = labelColor ?? v.fg;
+  // Small ghost buttons are inline text links: no side padding so the text lines up with content.
+  const inline = variant === 'ghost' && size === 'sm';
   return (
     <Pressable
       testID={testID}
@@ -65,16 +67,23 @@ export function Button({
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: !!inactive, busy: !!loading }}
       hitSlop={
-        s.height < 44 ? { top: (44 - s.height) / 2, bottom: (44 - s.height) / 2 } : undefined
+        s.height < 44
+          ? {
+              top: (44 - s.height) / 2,
+              bottom: (44 - s.height) / 2,
+              left: inline ? 8 : 0,
+              right: inline ? 8 : 0,
+            }
+          : undefined
       }
       style={({ pressed }) => [
         styles.base,
         {
           height: s.height,
           borderRadius: s.radius,
-          paddingHorizontal: s.px,
-          backgroundColor: pressed && !inactive ? v.pressed : v.bg,
-          opacity: disabled ? 0.4 : 1,
+          paddingHorizontal: inline ? 0 : s.px,
+          backgroundColor: pressed && !inactive && !inline ? v.pressed : v.bg,
+          opacity: disabled ? 0.4 : pressed && inline ? 0.6 : 1,
         },
         style,
       ]}

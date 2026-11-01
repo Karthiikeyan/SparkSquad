@@ -1,5 +1,5 @@
 import { HARD_CAPS, localDateInZone, ulid, type NotificationKind } from '@sparksquad/shared';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../db/client';
 import { notifications, pushTokens, user } from '../db/schema';
 import type { Bindings } from '../env';
@@ -33,6 +33,60 @@ export async function addNotification(
       createdAt: ts,
       updatedAt: ts,
     })
+    .run();
+}
+
+type InboxSetting = 'notifyComments' | 'notifyMembers' | 'notifyMilestones';
+
+/** Adds an inbox item only when the recipient keeps that kind switched on. */
+export async function addNotificationIf(
+  db: Db,
+  userId: string,
+  setting: InboxSetting,
+  kind: NotificationKind,
+  payload: Record<string, unknown>,
+): Promise<void> {
+  const u = await db.select({ on: user[setting] }).from(user).where(eq(user.id, userId)).get();
+  if (u?.on) await addNotification(db, userId, kind, payload);
+}
+
+/**
+ * Fires are grouped: one unread "fires" item per check-in, updated with the latest count
+ * and name instead of a new row per tap.
+ */
+export async function notifyFires(
+  db: Db,
+  authorId: string,
+  payload: { checkinId: string; squadId: string; squadName: string; name: string; count: number },
+): Promise<void> {
+  const u = await db
+    .select({ on: user.notifyComments })
+    .from(user)
+    .where(eq(user.id, authorId))
+    .get();
+  if (!u?.on) return;
+  const existing = await db
+    .select({ id: notifications.id })
+    .from(notifications)
+    .where(
+      and(
+        eq(notifications.userId, authorId),
+        eq(notifications.kind, 'fires'),
+        isNull(notifications.readAt),
+        // Check-in ids may contain "_", a LIKE wildcard; escape so grouping matches exactly.
+        sql`${notifications.payload} like ${`%"checkinId":"${payload.checkinId.replace(/[\\%_]/g, (ch) => `\\${ch}`)}"%`} escape '\\'`,
+      ),
+    )
+    .get();
+  if (!existing) {
+    await addNotification(db, authorId, 'fires', payload);
+    return;
+  }
+  const ts = new Date().toISOString();
+  await db
+    .update(notifications)
+    .set({ payload: JSON.stringify(payload), createdAt: ts, updatedAt: ts })
+    .where(eq(notifications.id, existing.id))
     .run();
 }
 

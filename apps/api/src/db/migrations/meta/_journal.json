@@ -12,8 +12,15 @@
     {
       "idx": 1,
       "version": "6",
-      "when": 1793454681317,
-      "tag": "0001_entitlement_ordering",
+      "when": 1793475863293,
+      "tag": "0001_notify_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793506852363,
+      "tag": "0002_entitlement_ordering",
       "breakpoints": true
     }
   ]
