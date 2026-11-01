@@ -12,7 +12,8 @@ import {
   Trash2,
 } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Alert } from '../../../components/ui/Dialog';
 import {
   Avatar,
   BottomSheet,

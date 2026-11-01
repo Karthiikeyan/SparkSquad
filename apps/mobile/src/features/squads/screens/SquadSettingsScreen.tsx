@@ -10,7 +10,8 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Alert } from '../../../components/ui/Dialog';
 import {
   BottomSheet,
   Button,

@@ -7,6 +7,7 @@ export { Checkbox } from './Checkbox';
 export { CountRing } from './CountRing';
 export { ChipToggle } from './ChipToggle';
 export { DayStrip, type DayState, type StripDay } from './DayStrip';
+export { DialogHost, showDialog, type DialogButton } from './Dialog';
 export { GroupedList, GroupFooter, ListRow, SectionLabel } from './GroupedList';
 export { IconButton } from './IconButton';
 export { NavHeader } from './NavHeader';

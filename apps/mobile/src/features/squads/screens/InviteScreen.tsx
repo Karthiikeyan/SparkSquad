@@ -1,7 +1,8 @@
 import * as Clipboard from 'expo-clipboard';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Share, StyleSheet, View } from 'react-native';
+import { Share, StyleSheet, View } from 'react-native';
+import { Alert } from '../../../components/ui/Dialog';
 import QRCode from 'react-native-qrcode-svg';
 import {
   Button,

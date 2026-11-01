@@ -2,7 +2,8 @@ import { integrationSchema, TEXT_LIMITS } from '@sparksquad/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import { Alert } from '../../components/ui/Dialog';
 import {
   Button,
   GroupedList,

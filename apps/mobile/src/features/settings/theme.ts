@@ -1,4 +1,5 @@
-import { Alert, Appearance } from 'react-native';
+import { Appearance } from 'react-native';
+import { Alert } from '../../components/ui/Dialog';
 import { t } from '../../i18n';
 import { setPref, type Prefs } from '../../lib/prefs';
 

@@ -2,7 +2,8 @@ import type { MemberDTO, Role } from '@sparksquad/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Alert } from '../../../components/ui/Dialog';
 import {
   Avatar,
   BottomSheet,

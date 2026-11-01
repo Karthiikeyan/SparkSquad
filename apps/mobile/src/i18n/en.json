@@ -1,5 +1,6 @@
 {
   "common": {
+    "ok": "OK",
     "retry": "Try again",
     "cancel": "Cancel",
     "close": "Close",

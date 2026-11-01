@@ -1,7 +1,8 @@
 import { reportReasonSchema, TEXT_LIMITS, type ReportInput } from '@sparksquad/shared';
 import { Check } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert } from '../../components/ui/Dialog';
 import { BottomSheet, Button, Text, TextField, useToast } from '../../components/ui';
 import { t } from '../../i18n';
 import { endpoints } from '../../lib/api/endpoints';

@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ErrorState, ToastProvider } from '../components/ui';
+import { DialogHost, ErrorState, ToastProvider } from '../components/ui';
 import { SessionProvider } from '../features/auth/SessionProvider';
 import { ForceUpdateScreen, useMinVersionCheck } from '../features/system/ForceUpdate';
 import { t } from '../i18n';
@@ -96,6 +96,7 @@ export function AppProviders({ children, onReady }: { children: ReactNode; onRea
         <QueryClientProvider client={queryClient}>
           <ToastProvider>
             <LocalInvalidation />
+            <DialogHost />
             <RuntimeGate onReady={onReady}>
               <UpdateGate>
                 <SessionProvider>{children}</SessionProvider>

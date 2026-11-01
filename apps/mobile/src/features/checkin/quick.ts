@@ -3,7 +3,7 @@ import * as Haptics from 'expo-haptics';
 import { getCalendars } from 'expo-localization';
 import { router } from 'expo-router';
 import { useCallback, useRef } from 'react';
-import { Alert } from 'react-native';
+import { Alert } from '../../components/ui/Dialog';
 import { useToast } from '../../components/ui';
 import { t } from '../../i18n';
 import { track } from '../../lib/analytics';
