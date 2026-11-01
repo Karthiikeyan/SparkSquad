@@ -1,3 +1,4 @@
+import { ensureAiConsent } from '../../ai/consent';
 import { buildPrompt, limitsFor } from '@sparksquad/shared';
 import { router, useFocusEffect } from 'expo-router';
 import { KeyRound, Send } from 'lucide-react-native';
@@ -23,7 +24,13 @@ import { useOnline } from '../../../lib/hooks/useOnline';
 import { getPref } from '../../../lib/prefs';
 import { colors, fonts, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
-import { AI_COMPANY, AiError, sendChat, type ChatMessage } from '../../ai/providers';
+import {
+  AI_COMPANY,
+  AI_PROVIDER_LABEL,
+  AiError,
+  sendChat,
+  type ChatMessage,
+} from '../../ai/providers';
 import {
   buildRepairMessage,
   dailyLimit,
@@ -35,15 +42,6 @@ import { todayFor } from '../../today/model';
 import { useCreateFlow } from '../flow';
 
 type Phase = 'goal' | 'chat' | 'busy' | 'repairing' | 'failed';
-
-const PROVIDER_LABEL: Record<
-  AiProvider,
-  'aiSettings.gemini' | 'aiSettings.openai' | 'aiSettings.anthropic'
-> = {
-  gemini: 'aiSettings.gemini',
-  openai: 'aiSettings.openai',
-  anthropic: 'aiSettings.anthropic',
-};
 
 /** D8: BYOK interview → JSON plan → shared parser → one repair round → Import preview (D5). */
 export function AiBuildScreen() {
@@ -165,6 +163,7 @@ export function AiBuildScreen() {
   const send = (text: string) => {
     const value = text.trim();
     if (!value) return;
+    // No need to ask again here: `start` already asked before the first message.
     setDraft('');
     setNotice(null);
     const history = [...messages, { role: 'user' as const, text: value }];
@@ -173,7 +172,8 @@ export function AiBuildScreen() {
     void handle(history, false);
   };
 
-  const start = () => {
+  const start = async () => {
+    if (!(await ensureAiConsent(provider))) return;
     setNotice(null);
     const history: ChatMessage[] = [{ role: 'user', text: buildPrompt(flow.goal, { byok: true }) }];
     setMessages(history);
@@ -196,7 +196,7 @@ export function AiBuildScreen() {
         />
         <Button
           label={t('aiBuild.start')}
-          onPress={start}
+          onPress={() => void start()}
           disabled={!flow.goal.trim()}
           testID="ai-start"
         />
@@ -234,7 +234,7 @@ export function AiBuildScreen() {
               >
                 <KeyRound size={12} color={colors.chipLabel} strokeWidth={iconStroke} />
                 <Text variant="caption" style={styles.keyChipText}>
-                  {t('aiBuild.keyChip', { provider: t(PROVIDER_LABEL[provider]) })}
+                  {t('aiBuild.keyChip', { provider: t(AI_PROVIDER_LABEL[provider]) })}
                 </Text>
               </Pressable>
             }

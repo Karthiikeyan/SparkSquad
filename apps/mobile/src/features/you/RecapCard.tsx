@@ -6,6 +6,7 @@ import { t } from '../../i18n';
 import { getAiKey, type AiProvider } from '../../lib/aiKeys';
 import { getPref } from '../../lib/prefs';
 import { colors, iconStroke } from '../../theme/tokens';
+import { ensureAiConsent } from '../ai/consent';
 import { onDeviceAvailable, onDeviceText } from '../ai/onDevice';
 import { sendChat } from '../ai/providers';
 import { dailyLimit, takeRequest } from '../ai/session';
@@ -47,6 +48,7 @@ export function RecapCard({ summary, today, canRewrite, onError }: Props) {
 
   const rewrite = async () => {
     if (!engine) return;
+    if (engine.kind === 'byok' && !(await ensureAiConsent(engine.provider))) return;
     const prompt = t('recap.prompt', { summary });
     // On-device costs nothing, so only the user's own key counts toward the daily cap.
     if (engine.kind === 'byok' && !takeRequest(today)) {

@@ -68,6 +68,8 @@ export interface SubmitArgs {
   draft: DraftValues;
   note: string | null;
   honestMiss: boolean;
+  /** Comeback day: one finished task counts as the day (the server re-checks). */
+  restart?: boolean;
   hasPhoto: boolean;
   partialCounts: boolean;
   existing: CheckinDTO | null;
@@ -87,7 +89,8 @@ export interface SubmitResult {
 export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
   const now = (a.now ?? new Date()).toISOString();
   const values = a.honestMiss ? [] : toTaskValues(a.tasks, a.draft);
-  const { status, fraction } = computeCheckinStatus(a.tasks, values, a.honestMiss);
+  const { status, fraction, completed } = computeCheckinStatus(a.tasks, values, a.honestMiss);
+  const restart = !!a.restart && !a.honestMiss && completed >= 1;
   const id = a.existing?.id ?? ulid();
   const note = a.note?.trim() ? a.note.trim() : null;
   const verified = a.honestMiss
@@ -106,6 +109,7 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     values,
     note,
     hasPhoto: a.hasPhoto,
+    ...(restart ? { restart: true } : {}),
     photoUrl: a.existing?.photoUrl ?? null,
     verified,
     reactionCount: a.existing?.reactionCount ?? 0,
@@ -122,6 +126,7 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     values,
     note,
     honestMiss: a.honestMiss,
+    ...(restart ? { restart: true } : {}),
     hasPhoto: a.hasPhoto,
     ...(verified.length ? { verified } : {}),
     // Removing a shared photo on edit clears it on the server too.
@@ -135,5 +140,5 @@ export async function submitCheckin(a: SubmitArgs): Promise<SubmitResult> {
     input,
     ...(photoUri ? { photoUri } : {}),
   });
-  return { checkin, countsDone: countsAsDone(status, fraction, a.partialCounts) };
+  return { checkin, countsDone: restart || countsAsDone(status, fraction, a.partialCounts) };
 }

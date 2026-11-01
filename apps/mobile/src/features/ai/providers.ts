@@ -1,3 +1,4 @@
+import type { TKey } from '../../i18n';
 import type { AiProvider } from '../../lib/aiKeys';
 
 export interface ChatMessage {
@@ -8,15 +9,31 @@ export interface ChatMessage {
 /** Default models per provider (small, cheap, long output). Change here only. */
 export const AI_MODELS: Record<AiProvider, string> = {
   gemini: 'gemini-2.5-flash',
+  groq: 'openai/gpt-oss-20b',
+  // OpenRouter's router picks whichever free model is up, so free model churn can't break this.
+  openrouter: 'openrouter/free',
   openai: 'gpt-4.1-mini',
   anthropic: 'claude-haiku-4-5',
 };
 
 export const AI_COMPANY: Record<AiProvider, string> = {
   gemini: 'Google',
+  groq: 'Groq',
+  openrouter: 'OpenRouter',
   openai: 'OpenAI',
   anthropic: 'Anthropic',
 };
+
+export const AI_PROVIDER_LABEL: Record<AiProvider, TKey> = {
+  gemini: 'aiSettings.gemini',
+  groq: 'aiSettings.groq',
+  openrouter: 'aiSettings.openrouter',
+  openai: 'aiSettings.openai',
+  anthropic: 'aiSettings.anthropic',
+};
+
+/** Providers with a free tier: shown first and tagged "Free" in settings. */
+export const AI_FREE_PROVIDERS: readonly AiProvider[] = ['gemini', 'groq', 'openrouter'];
 
 /** Why a provider call failed, without echoing anything secret. */
 export class AiError extends Error {
@@ -25,6 +42,12 @@ export class AiError extends Error {
     this.name = 'AiError';
   }
 }
+
+const OPENAI_STYLE_URL = {
+  openai: 'https://api.openai.com/v1/chat/completions',
+  groq: 'https://api.groq.com/openai/v1/chat/completions',
+  openrouter: 'https://openrouter.ai/api/v1/chat/completions',
+} as const;
 
 interface ProviderRequest {
   url: string;
@@ -72,14 +95,15 @@ export function buildRequest(
       read: (json) => texts(get(json, ['candidates', 0, 'content', 'parts'])),
     };
   }
-  if (provider === 'openai') {
+  // OpenAI, Groq and OpenRouter speak the same chat format.
+  if (provider === 'openai' || provider === 'groq' || provider === 'openrouter') {
     return {
-      url: 'https://api.openai.com/v1/chat/completions',
+      url: OPENAI_STYLE_URL[provider],
       headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
       body: {
-        model: AI_MODELS.openai,
+        model: AI_MODELS[provider],
         messages: messages.map((m) => ({ role: m.role, content: m.text })),
-        max_completion_tokens: 16_000,
+        ...(provider === 'openrouter' ? { max_tokens: 16_000 } : { max_completion_tokens: 16_000 }),
       },
       read: (json) => {
         const c = get(json, ['choices', 0, 'message', 'content']);
@@ -122,7 +146,8 @@ export async function sendChat(
     throw new AiError('network');
   }
   if (res.status === 401 || res.status === 403) throw new AiError('auth');
-  if (res.status === 429) throw new AiError('rate');
+  // OpenRouter answers 402 when the free allowance or credits run out.
+  if (res.status === 429 || res.status === 402) throw new AiError('rate');
   if (!res.ok) throw new AiError('server');
   const text = req.read(await res.json().catch(() => null)).trim();
   if (!text) throw new AiError('empty');

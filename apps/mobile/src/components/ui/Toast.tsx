@@ -12,7 +12,7 @@ import {
 import { AccessibilityInfo, Animated, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useReducedMotion } from '../../lib/hooks/useReducedMotion';
-import { colors, iconStroke, motion, radius, space } from '../../theme/tokens';
+import { colors, iconStroke, motion, radius, tabBarHeight } from '../../theme/tokens';
 import { Text } from './Text';
 
 export type ToastKind = 'success' | 'info' | 'error';
@@ -78,7 +78,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const api = useMemo(() => ({ show, setAboveTabBar }), [show]);
   const Icon = toast ? ICON[toast.kind] : null;
-  const bottom = (aboveTabBar ? space.tabBar : insets.bottom) + 12;
+  const bottom = (aboveTabBar ? tabBarHeight(insets.bottom) : insets.bottom) + 12;
 
   return (
     <ToastContext.Provider value={api}>

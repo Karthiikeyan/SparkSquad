@@ -1,0 +1,387 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Reading 30",
+  "goal": "Read every day for 30 days and finish at least one book",
+  "category": "reading",
+  "duration_days": 30,
+  "days_per_week": 7,
+  "phases": [
+    {
+      "name": "Start small",
+      "from_day": 1,
+      "to_day": 7
+    },
+    {
+      "name": "Build the habit",
+      "from_day": 8,
+      "to_day": 21
+    },
+    {
+      "name": "Read longer",
+      "from_day": 22,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Read 10 minutes",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Read and reflect",
+      "tasks": [
+        {
+          "title": "Read for 10 minutes",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Write one idea worth keeping",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Read 15 minutes",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Read and reflect",
+      "tasks": [
+        {
+          "title": "Read for 15 minutes",
+          "type": "minutes",
+          "target": 15
+        },
+        {
+          "title": "Write one idea worth keeping",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Read 20 minutes",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Read and reflect",
+      "tasks": [
+        {
+          "title": "Read for 20 minutes",
+          "type": "minutes",
+          "target": 20
+        },
+        {
+          "title": "Write one idea worth keeping",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 22,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Read and reflect",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        },
+        {
+          "title": "Write one idea worth keeping",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 29,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Read 25 minutes",
+      "tasks": [
+        {
+          "title": "Read for 25 minutes",
+          "type": "minutes",
+          "target": 25
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "One week of reading"
+    },
+    {
+      "day": 21,
+      "title": "Three weeks, it is a habit now"
+    },
+    {
+      "day": 30,
+      "title": "30 days of reading complete"
+    }
+  ]
+}

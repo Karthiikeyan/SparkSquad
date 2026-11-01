@@ -19,10 +19,11 @@ function reversedClientId(clientId: string | undefined): string | null {
 }
 
 const googleIosScheme = reversedClientId(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID);
-const easProjectId = process.env.EAS_PROJECT_ID;
+const easProjectId = '428c8db3-afbc-469a-9171-e22395ed37eb';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
+  owner: 'spark-squad',
   name,
   slug: 'sparksquad',
   scheme: 'sparksquad',
@@ -39,6 +40,34 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: bundleId,
     supportsTablet: false,
     usesAppleSignIn: true,
+    infoPlist: {
+      // HTTPS only, so no export compliance paperwork on each upload.
+      ITSAppUsesNonExemptEncryption: false,
+      // Development builds still need plain HTTP to reach the PC.
+      ...(IS_DEV ? {} : { NSAppTransportSecurity: { NSAllowsArbitraryLoads: false } }),
+    },
+    privacyManifests: {
+      NSPrivacyTracking: false,
+      NSPrivacyTrackingDomains: [],
+      NSPrivacyAccessedAPITypes: [
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryUserDefaults',
+          NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryFileTimestamp',
+          NSPrivacyAccessedAPITypeReasons: ['C617.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategorySystemBootTime',
+          NSPrivacyAccessedAPITypeReasons: ['35F9.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryDiskSpace',
+          NSPrivacyAccessedAPITypeReasons: ['E174.1'],
+        },
+      ],
+    },
   },
   android: {
     package: bundleId,
@@ -48,6 +77,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     blockedPermissions: [
       'android.permission.READ_MEDIA_AUDIO',
       'android.permission.READ_MEDIA_VIDEO',
+      // Play's photo policy: proofs use the system picker, which needs no permission, and share
+      // cards are saved write-only.
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.READ_MEDIA_VISUAL_USER_SELECTED',
+      'android.permission.ACCESS_MEDIA_LOCATION',
+      // Add to calendar opens the phone's own "new event" screen.
+      'android.permission.READ_CALENDAR',
+      'android.permission.WRITE_CALENDAR',
+      // No ads, so no advertising ID.
+      'com.google.android.gms.permission.AD_ID',
       // Added by the React Native template for dev tools; the app never draws over other apps.
       'android.permission.SYSTEM_ALERT_WINDOW',
     ],
@@ -63,17 +102,69 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     'expo-router',
+    [
+      'expo-quick-actions',
+      {
+        androidIcons: {
+          shortcut_checkin: {
+            foregroundImage: './assets/images/shortcut-checkin.png',
+            backgroundColor: '#000000',
+          },
+          shortcut_today: {
+            foregroundImage: './assets/images/shortcut-today.png',
+            backgroundColor: '#000000',
+          },
+          shortcut_invite: {
+            foregroundImage: './assets/images/shortcut-invite.png',
+            backgroundColor: '#000000',
+          },
+        },
+      },
+    ],
+    [
+      'react-native-android-widget',
+      {
+        widgets: [
+          {
+            name: 'SquadToday',
+            label: 'SparkSquad today',
+            description: "Tick off today's tasks from your home screen",
+            // Small minimums and no maximum: resize it freely, the layout follows the size.
+            minWidth: '180dp',
+            minHeight: '70dp',
+            targetCellWidth: 4,
+            targetCellHeight: 3,
+            resizeMode: 'horizontal|vertical',
+            previewImage: './assets/images/widget-preview.png',
+            // Android refreshes it at least this often; the app also redraws it on every change.
+            updatePeriodMillis: 3_600_000,
+          },
+        ],
+      },
+    ],
     'expo-font',
     'expo-localization',
-    'expo-secure-store',
+    // Keys are never gated on Face ID, so no permission text for it.
+    ['expo-secure-store', { faceIDPermission: false }],
     'expo-sqlite',
     'expo-apple-authentication',
     'expo-sharing',
+    // Only the Add to calendar sheet is used; iOS still needs these strings in the build.
+    [
+      'expo-calendar',
+      {
+        calendarPermission: 'SparkSquad adds your challenge to your calendar when you ask it to.',
+        writeOnlyCalendarPermission:
+          'SparkSquad adds your challenge to your calendar when you ask it to.',
+        remindersPermission: false,
+      },
+    ],
     [
       'expo-media-library',
       {
         savePhotosPermission: 'SparkSquad saves share cards you make to your photos.',
-        photosPermission: 'SparkSquad saves share cards you make to your photos.',
+        photosPermission:
+          'SparkSquad uses your photos so you can add proof to a check-in, and saves share cards you make.',
         isAccessMediaLocationEnabled: false,
       },
     ],
@@ -94,7 +185,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       '@kingstinct/react-native-healthkit',
       {
         NSHealthShareUsageDescription:
-          'SparkSquad reads your step count so step tasks can tick themselves off. Steps stay on this phone.',
+          'SparkSquad reads your step count so step tasks fill in. It only leaves this phone in a check-in you submit.',
         NSHealthUpdateUsageDescription: false,
         background: false,
       },
@@ -120,7 +211,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         backgroundColor: '#000000',
         image: './assets/images/splash-icon.png',
-        imageWidth: 96,
+        imageWidth: 180,
       },
     ],
   ],

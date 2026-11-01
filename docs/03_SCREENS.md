@@ -54,8 +54,8 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 |---|---|---|---|
 | D1 | Squad basics | `create/basics` | Step 1 of 3: name, description, category chips, privacy (Public/Private), member limit (default 100), WhatsApp URL optional. Enforce Free owns-1 limit → paywall. |
 | D2 | Set up the plan **[D] CreateSquad** | `create/plan` | Step 2 of 3: Use a template / Import a plan file / Build it with your AI (Free) / Generate in the app (BYOK, Plus) / Start blank. |
-| D3 | Templates | `create/templates` | Grid of templates by category with days and tasks/day. |
-| D4 | Template detail | `create/templates/[id]` | Same preview as import (stats + first days) + Use this plan. |
+| D3 | Templates | `create/templates` | Cards with icon, title, one line on what it's for, days and tasks/day; category filter row. |
+| D4 | Template detail | `create/templates/[id]` | Hero with goal and stats, phases, what a day looks like, milestones, day list; start date and Use this plan pinned at the bottom. |
 | D5 | Import plan **[D] ImportPlan** | `create/import` | Pasted text preview, Paste again / Choose a file, result card (title, goal), stats (days, tasks, review days, phases), "N items were fixed" disclosure, first days preview, See all days, Start date row, Import plan. |
 | D6 | Import error | same | "This isn't a SparkSquad plan" with exact reason, buttons Copy the prompt again / Paste again. Partial-parse errors listed per day. |
 | D7 | Build with your AI **[D] AIPrompt** | `create/ai-prompt` | 1 goal field, 2 prompt preview + Copy prompt, 3 open ChatGPT / Gemini / Claude (deep links/URLs), 4 Paste the AI's reply → D5. |
@@ -67,7 +67,7 @@ Routes use Expo Router (`apps/mobile/app/`). Tab bar on the 4 tab roots only; th
 ## E. Discover (tab 3)  `(tabs)/discover`
 | # | Screen | Route | Notes |
 |---|---|---|---|
-| E1 | Discover **[D] Discover** | `(tabs)/discover` | Search; scrolling category filter (All first, then my interests); All shows Popular now (cards), Starting soon, Plan templates rail, New squads; a category shows Popular / Starting soon / Newest with paging and its templates; Start a squad card. Full squads are hidden. |
+| E1 | Discover **[D] Discover** | `(tabs)/discover` | Search; one-row category filter (All, three categories with my interests first, filter button opening every category and the sort); All shows Popular now (cards), Starting soon, Plan templates rail, New squads; a category or sort choice shows the paged list and its templates; Start a squad card. Full squads are hidden. |
 | E2 | Search results | `discover/search` | Squads and templates sections; recent searches when empty. |
 | E3 | Squad preview | `squad/[id]/preview` | Public info before joining: description, rules, plan summary, members count, start date, Join / Request to join. Also the landing for invite deep links (`sparksquad://join/CODE`; https invite links on the API domain `/join/CODE` that redirect to the store if the app is missing, upgradeable to universal links once a custom domain exists). |
 | E4 | Join with code | `join` | 6-char code input → E3. |

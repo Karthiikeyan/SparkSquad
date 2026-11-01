@@ -2,6 +2,7 @@ import {
   TIER_LIMITS,
   addDays,
   applyDayOutcome,
+  bridgedDates,
   dateRange,
   diffDays,
   endDate,
@@ -87,6 +88,7 @@ export async function recomputeChallengeStreak(
       localDate: checkins.localDate,
       countsDone: checkins.countsDone,
       status: checkins.status,
+      restart: checkins.restart,
     })
     .from(checkins)
     .where(and(eq(checkins.challengeId, ch.id), eq(checkins.userId, userId)))
@@ -96,13 +98,18 @@ export async function recomputeChallengeStreak(
   const last = endDate(ch.startDate, ch.durationDays);
   const until = today < last ? today : last;
   const dates = until >= ch.startDate ? dateRange(ch.startDate, until) : [];
+  const bridged = bridgedDates(
+    rows.map((r) => ({ date: r.localDate, done: r.countsDone, restart: r.restart })),
+    ch.startDate,
+    (d) => rest.has(diffDays(ch.startDate, d) + 1),
+  );
   const result = replay(
     dates,
     (d) => {
       const dayNum = diffDays(ch.startDate, d) + 1;
       const row = byDate.get(d);
       if (row?.countsDone) return 'done';
-      if (rest.has(dayNum)) return 'rest';
+      if (rest.has(dayNum) || bridged.has(d)) return 'rest';
       if (row?.status === 'honest_miss') return d === today ? 'pending' : 'honest_miss';
       return d === today ? 'pending' : 'missed';
     },
@@ -121,16 +128,23 @@ export async function recomputeGlobalStreak(
   const plan = await userPlan(db, userId);
   const since = addDays(today, -GLOBAL_LOOKBACK_DAYS);
   const rows = await db
-    .selectDistinct({ localDate: checkins.localDate })
+    .select({ localDate: checkins.localDate, restart: checkins.restart })
     .from(checkins)
     .where(and(eq(checkins.userId, userId), gte(checkins.localDate, since)))
     .all();
   const days = new Set(rows.map((r) => r.localDate));
   const first = [...days].sort()[0];
   const dates = first && first <= today ? dateRange(first, today) : [];
+  const bridged = first
+    ? bridgedDates(
+        rows.map((r) => ({ date: r.localDate, done: true, restart: r.restart })),
+        first,
+        () => false,
+      )
+    : new Set<LocalDate>();
   const result = replay(
     dates,
-    (d) => (days.has(d) ? 'done' : d === today ? 'pending' : 'missed'),
+    (d) => (days.has(d) ? 'done' : bridged.has(d) ? 'rest' : d === today ? 'pending' : 'missed'),
     TIER_LIMITS[plan].freezesBanked,
   );
   await saveStreak(db, userId, GLOBAL_SCOPE, result.state);
@@ -141,7 +155,7 @@ export async function recomputeGlobalStreak(
 export async function awardBadges(
   db: Db,
   userId: string,
-  facts: { currentStreak: number; challengeCompleted?: boolean },
+  facts: { currentStreak: number; challengeCompleted?: boolean; moments?: readonly BadgeId[] },
 ): Promise<BadgeId[]> {
   const owned = await db
     .select({ badge: badges.badge })
@@ -158,6 +172,7 @@ export async function awardBadges(
       totalCheckins: total?.n ?? 0,
       currentStreak: facts.currentStreak,
       challengeCompleted: facts.challengeCompleted ?? false,
+      moments: facts.moments ?? [],
     },
     new Set(owned.map((o) => o.badge as BadgeId)),
   );

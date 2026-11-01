@@ -23,7 +23,9 @@ import type { DraftValues } from '../checkin/submit';
 import { markReadLocally } from '../notifications/data';
 import { freezeNotice } from '../notifications/model';
 import { useRefresh } from '../system/useRefresh';
+import { refreshWidget } from '../widget/sync';
 import { ChallengeCard } from './ChallengeCard';
+import { ComebackBanner } from './ComebackBanner';
 import { BellButton, StreakPill } from './HeaderActions';
 import { timeZoneOf, type TodayCard } from './model';
 import { useNotificationsList, useToday, useUnreadCount } from './useToday';
@@ -94,29 +96,32 @@ export function TodayScreen() {
     body = (
       <View style={styles.cards}>
         {today.data.cards.map((card) => (
-          <ChallengeCard
-            key={card.challenge.id}
-            card={card}
-            draft={draftFor(card)}
-            onToggle={(i) => {
-              const task = card.day?.tasks[i];
-              if (!task) return;
-              setDrafts((cur) => ({
-                ...cur,
-                [draftKey(card)]: toggleTask(
-                  card.challenge.id,
-                  card.today,
-                  draftFor(card),
-                  i,
-                  task,
-                ),
-              }));
-            }}
-            onCheckIn={(date) => openCheckin(card, date)}
-            onOpenSquad={() =>
-              router.push({ pathname: '/squad/[id]', params: { id: card.squad.id } })
-            }
-          />
+          <View key={card.challenge.id} style={styles.cards}>
+            {card.comeback ? <ComebackBanner card={card} /> : null}
+            <ChallengeCard
+              card={card}
+              draft={draftFor(card)}
+              onToggle={(i) => {
+                const task = card.day?.tasks[i];
+                if (!task) return;
+                setDrafts((cur) => ({
+                  ...cur,
+                  [draftKey(card)]: toggleTask(
+                    card.challenge.id,
+                    card.today,
+                    draftFor(card),
+                    i,
+                    task,
+                  ),
+                }));
+                refreshWidget();
+              }}
+              onCheckIn={(date) => openCheckin(card, date)}
+              onOpenSquad={() =>
+                router.push({ pathname: '/squad/[id]', params: { id: card.squad.id } })
+              }
+            />
+          </View>
         ))}
       </View>
     );

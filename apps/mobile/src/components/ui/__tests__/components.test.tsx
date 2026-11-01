@@ -14,6 +14,8 @@ import {
   PhaseBar,
   ProgressBar,
   SegmentedControl,
+  parseTyped,
+  shouldDismiss,
   Stepper,
   Switch,
   TabBar,
@@ -54,6 +56,53 @@ describe('Stepper', () => {
     expect(screen.getByText('2')).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: 'Decrease minutes' }));
     expect(screen.getByText('1')).toBeTruthy();
+  });
+});
+
+describe('Stepper typing and holding', () => {
+  function Harness() {
+    const [v, setV] = useState(100);
+    return <Stepper value={v} onChange={setV} label="members" min={2} max={100} />;
+  }
+
+  it('lets you type a number and clamps it to the range', async () => {
+    await render(<Harness />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Type members' }));
+    const input = screen.getByTestId('stepper-input');
+    await fireEvent.changeText(input, '10');
+    await fireEvent(input, 'submitEditing');
+    expect(screen.getByText('10')).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Type members' }));
+    const again = screen.getByTestId('stepper-input');
+    await fireEvent.changeText(again, '999');
+    await fireEvent(again, 'blur');
+    expect(screen.getByText('100')).toBeTruthy();
+  });
+
+  it('keeps the value when the field is left empty', async () => {
+    await render(<Harness />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Type members' }));
+    const input = screen.getByTestId('stepper-input');
+    await fireEvent.changeText(input, '');
+    await fireEvent(input, 'blur');
+    expect(screen.getByText('100')).toBeTruthy();
+  });
+
+  it('parses typed text', () => {
+    expect(parseTyped('42', 2, 100)).toBe(42);
+    expect(parseTyped(' 1,000 ', 2, 100)).toBe(100);
+    expect(parseTyped('1', 2, 100)).toBe(2);
+    expect(parseTyped('abc', 2, 100)).toBeNull();
+  });
+});
+
+describe('BottomSheet swipe', () => {
+  it('closes on a long drag or a flick, and springs back otherwise', () => {
+    expect(shouldDismiss(120, 0)).toBe(true);
+    expect(shouldDismiss(40, 1.2)).toBe(true);
+    expect(shouldDismiss(40, 0.2)).toBe(false);
+    expect(shouldDismiss(10, 2)).toBe(false);
   });
 });
 

@@ -49,7 +49,8 @@ export function Screen({
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const online = useOnline();
-  const bottomPad = withTabBar ? space.tabBar + 16 : Math.max(insets.bottom, 16) + 16;
+  // The tab bar sits below the screen, so tab roots only need breathing room.
+  const bottomPad = withTabBar ? 24 : Math.max(insets.bottom, 16) + 16;
 
   const head = (
     <>
@@ -111,12 +112,7 @@ export function Screen({
         </View>
       )}
       {footer ? (
-        <View
-          style={[
-            styles.footer,
-            { paddingBottom: withTabBar ? space.tabBar + 12 : insets.bottom + 12 },
-          ]}
-        >
+        <View style={[styles.footer, { paddingBottom: withTabBar ? 12 : insets.bottom + 12 }]}>
           {footer}
         </View>
       ) : null}

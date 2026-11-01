@@ -16,12 +16,16 @@ export interface ReminderInput {
   /** Challenges that haven't started yet (startDate is a local YYYY-MM-DD). */
   upcoming?: readonly { title: string; startDate: string; squadId: string }[];
   notifyChallengeStart?: boolean;
+  /** Squad whose weekly recap card to announce on Sunday evening. */
+  recapSquadId?: string | null;
+  /** Someone can come back with a smaller day, so say that instead. */
+  comeback?: boolean;
   days?: number;
 }
 
 export interface PlannedReminder {
   id: string;
-  kind: 'reminder' | 'missed' | 'streak' | 'start';
+  kind: 'reminder' | 'missed' | 'streak' | 'start' | 'recap';
   at: Date;
   title: string;
   body: string;
@@ -37,6 +41,7 @@ export const STREAK_RISK_HOUR = 22;
 export const STREAK_RISK_MIN = 3;
 export const START_EVE_HOUR = 19;
 export const START_MORNING_HOUR = 8;
+export const RECAP_HOUR = 18;
 
 function at(base: Date, dayOffset: number, hour: number, minute: number): Date {
   const d = new Date(base);
@@ -51,14 +56,15 @@ function at(base: Date, dayOffset: number, hour: number, minute: number): Date {
  * while today is still open, and is cancelled by re-planning after the check-in.
  */
 export function planReminders(input: ReminderInput): PlannedReminder[] {
-  const out: PlannedReminder[] = [...planStarts(input)];
+  const out: PlannedReminder[] = [...planStarts(input), ...planRecap(input)];
   if (input.activeTitles.length === 0) return out.sort((a, b) => a.at.getTime() - b.at.getTime());
   const [h, m] = (isReminderTime(input.reminderTime) ? input.reminderTime : '20:00')
     .split(':')
     .map(Number) as [number, number];
   const days = input.days ?? 7;
-  const body =
-    input.activeTitles.length === 1
+  const body = input.comeback
+    ? t('reminders.comebackBody')
+    : input.activeTitles.length === 1
       ? t('reminders.bodyOne', { title: input.activeTitles[0]! })
       : t('reminders.bodyMany', { n: input.activeTitles.length });
   for (let i = 0; i < days; i++) {
@@ -110,6 +116,24 @@ function planStreakRisk(input: ReminderInput, reminderMinutes: number): PlannedR
     body: t('reminders.streakBody'),
   });
   return out;
+}
+
+/** Next Sunday evening: this week's share card is ready (built when opened, on the phone). */
+function planRecap(input: ReminderInput): PlannedReminder[] {
+  if (!input.recapSquadId) return [];
+  const daysToSunday = (7 - input.now.getDay()) % 7;
+  let when = at(input.now, daysToSunday, RECAP_HOUR, 0);
+  if (when <= input.now) when = at(input.now, daysToSunday + 7, RECAP_HOUR, 0);
+  return [
+    {
+      id: 'recap',
+      kind: 'recap',
+      at: when,
+      title: t('reminders.recapTitle'),
+      body: t('reminders.recapBody'),
+      data: { squadId: input.recapSquadId },
+    },
+  ];
 }
 
 function localDay(date: string, dayOffset: number, hour: number): Date {

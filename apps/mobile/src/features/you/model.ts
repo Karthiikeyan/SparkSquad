@@ -3,6 +3,7 @@ import {
   BADGES,
   compareLocalDates,
   COUNT_BADGES,
+  MOMENT_BADGES,
   diffDays,
   isoWeekday,
   startOfWeek,
@@ -115,40 +116,18 @@ export type BadgeGroup = 'streaks' | 'checkins' | 'milestones';
 
 export interface BadgeRow {
   badge: BadgeId;
-  glyph: string;
   label: string;
   earned: boolean;
   earnedAt: string | null;
   group: BadgeGroup;
-  /** Days (streaks) or check-ins needed; null for one-off milestones. */
+  /** Days (streaks) or check-ins needed; null for one-off moments. */
   target: number | null;
   /** Progress towards `target`, capped at it. */
   current: number;
   /** Still needed for locked badges with a target. */
   toGo: number | null;
-  /** 1 (first steps) to 3 (long haul): drives the disc style. */
-  tier: 1 | 2 | 3;
-}
-
-const GLYPH: Record<BadgeId, string> = {
-  first_checkin: '1',
-  streak_3: '3',
-  streak_7: '7',
-  streak_14: '14',
-  streak_21: '21',
-  streak_30: '30',
-  streak_60: '60',
-  streak_100: '100',
-  checkins_10: '10',
-  checkins_50: '50',
-  checkins_100: '100',
-  challenge_complete: '80',
-};
-
-function tierFor(target: number | null, badge: BadgeId): 1 | 2 | 3 {
-  if (badge === 'challenge_complete') return 3;
-  if (target === null || target < 14) return 1;
-  return target < 50 ? 2 : 3;
+  /** A moment that stays a mystery until it happens. */
+  secret: boolean;
 }
 
 /** Every badge: earned first (in catalogue order), then locked with what's left. */
@@ -166,7 +145,6 @@ export function badgeRows(
     const earned = have.has(badge);
     return {
       badge,
-      glyph: GLYPH[badge],
       label: t(`badges.${badge}`),
       earned,
       earnedAt: have.get(badge) ?? null,
@@ -174,16 +152,30 @@ export function badgeRows(
       target,
       current: target === null ? 0 : Math.min(value, target),
       toGo: target !== null && !earned ? Math.max(1, target - value) : null,
-      tier: tierFor(target, badge),
+      secret: MOMENT_BADGES.includes(badge) && !earned,
     };
   });
   return [...rows.filter((r) => r.earned), ...rows.filter((r) => !r.earned)];
 }
 
+/** Your flame: the highest streak form reached, and the next one to grow into. */
+export function flameState(rows: readonly BadgeRow[]): {
+  current: BadgeRow | null;
+  next: BadgeRow | null;
+} {
+  const line = rows
+    .filter((r) => r.group === 'streaks')
+    .sort((a, b) => (a.target ?? 0) - (b.target ?? 0));
+  return {
+    current: line.filter((r) => r.earned).at(-1) ?? null,
+    next: line.find((r) => !r.earned) ?? null,
+  };
+}
+
 /** Three badges for the profile: latest earned, then the closest locked ones. */
 export function badgeStrip(rows: readonly BadgeRow[], size = 3): BadgeRow[] {
   const ratio = (r: BadgeRow) => (r.target ? r.current / r.target : 0);
-  const locked = rows.filter((r) => !r.earned).sort((a, b) => ratio(b) - ratio(a));
+  const locked = rows.filter((r) => !r.earned && !r.secret).sort((a, b) => ratio(b) - ratio(a));
   const earned = rows.filter((r) => r.earned);
   const take = Math.max(size - Math.min(locked.length, 1), size - locked.length);
   return [...earned.slice(-take), ...locked].slice(0, size);
@@ -192,7 +184,7 @@ export function badgeStrip(rows: readonly BadgeRow[], size = 3): BadgeRow[] {
 /** The locked badge closest to being earned (by share done), for "Up next". */
 export function nextBadge(rows: readonly BadgeRow[]): BadgeRow | null {
   const locked = rows.filter((r) => !r.earned && r.target !== null);
-  if (locked.length === 0) return rows.find((r) => !r.earned) ?? null;
+  if (locked.length === 0) return rows.find((r) => !r.earned && !r.secret) ?? null;
   return locked.reduce((best, r) =>
     r.current / (r.target ?? 1) > best.current / (best.target ?? 1) ? r : best,
   );

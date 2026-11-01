@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-export const AI_PROVIDERS = ['gemini', 'openai', 'anthropic'] as const;
+export const AI_PROVIDERS = ['gemini', 'groq', 'openrouter', 'openai', 'anthropic'] as const;
 export type AiProvider = (typeof AI_PROVIDERS)[number];
 
 const keyName = (p: AiProvider) => `sparksquad_ai_key_${p}`;

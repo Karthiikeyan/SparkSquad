@@ -1,0 +1,581 @@
+{
+  "sparksquad_plan": 1,
+  "title": "No-spend 30",
+  "goal": "Buy only what you need for 30 days and see where the money goes",
+  "category": "finance",
+  "duration_days": 30,
+  "days_per_week": 7,
+  "phases": [
+    {
+      "name": "See your spending",
+      "from_day": 1,
+      "to_day": 10
+    },
+    {
+      "name": "Cut the extras",
+      "from_day": 11,
+      "to_day": 20
+    },
+    {
+      "name": "Make it stick",
+      "from_day": 21,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cancel a subscription you do not use",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cook at home instead of ordering in",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Unsubscribe from one shopping app or list",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Check your bank balance and write it down",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Wait 24 hours before any non-essential buy",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Find one bill you can reduce",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cancel a subscription you do not use",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cook at home instead of ordering in",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Unsubscribe from one shopping app or list",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "See your spending",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Check your bank balance and write it down",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Wait 24 hours before any non-essential buy",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Find one bill you can reduce",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cancel a subscription you do not use",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cook at home instead of ordering in",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Unsubscribe from one shopping app or list",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Check your bank balance and write it down",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Wait 24 hours before any non-essential buy",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Find one bill you can reduce",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cancel a subscription you do not use",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Cut the extras",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cook at home instead of ordering in",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Unsubscribe from one shopping app or list",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 22,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Check your bank balance and write it down",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Wait 24 hours before any non-essential buy",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Find one bill you can reduce",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cancel a subscription you do not use",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Cook at home instead of ordering in",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Unsubscribe from one shopping app or list",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Check your bank balance and write it down",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 29,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Wait 24 hours before any non-essential buy",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Make it stick",
+      "tasks": [
+        {
+          "title": "No non-essential spending today",
+          "type": "check"
+        },
+        {
+          "title": "Write down everything you spent",
+          "type": "check"
+        },
+        {
+          "title": "Find one bill you can reduce",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 10,
+      "title": "You know where it goes"
+    },
+    {
+      "day": 20,
+      "title": "Twenty days without extras"
+    },
+    {
+      "day": 30,
+      "title": "30 no-spend days complete"
+    }
+  ]
+}

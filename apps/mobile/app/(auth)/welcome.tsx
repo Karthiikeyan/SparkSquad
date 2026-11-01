@@ -1,8 +1,9 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, OfflineBanner, Text, useToast } from '../../src/components/ui';
+import { BrandMark, Button, OfflineBanner, Text, useToast, WAVES } from '../../src/components/ui';
 import { AppleLogo, GoogleLogo } from '../../src/features/auth/BrandLogos';
 import { useSession } from '../../src/features/auth/SessionProvider';
 import {
@@ -12,7 +13,6 @@ import {
   signInWithGoogle,
   type SignInOutcome,
 } from '../../src/features/auth/signIn';
-import { WelcomeRing } from '../../src/features/auth/WelcomeRing';
 import { useConfig } from '../../src/features/system/useConfig';
 import { t } from '../../src/i18n';
 import { track } from '../../src/lib/analytics';
@@ -21,7 +21,7 @@ import { colors, fonts } from '../../src/theme/tokens';
 
 type Provider = 'google' | 'apple';
 
-/** A2: squad ring, pitch, Google / Apple / email, 18+ and terms line. */
+/** A2: logo on the brand waves, pitch, Google / Apple / email, 18+ and terms line. */
 export default function Welcome() {
   const insets = useSafeAreaInsets();
   const toast = useToast();
@@ -44,8 +44,10 @@ export default function Welcome() {
   }, []);
 
   const features = config.data?.features;
-  const showGoogle = !!features?.google && googleConfigured();
   const showApple = !!features?.apple && apple;
+  // App Store 4.8: on iPhone, Google may only appear next to Sign in with Apple.
+  const showGoogle =
+    !!features?.google && googleConfigured() && (Platform.OS !== 'ios' || showApple);
 
   const run = async (provider: Provider, fn: () => Promise<SignInOutcome>) => {
     setBusy(provider);
@@ -62,10 +64,12 @@ export default function Welcome() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom + 16 }]}>
+      <Image source={WAVES} style={StyleSheet.absoluteFill} contentFit="cover" />
       <ScrollView contentContainerStyle={styles.scroll} bounces={false}>
         {!online ? <OfflineBanner /> : null}
-        <View style={styles.ring}>
-          <WelcomeRing />
+        <View style={styles.brand}>
+          <BrandMark width={168} accessibilityLabel={t('brand.logo')} />
+          <Text style={styles.name}>{t('brand.name')}</Text>
         </View>
         <Text style={styles.title} accessibilityRole="header">
           {t('welcome.title')}
@@ -140,15 +144,16 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 24 },
-  scroll: { flexGrow: 1 },
-  ring: { marginTop: 56 },
+  scroll: { flexGrow: 1, justifyContent: 'center' },
+  brand: { alignItems: 'center', gap: 14 },
+  name: { fontFamily: fonts.display, fontSize: 24, lineHeight: 30, color: colors.label },
   title: {
     fontFamily: fonts.display,
     fontSize: 34,
     lineHeight: 38,
     letterSpacing: -0.6,
     color: colors.label,
-    marginTop: 44,
+    marginTop: 40,
     marginBottom: 10,
   },
   body: { lineHeight: 23 },

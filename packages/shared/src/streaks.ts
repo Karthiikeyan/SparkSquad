@@ -1,5 +1,5 @@
+import { addDays, type LocalDate } from './date';
 import { HARD_CAPS } from './limits';
-import type { LocalDate } from './date';
 
 /**
  * Outcome of one local day for one member:
@@ -80,6 +80,64 @@ export function replayStreak(
   return { state, events };
 }
 
+export interface RestartOffer {
+  /** Non-rest days missed since the last done day. */
+  missed: number;
+  /** True when finishing the restart day also saves the old streak. */
+  restores: boolean;
+}
+
+/**
+ * The comeback flow: after missing days with no freeze left, finishing just one task counts as a
+ * full day. Within `restartMaxMissedDays` it also bridges the gap, so the old streak carries on.
+ * Null when there is nothing to come back from. Server and phone share this rule.
+ */
+export function restartOffer(a: {
+  date: LocalDate;
+  startDate: LocalDate;
+  /** Current streak, before today. Above 0 means a freeze or a done day kept it alive. */
+  current: number;
+  lastDoneDate: LocalDate | null;
+  isRest: (date: LocalDate) => boolean;
+  /** Earlier restart days in this challenge. */
+  restartDates: readonly LocalDate[];
+}): RestartOffer | null {
+  // Nothing to come back from if they never showed up (someone who just joined, for instance).
+  if (a.current > 0 || !a.lastDoneDate || a.date <= a.startDate) return null;
+  const since = addDays(a.date, -HARD_CAPS.restartCooldownDays);
+  if (a.restartDates.some((d) => d >= since && d < a.date)) return null;
+  let missed = 0;
+  for (let d = addDays(a.date, -1); d > a.lastDoneDate; d = addDays(d, -1)) {
+    if (!a.isRest(d)) missed += 1;
+  }
+  if (missed === 0) return null;
+  return { missed, restores: missed <= HARD_CAPS.restartMaxMissedDays };
+}
+
+/** Missed days a restart day has bridged: replays treat them like rest days. */
+export function bridgedDates(
+  rows: readonly { date: LocalDate; done: boolean; restart: boolean }[],
+  firstDate: LocalDate,
+  isRest: (date: LocalDate) => boolean,
+): Set<LocalDate> {
+  const done = new Set(rows.filter((r) => r.done).map((r) => r.date));
+  const bridged = new Set<LocalDate>();
+  for (const row of rows) {
+    if (!row.restart || !row.done) continue;
+    const gap: LocalDate[] = [];
+    let found = false;
+    for (let d = addDays(row.date, -1); d >= firstDate; d = addDays(d, -1)) {
+      if (done.has(d)) {
+        found = true;
+        break;
+      }
+      if (!isRest(d)) gap.push(d);
+    }
+    if (found && gap.length <= HARD_CAPS.restartMaxMissedDays) gap.forEach((d) => bridged.add(d));
+  }
+  return bridged;
+}
+
 export const BADGES = [
   'first_checkin',
   'streak_3',
@@ -93,6 +151,11 @@ export const BADGES = [
   'checkins_50',
   'checkins_100',
   'challenge_complete',
+  'early_bird',
+  'truth_teller',
+  'full_house',
+  'comeback',
+  'cheerleader',
 ] as const;
 export type BadgeId = (typeof BADGES)[number];
 
@@ -113,9 +176,28 @@ export const COUNT_BADGES: readonly { badge: BadgeId; count: number }[] = [
   { badge: 'checkins_100', count: 100 },
 ];
 
+/** One-off moments, kept secret in the app until earned. */
+export const MOMENT_BADGES: readonly BadgeId[] = [
+  'early_bird',
+  'truth_teller',
+  'full_house',
+  'comeback',
+  'cheerleader',
+];
+
+/** Fires a person must give to become a cheerleader. */
+export const CHEERLEADER_FIRES = 10;
+/** Checking in before this local hour earns the early bird moment. */
+export const EARLY_BIRD_HOUR = 8;
+
 /** Badges newly earned given the current facts and what the user already has. */
 export function newBadges(
-  facts: { totalCheckins: number; currentStreak: number; challengeCompleted: boolean },
+  facts: {
+    totalCheckins: number;
+    currentStreak: number;
+    challengeCompleted: boolean;
+    moments?: readonly BadgeId[];
+  },
   owned: ReadonlySet<BadgeId>,
 ): BadgeId[] {
   const earned: BadgeId[] = [];
@@ -123,6 +205,7 @@ export function newBadges(
   for (const s of STREAK_BADGES) if (facts.currentStreak >= s.days) earned.push(s.badge);
   for (const c of COUNT_BADGES) if (facts.totalCheckins >= c.count) earned.push(c.badge);
   if (facts.challengeCompleted) earned.push('challenge_complete');
+  earned.push(...(facts.moments ?? []));
   return earned.filter((b) => !owned.has(b));
 }
 

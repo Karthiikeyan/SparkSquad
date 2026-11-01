@@ -1,17 +1,25 @@
 import { integrationSchema, TEXT_LIMITS } from '@sparksquad/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import {
+  Check,
+  ChevronRight,
+  Code,
+  Footprints,
+  GitBranch,
+  Trophy,
+  type LucideIcon,
+} from 'lucide-react-native';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Alert } from '../../components/ui/Dialog';
 import {
+  BottomSheet,
   Button,
-  GroupedList,
   GroupFooter,
-  ListRow,
   NavHeader,
+  Pressable,
   Screen,
-  SectionLabel,
   Text,
   TextField,
   useToast,
@@ -21,7 +29,7 @@ import { endpoints, type IntegrationProvider } from '../../lib/api/endpoints';
 import { errorMessage } from '../../lib/api/errors';
 import { useOnline } from '../../lib/hooks/useOnline';
 import { getPref, setPref } from '../../lib/prefs';
-import { colors, radius } from '../../theme/tokens';
+import { colors, iconStroke, radius } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { clearVerifyCache } from '../verify/prefill';
 import {
@@ -35,10 +43,30 @@ import {
 } from '../verify/steps';
 import { checkHandle } from '../verify/verifiers';
 
-const PROVIDERS: readonly { id: IntegrationProvider; label: TKey; site: TKey }[] = [
-  { id: 'github', label: 'integrations.github', site: 'integrations.name_github' },
-  { id: 'leetcode', label: 'integrations.leetcode', site: 'integrations.name_leetcode' },
-  { id: 'codeforces', label: 'integrations.codeforces', site: 'integrations.name_codeforces' },
+const PROVIDERS: readonly {
+  id: IntegrationProvider;
+  label: TKey;
+  site: TKey;
+  icon: LucideIcon;
+}[] = [
+  {
+    id: 'github',
+    label: 'integrations.github',
+    site: 'integrations.name_github',
+    icon: GitBranch,
+  },
+  {
+    id: 'leetcode',
+    label: 'integrations.leetcode',
+    site: 'integrations.name_leetcode',
+    icon: Code,
+  },
+  {
+    id: 'codeforces',
+    label: 'integrations.codeforces',
+    site: 'integrations.name_codeforces',
+    icon: Trophy,
+  },
 ];
 
 export const integrationsKey = ['integrations'] as const;
@@ -47,7 +75,65 @@ export const integrationsKey = ['integrations'] as const;
 export const normaliseHandle = (raw: string) => raw.trim().replace(/^@/, '');
 export const looksLikeHandle = (h: string) => integrationSchema.safeParse({ handle: h }).success;
 
-/** F7: GitHub / LeetCode / Codeforces handles (validated by a test fetch) and the steps note. */
+/** One account: icon, name, status; the right side says what a tap does. */
+function AccountRow({
+  icon: Icon,
+  title,
+  status,
+  connected,
+  first,
+  accessory,
+  onPress,
+  testID,
+}: {
+  icon: LucideIcon;
+  title: string;
+  status: string;
+  connected: boolean;
+  first?: boolean;
+  accessory?: ReactNode;
+  onPress?: () => void;
+  testID?: string;
+}) {
+  return (
+    <Pressable
+      noScale
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={`${title}, ${status}`}
+      style={({ pressed }) => [styles.row, !first && styles.separator, pressed && styles.pressed]}
+      testID={testID}
+    >
+      <View style={[styles.icon, connected && styles.iconOn]}>
+        <Icon
+          size={19}
+          color={connected ? colors.accent : colors.label2}
+          strokeWidth={iconStroke}
+        />
+      </View>
+      <View style={styles.flex}>
+        <Text variant="bodyMedium">{title}</Text>
+        <Text variant="footnote" color="label2" numberOfLines={1}>
+          {status}
+        </Text>
+      </View>
+      {accessory ??
+        (connected ? (
+          <View style={styles.linked}>
+            <Check size={16} color={colors.success} strokeWidth={2.2} />
+            <ChevronRight size={18} color={colors.iconMuted} strokeWidth={iconStroke} />
+          </View>
+        ) : (
+          <Text variant="footnoteSemibold" color="accent">
+            {t('integrations.connect')}
+          </Text>
+        ))}
+    </Pressable>
+  );
+}
+
+/** F7: GitHub / LeetCode / Codeforces handles (validated by a test fetch) and steps, in one list. */
 export function IntegrationsScreen() {
   const online = useOnline();
   const list = useQuery({
@@ -56,6 +142,7 @@ export function IntegrationsScreen() {
     enabled: online,
   });
   const [saved, setSaved] = useState(() => getPref('integrations') ?? {});
+  const [editing, setEditing] = useState<IntegrationProvider | null>(null);
 
   // The server is the source of truth; mirror it so verification works offline.
   useEffect(() => {
@@ -65,6 +152,8 @@ export function IntegrationsScreen() {
     setPref('integrations', next);
     setSaved(next);
   }, [list.data]);
+
+  const provider = PROVIDERS.find((p) => p.id === editing);
 
   return (
     <Screen header={<NavHeader backLabel={t('common.back')} onBack={() => router.back()} />}>
@@ -87,25 +176,50 @@ export function IntegrationsScreen() {
           />
         </View>
       ) : null}
-      {PROVIDERS.map((p) => (
-        <HandleCard
-          key={p.id}
-          provider={p.id}
-          label={t(p.label)}
-          site={t(p.site)}
-          current={saved[p.id] ?? null}
-          online={online}
-          onSaved={(handle) => {
-            const next = { ...saved };
-            if (handle) next[p.id] = handle;
-            else delete next[p.id];
-            setPref('integrations', next);
-            setSaved(next);
-          }}
-        />
-      ))}
-      <SectionLabel>{t('integrations.steps')}</SectionLabel>
-      <StepsRow />
+      <View style={styles.group}>
+        {PROVIDERS.map((p, i) => {
+          const handle = saved[p.id];
+          return (
+            <AccountRow
+              key={p.id}
+              first={i === 0}
+              icon={p.icon}
+              title={t(p.site)}
+              status={handle ? `@${handle}` : t('integrations.notConnected')}
+              connected={!!handle}
+              onPress={() => setEditing(p.id)}
+              testID={`account-${p.id}`}
+            />
+          );
+        })}
+        <StepsRow />
+      </View>
+      <GroupFooter>{t('integrations.footer')}</GroupFooter>
+
+      <BottomSheet
+        visible={!!provider}
+        onClose={() => setEditing(null)}
+        accessibilityLabel={provider ? t(provider.site) : t('integrations.title')}
+      >
+        {provider ? (
+          <HandleForm
+            key={provider.id}
+            provider={provider.id}
+            label={t(provider.label)}
+            site={t(provider.site)}
+            current={saved[provider.id] ?? null}
+            online={online}
+            onSaved={(handle) => {
+              const next = { ...saved };
+              if (handle) next[provider.id] = handle;
+              else delete next[provider.id];
+              setPref('integrations', next);
+              setSaved(next);
+              setEditing(null);
+            }}
+          />
+        ) : null}
+      </BottomSheet>
     </Screen>
   );
 }
@@ -130,6 +244,17 @@ function StepsRow() {
     };
   }, []);
 
+  const askThenConnect = () =>
+    Alert.alert(t('integrations.stepsAskTitle', { source }), t('integrations.stepsAskBody'), [
+      { text: t('common.notNow'), style: 'cancel' },
+      {
+        text: t('settingsMain.privacy'),
+        onPress: () =>
+          router.push({ pathname: '/settings/legal/[doc]', params: { doc: 'privacy' } }),
+      },
+      { text: t('integrations.connect'), onPress: () => void connect() },
+    ]);
+
   const connect = async () => {
     setBusy(true);
     const ok = await connectSteps();
@@ -146,13 +271,14 @@ function StepsRow() {
     ]);
   };
 
-  let accessory = null;
-  let footer = t('integrations.stepsBody', { source });
+  const on = connected && status === 'available';
+  let accessory: ReactNode = null;
+  let line = t('integrations.stepsShort');
   if (status === 'available') {
-    accessory = connected ? (
+    accessory = on ? (
       <Button
         label={t('integrations.remove')}
-        variant="destructive"
+        variant="ghost"
         size="sm"
         onPress={() => {
           disconnectSteps();
@@ -162,41 +288,42 @@ function StepsRow() {
     ) : (
       <Button
         label={t('integrations.connect')}
+        variant="ghost"
         size="sm"
         loading={busy}
-        onPress={() => void connect()}
+        onPress={askThenConnect}
         testID="steps-connect"
       />
     );
+    if (on) line = t('integrations.stepsOn');
   } else if (status === 'needsInstall') {
-    footer = t('integrations.stepsInstall');
+    line = t('integrations.stepsInstall');
     accessory = (
       <Button
         label={t('integrations.install')}
-        variant="secondary"
+        variant="ghost"
         size="sm"
         onPress={openHealthConnectInstall}
       />
     );
   } else if (status === 'unsupported') {
-    footer = t('integrations.stepsUnsupported');
+    line = t('integrations.stepsUnsupported');
+    accessory = <View />;
   }
 
   return (
-    <>
-      <GroupedList>
-        <ListRow
-          title={source}
-          subtitle={connected && status === 'available' ? t('integrations.stepsOn') : undefined}
-          accessory={accessory}
-        />
-      </GroupedList>
-      <GroupFooter>{footer}</GroupFooter>
-    </>
+    <AccountRow
+      icon={Footprints}
+      title={source}
+      status={line}
+      connected={on}
+      accessory={accessory ?? <View />}
+    />
   );
 }
 
-function HandleCard({
+/** Username form inside the sheet. */
+function HandleForm({
   provider,
   label,
   site,
@@ -217,8 +344,6 @@ function HandleCard({
   const [value, setValue] = useState(current ?? '');
   const [error, setError] = useState<string | undefined>();
   const [busy, setBusy] = useState<'save' | 'remove' | null>(null);
-
-  useEffect(() => setValue(current ?? ''), [current]);
 
   const handle = normaliseHandle(value);
   const dirty = handle !== (current ?? '');
@@ -270,7 +395,10 @@ function HandleCard({
   };
 
   return (
-    <View style={styles.card}>
+    <View style={styles.form}>
+      <Text variant="title2" accessibilityRole="header">
+        {site}
+      </Text>
       <TextField
         label={label}
         placeholder={t('integrations.placeholder')}
@@ -282,29 +410,27 @@ function HandleCard({
         error={error}
         autoCapitalize="none"
         autoCorrect={false}
+        autoFocus
         maxLength={TEXT_LIMITS.handle}
         testID={`handle-${provider}`}
       />
-      <View style={styles.actions}>
-        {current ? (
-          <Button
-            label={t('integrations.remove')}
-            variant="destructive"
-            size="sm"
-            onPress={() => void remove()}
-            loading={busy === 'remove'}
-            disabled={!online || busy !== null}
-          />
-        ) : null}
+      <Button
+        label={busy === 'save' ? t('integrations.checking') : t('integrations.save')}
+        onPress={() => void save()}
+        loading={busy === 'save'}
+        disabled={!online || !dirty || !handle || busy !== null}
+        testID={`save-${provider}`}
+      />
+      {current ? (
         <Button
-          label={busy === 'save' ? t('integrations.checking') : t('integrations.save')}
-          size="sm"
-          onPress={() => void save()}
-          loading={busy === 'save'}
-          disabled={!online || !dirty || !handle || busy !== null}
-          testID={`save-${provider}`}
+          label={t('integrations.remove')}
+          variant="destructive"
+          size="md"
+          onPress={() => void remove()}
+          loading={busy === 'remove'}
+          disabled={!online || busy !== null}
         />
-      </View>
+      ) : null}
     </View>
   );
 }
@@ -312,14 +438,21 @@ function HandleCard({
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 8 },
   body: { marginBottom: 20, lineHeight: 22 },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.list,
-    padding: 16,
-    gap: 12,
-    marginBottom: 12,
+  group: { backgroundColor: colors.surface, borderRadius: radius.list, paddingHorizontal: 14 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 64, paddingVertical: 10 },
+  separator: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },
+  pressed: { opacity: 0.7 },
+  icon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: colors.control,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10 },
-  flex: { flex: 1 },
+  iconOn: { backgroundColor: colors.accentSoft },
+  linked: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  flex: { flex: 1, minWidth: 0 },
+  form: { gap: 14 },
   loadError: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
 });

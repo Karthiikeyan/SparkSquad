@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Alert } from '../../components/ui/Dialog';
 import {
+  BrandMark,
   Button,
   GroupedList,
   GroupFooter,
@@ -13,8 +14,9 @@ import {
   SegmentedControl,
   Text,
 } from '../../components/ui';
-import { t, type TKey } from '../../i18n';
+import { t } from '../../i18n';
 import { getAiKey, type AiProvider } from '../../lib/aiKeys';
+import { AI_PROVIDER_LABEL } from '../ai/providers';
 import { analyticsOptedOut, setAnalyticsOptOut } from '../../lib/analytics';
 import { env } from '../../lib/env';
 import { getPref, type Prefs } from '../../lib/prefs';
@@ -25,17 +27,12 @@ import { colors, lightThemeEnabled, radius } from '../../theme/tokens';
 import { changeTheme } from './theme';
 import { useMePatch } from './useMePatch';
 
-const PROVIDER_LABEL: Record<AiProvider, TKey> = {
-  gemini: 'aiSettings.gemini',
-  openai: 'aiSettings.openai',
-  anthropic: 'aiSettings.anthropic',
-};
-
 const LEGAL = [
   ['terms', 'settingsMain.terms'],
   ['privacy', 'settingsMain.privacy'],
   ['licences', 'settingsMain.licences'],
   ['guidelines', 'settingsMain.guidelines'],
+  ['childSafety', 'settingsMain.childSafety'],
 ] as const;
 
 /** F5: every setting in one grouped list (Settings design). */
@@ -88,7 +85,7 @@ export function SettingsScreen() {
           title={t('settingsMain.aiRow')}
           value={
             aiProvider
-              ? t('settingsMain.aiSet', { provider: t(PROVIDER_LABEL[aiProvider]) })
+              ? t('settingsMain.aiSet', { provider: t(AI_PROVIDER_LABEL[aiProvider]) })
               : t('settingsMain.aiNone')
           }
           chevron
@@ -220,6 +217,12 @@ export function SettingsScreen() {
         onPress={() => void confirmSignOut()}
         testID="sign-out"
       />
+      <View style={styles.brand}>
+        <BrandMark width={56} />
+        <Text variant="caption" color="label3">
+          {t('settingsMain.madeFor')}
+        </Text>
+      </View>
     </Screen>
   );
 }
@@ -227,6 +230,7 @@ export function SettingsScreen() {
 const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
   group: { marginBottom: 20 },
+  brand: { alignItems: 'center', gap: 8, marginTop: 28 },
   segment: {
     backgroundColor: colors.surface,
     borderRadius: radius.list,

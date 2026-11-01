@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Avatar,
-  Badge,
   Button,
   Card,
   ErrorState,
@@ -16,6 +15,7 @@ import {
   useToast,
 } from '../../../components/ui';
 import { t } from '../../../i18n';
+import { BadgeTile } from '../../you/BadgeEmblem';
 import { endpoints } from '../../../lib/api/endpoints';
 import { errorMessage } from '../../../lib/api/errors';
 import { useMe } from '../../auth/SessionProvider';
@@ -94,7 +94,7 @@ export function MemberProfileScreen() {
           {earned.length ? (
             <View style={styles.badgeRow}>
               {earned.map((b) => (
-                <Badge key={b.badge} glyph={b.glyph} label={b.label} earned />
+                <BadgeTile key={b.badge} badge={b.badge} label={b.label} earned />
               ))}
             </View>
           ) : (

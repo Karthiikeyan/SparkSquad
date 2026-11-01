@@ -1,0 +1,408 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Gym starter 28",
+  "goal": "Learn the basic lifts and train three times a week for four weeks",
+  "category": "fitness",
+  "duration_days": 28,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Learn the moves",
+      "from_day": 1,
+      "to_day": 14
+    },
+    {
+      "name": "Add weight",
+      "from_day": 15,
+      "to_day": 28
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Full body A",
+      "tasks": [
+        {
+          "title": "Squats, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Push-ups or chest press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Rows, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Full body B",
+      "tasks": [
+        {
+          "title": "Deadlifts, light, 3 sets of 8",
+          "type": "check"
+        },
+        {
+          "title": "Shoulder press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Lat pulldown, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Full body C",
+      "tasks": [
+        {
+          "title": "Lunges, 3 sets of 10 each leg",
+          "type": "check"
+        },
+        {
+          "title": "Incline press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Plank, 3 holds of 30 seconds",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Full rest",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Full body A",
+      "tasks": [
+        {
+          "title": "Squats, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Push-ups or chest press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Rows, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Full body B",
+      "tasks": [
+        {
+          "title": "Deadlifts, light, 3 sets of 8",
+          "type": "check"
+        },
+        {
+          "title": "Shoulder press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Lat pulldown, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Full body C",
+      "tasks": [
+        {
+          "title": "Lunges, 3 sets of 10 each leg",
+          "type": "check"
+        },
+        {
+          "title": "Incline press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Plank, 3 holds of 30 seconds",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Full rest",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Full body A",
+      "tasks": [
+        {
+          "title": "Squats, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Push-ups or chest press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Rows, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Full body B",
+      "tasks": [
+        {
+          "title": "Deadlifts, light, 3 sets of 8",
+          "type": "check"
+        },
+        {
+          "title": "Shoulder press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Lat pulldown, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Full body C",
+      "tasks": [
+        {
+          "title": "Lunges, 3 sets of 10 each leg",
+          "type": "check"
+        },
+        {
+          "title": "Incline press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Plank, 3 holds of 30 seconds",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Full rest",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Full body A",
+      "tasks": [
+        {
+          "title": "Squats, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Push-ups or chest press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Rows, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Full body B",
+      "tasks": [
+        {
+          "title": "Deadlifts, light, 3 sets of 8",
+          "type": "check"
+        },
+        {
+          "title": "Shoulder press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Lat pulldown, 3 sets of 10",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Full body C",
+      "tasks": [
+        {
+          "title": "Lunges, 3 sets of 10 each leg",
+          "type": "check"
+        },
+        {
+          "title": "Incline press, 3 sets of 10",
+          "type": "check"
+        },
+        {
+          "title": "Plank, 3 holds of 30 seconds",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Active recovery",
+      "tasks": [
+        {
+          "title": "Walk or stretch",
+          "type": "minutes",
+          "target": 20
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Full rest",
+      "rest": true,
+      "tasks": []
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "First week of training"
+    },
+    {
+      "day": 14,
+      "title": "You know the moves"
+    },
+    {
+      "day": 28,
+      "title": "Four weeks of gym complete"
+    }
+  ]
+}

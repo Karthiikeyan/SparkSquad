@@ -34,3 +34,6 @@ EXPO_ACCESS_TOKEN=
 R2_ACCOUNT_ID=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
+
+# Fixed sign-in for the one account store reviewers use: email:6digits. Leave empty in normal use.
+REVIEW_ACCOUNT=

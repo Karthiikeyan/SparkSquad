@@ -1,6 +1,7 @@
 export * from './date';
 export * from './errors';
 export * from './ids';
+export * from './legal';
 export * from './limits';
 export * from './schemas';
 export * from './scoring';

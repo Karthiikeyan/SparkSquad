@@ -1,5 +1,6 @@
 import {
   addDays,
+  HARD_CAPS,
   type ChallengeDTO,
   type CheckinDTO,
   type MeDTO,
@@ -56,7 +57,10 @@ export async function readTodaySource(
         .select()
         .from(checkins)
         .where(
-          and(inArray(checkins.challengeId, chIds), gte(checkins.localDate, addDays(today, -2))),
+          and(
+            inArray(checkins.challengeId, chIds),
+            gte(checkins.localDate, addDays(today, -HARD_CAPS.restartCooldownDays)),
+          ),
         )
         .all()
     : [];

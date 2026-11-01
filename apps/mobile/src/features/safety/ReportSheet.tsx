@@ -1,9 +1,16 @@
 import { reportReasonSchema, TEXT_LIMITS, type ReportInput } from '@sparksquad/shared';
 import { Check } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Alert } from '../../components/ui/Dialog';
-import { BottomSheet, Button, Text, TextField, useToast } from '../../components/ui';
+import {
+  BottomSheet,
+  Button,
+  SheetScrollView,
+  Text,
+  TextField,
+  useToast,
+} from '../../components/ui';
 import { t } from '../../i18n';
 import { endpoints } from '../../lib/api/endpoints';
 import { errorMessage } from '../../lib/api/errors';
@@ -49,7 +56,7 @@ export function ReportSheet({
 
   return (
     <BottomSheet visible={!!target} onClose={onClose} accessibilityLabel={t('report.title')}>
-      <ScrollView keyboardShouldPersistTaps="handled">
+      <SheetScrollView keyboardShouldPersistTaps="handled">
         <Text variant="title2" accessibilityRole="header">
           {t('report.title')}
         </Text>
@@ -95,7 +102,7 @@ export function ReportSheet({
           style={styles.submit}
           testID="report-submit"
         />
-      </ScrollView>
+      </SheetScrollView>
     </BottomSheet>
   );
 }

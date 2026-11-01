@@ -24,6 +24,7 @@ function card(over: Partial<TodayCard> = {}): TodayCard {
     state: 'active',
     today: '2026-10-31',
     dayNumber: 12,
+    comeback: null,
     day,
     mine: null,
     minePending: false,

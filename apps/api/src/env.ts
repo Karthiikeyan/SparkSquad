@@ -28,6 +28,8 @@ export interface Bindings {
   APPLE_CLIENT_ID?: string;
   APPLE_CLIENT_SECRET?: string;
   APPLE_APP_BUNDLE_IDENTIFIER?: string;
+  /** `email:123456`. Fixed sign-in code for the one account store reviewers use. Unset = off. */
+  REVIEW_ACCOUNT?: string;
   RESEND_API_KEY?: string;
   REVENUECAT_WEBHOOK_SECRET?: string;
   /** "true" lets RevenueCat SANDBOX events grant entitlements when APP_ENV=production (staging only). */

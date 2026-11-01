@@ -744,4 +744,323 @@ function rest(day, title = 'Rest and review the week') {
   });
 }
 
+/* ---------------- Habit starters ---------------- */
+
+/** Builds `count` days from `make(day)`, with a rest day every `restEvery` days when given. */
+function daysOf(count, make, restEvery, restTitle) {
+  return Array.from({ length: count }, (_, i) => {
+    const day = i + 1;
+    return restEvery && day % restEvery === 0 ? rest(day, restTitle) : { day, ...make(day) };
+  });
+}
+
+/** The step of a ramp a day falls on: `[[upToDay, value], ...]`. */
+function stage(day, ramp) {
+  return ramp.find(([upTo]) => day <= upTo)[1];
+}
+
+/* ---------------- Reading 30 ---------------- */
+{
+  const minutes = [
+    [7, 10],
+    [14, 15],
+    [21, 20],
+    [30, 25],
+  ];
+  write('reading-30', {
+    sparksquad_plan: 1,
+    title: 'Reading 30',
+    goal: 'Read every day for 30 days and finish at least one book',
+    category: 'reading',
+    duration_days: 30,
+    days_per_week: 7,
+    phases: [
+      { name: 'Start small', from_day: 1, to_day: 7 },
+      { name: 'Build the habit', from_day: 8, to_day: 21 },
+      { name: 'Read longer', from_day: 22, to_day: 30 },
+    ],
+    days: daysOf(30, (day) => {
+      const target = stage(day, minutes);
+      const tasks = [{ title: `Read for ${target} minutes`, type: 'minutes', target }];
+      if (day % 7 === 0) tasks.push({ title: 'Write one idea worth keeping', type: 'check' });
+      return { title: day % 7 === 0 ? 'Read and reflect' : `Read ${target} minutes`, tasks };
+    }),
+    milestones: [
+      { day: 7, title: 'One week of reading' },
+      { day: 21, title: 'Three weeks, it is a habit now' },
+      { day: 30, title: '30 days of reading complete' },
+    ],
+  });
+}
+
+/* ---------------- Meditation 21 ---------------- */
+{
+  const minutes = [
+    [7, 5],
+    [14, 10],
+    [21, 15],
+  ];
+  const focus = ['Follow your breath', 'Body scan', 'Notice your thoughts', 'Gratitude sit'];
+  write('meditation-21', {
+    sparksquad_plan: 1,
+    title: 'Meditation 21',
+    goal: 'Sit quietly every day and reach 15 minutes by week three',
+    category: 'mindfulness',
+    duration_days: 21,
+    days_per_week: 7,
+    phases: [
+      { name: 'Learn to sit', from_day: 1, to_day: 7 },
+      { name: 'Go deeper', from_day: 8, to_day: 14 },
+      { name: 'Hold it', from_day: 15, to_day: 21 },
+    ],
+    days: daysOf(21, (day) => {
+      const target = stage(day, minutes);
+      const title = focus[(day - 1) % focus.length];
+      return {
+        title,
+        tasks: [
+          { title: `Meditate ${target} minutes: ${title.toLowerCase()}`, type: 'minutes', target },
+        ],
+      };
+    }),
+    milestones: [
+      { day: 7, title: 'First week of stillness' },
+      { day: 14, title: 'Ten minutes feels normal' },
+      { day: 21, title: '21 days of meditation complete' },
+    ],
+  });
+}
+
+/* ---------------- Sleep and water 14 ---------------- */
+{
+  const habit = [
+    'Put your phone away 30 minutes before bed',
+    'No caffeine after 4 PM',
+    'Go to bed at the same time as last night',
+    'Get 10 minutes of morning sunlight',
+  ];
+  write('sleep-water-14', {
+    sparksquad_plan: 1,
+    title: 'Sleep and water 14',
+    goal: 'Sleep 7 hours and drink 8 glasses of water a day for two weeks',
+    category: 'health',
+    duration_days: 14,
+    days_per_week: 7,
+    phases: [
+      { name: 'Set the routine', from_day: 1, to_day: 7 },
+      { name: 'Keep it steady', from_day: 8, to_day: 14 },
+    ],
+    days: daysOf(14, (day) => ({
+      title: day <= 7 ? 'Set the routine' : 'Keep it steady',
+      tasks: [
+        { title: 'Sleep at least 7 hours', type: 'check' },
+        { title: 'Drink 8 glasses of water', type: 'count', target: 8, unit: 'glasses' },
+        { title: habit[(day - 1) % habit.length], type: 'check' },
+      ],
+    })),
+    milestones: [
+      { day: 7, title: 'One rested week' },
+      { day: 14, title: 'Two weeks of better sleep complete' },
+    ],
+  });
+}
+
+/* ---------------- Exam revision 45 ---------------- */
+{
+  const phase = (day) => (day <= 20 ? 'Cover' : day <= 35 ? 'Practise' : 'Sharpen');
+  const work = {
+    Cover: ['Revise one chapter from your notes', 'Make a one-page summary'],
+    Practise: ['Solve 20 practice questions', 'Fix every mistake you made'],
+    Sharpen: ['Sit a timed past paper', 'Revise your weakest topic'],
+  };
+  write('exam-revision-45', {
+    sparksquad_plan: 1,
+    title: 'Exam revision 45',
+    goal: 'Cover the syllabus, practise hard and walk in ready in 45 days',
+    category: 'exams',
+    duration_days: 45,
+    days_per_week: 6,
+    phases: [
+      { name: 'Cover the syllabus', from_day: 1, to_day: 20 },
+      { name: 'Practise', from_day: 21, to_day: 35 },
+      { name: 'Sharpen', from_day: 36, to_day: 45 },
+    ],
+    days: daysOf(
+      45,
+      (day) => {
+        const name = phase(day);
+        return {
+          title: `${name}: day ${day}`,
+          tasks: [
+            { title: 'Focused study', type: 'minutes', target: name === 'Cover' ? 90 : 120 },
+            ...work[name].map((title) => ({ title, type: 'check' })),
+          ],
+        };
+      },
+      7,
+      'Rest and review the week',
+    ),
+    milestones: [
+      { day: 20, title: 'Syllabus covered' },
+      { day: 35, title: 'Practice phase done' },
+      { day: 45, title: 'Ready for the exam' },
+    ],
+  });
+}
+
+/* ---------------- Spoken English 30 ---------------- */
+{
+  const topics = [
+    'Introduce yourself',
+    'Describe your day',
+    'Talk about your family',
+    'Explain your job or studies',
+    'Describe your home town',
+    'Tell a story from childhood',
+    'Give your opinion on a film',
+    'Explain how to cook a dish',
+    'Plan a trip out loud',
+    'Practise a job interview answer',
+  ];
+  write('spoken-english-30', {
+    sparksquad_plan: 1,
+    title: 'Spoken English 30',
+    goal: 'Speak English out loud every day and feel confident in 30 days',
+    category: 'languages',
+    duration_days: 30,
+    days_per_week: 6,
+    phases: [
+      { name: 'Get talking', from_day: 1, to_day: 10 },
+      { name: 'Speak longer', from_day: 11, to_day: 20 },
+      { name: 'Speak with others', from_day: 21, to_day: 30 },
+    ],
+    days: daysOf(
+      30,
+      (day) => {
+        const title = topics[(day - 1) % topics.length];
+        return {
+          title,
+          tasks: [
+            {
+              title: `Speak for ${day <= 10 ? 5 : 10} minutes: ${title.toLowerCase()}`,
+              type: 'minutes',
+              target: day <= 10 ? 5 : 10,
+            },
+            { title: 'Learn 5 new words and use them', type: 'count', target: 5, unit: 'words' },
+            day > 20
+              ? { title: 'Talk with a squadmate in English', type: 'check' }
+              : { title: 'Record yourself and listen back', type: 'check' },
+          ],
+        };
+      },
+      7,
+      'Rest, or watch something in English',
+    ),
+    milestones: [
+      { day: 10, title: 'Ten days of talking' },
+      { day: 20, title: 'Ten minutes without stopping' },
+      { day: 30, title: '30 days of spoken English complete' },
+    ],
+  });
+}
+
+/* ---------------- Gym starter 28 ---------------- */
+{
+  const sessions = {
+    1: [
+      'Full body A',
+      ['Squats, 3 sets of 10', 'Push-ups or chest press, 3 sets of 10', 'Rows, 3 sets of 10'],
+    ],
+    3: [
+      'Full body B',
+      [
+        'Deadlifts, light, 3 sets of 8',
+        'Shoulder press, 3 sets of 10',
+        'Lat pulldown, 3 sets of 10',
+      ],
+    ],
+    5: [
+      'Full body C',
+      [
+        'Lunges, 3 sets of 10 each leg',
+        'Incline press, 3 sets of 10',
+        'Plank, 3 holds of 30 seconds',
+      ],
+    ],
+  };
+  write('gym-starter-28', {
+    sparksquad_plan: 1,
+    title: 'Gym starter 28',
+    goal: 'Learn the basic lifts and train three times a week for four weeks',
+    category: 'fitness',
+    duration_days: 28,
+    days_per_week: 6,
+    phases: [
+      { name: 'Learn the moves', from_day: 1, to_day: 14 },
+      { name: 'Add weight', from_day: 15, to_day: 28 },
+    ],
+    days: daysOf(
+      28,
+      (day) => {
+        const session = sessions[((day - 1) % 7) + 1];
+        if (!session) {
+          return {
+            title: 'Active recovery',
+            tasks: [{ title: 'Walk or stretch', type: 'minutes', target: 20 }],
+          };
+        }
+        return {
+          title: session[0],
+          tasks: session[1].map((title) => ({ title, type: 'check' })),
+        };
+      },
+      7,
+      'Full rest',
+    ),
+    milestones: [
+      { day: 7, title: 'First week of training' },
+      { day: 14, title: 'You know the moves' },
+      { day: 28, title: 'Four weeks of gym complete' },
+    ],
+  });
+}
+
+/* ---------------- No-spend 30 ---------------- */
+{
+  const focus = [
+    'Cancel a subscription you do not use',
+    'Cook at home instead of ordering in',
+    'Unsubscribe from one shopping app or list',
+    'Check your bank balance and write it down',
+    'Wait 24 hours before any non-essential buy',
+    'Find one bill you can reduce',
+  ];
+  write('no-spend-30', {
+    sparksquad_plan: 1,
+    title: 'No-spend 30',
+    goal: 'Buy only what you need for 30 days and see where the money goes',
+    category: 'finance',
+    duration_days: 30,
+    days_per_week: 7,
+    phases: [
+      { name: 'See your spending', from_day: 1, to_day: 10 },
+      { name: 'Cut the extras', from_day: 11, to_day: 20 },
+      { name: 'Make it stick', from_day: 21, to_day: 30 },
+    ],
+    days: daysOf(30, (day) => ({
+      title: day <= 10 ? 'See your spending' : day <= 20 ? 'Cut the extras' : 'Make it stick',
+      tasks: [
+        { title: 'No non-essential spending today', type: 'check' },
+        { title: 'Write down everything you spent', type: 'check' },
+        { title: focus[(day - 1) % focus.length], type: 'check' },
+      ],
+    })),
+    milestones: [
+      { day: 10, title: 'You know where it goes' },
+      { day: 20, title: 'Twenty days without extras' },
+      { day: 30, title: '30 no-spend days complete' },
+    ],
+  });
+}
+
 console.log('Templates written.');

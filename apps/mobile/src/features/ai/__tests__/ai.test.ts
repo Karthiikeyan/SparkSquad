@@ -19,6 +19,24 @@ describe('provider requests', () => {
     );
   });
 
+  it('sends Groq and OpenRouter keys to their own servers in the OpenAI format', () => {
+    const g = buildRequest('groq', 'gsk-x', messages);
+    expect(g.url).toBe('https://api.groq.com/openai/v1/chat/completions');
+    expect(g.headers.authorization).toBe('Bearer gsk-x');
+    expect(g.read({ choices: [{ message: { content: 'hey' } }] })).toBe('hey');
+    const r = buildRequest('openrouter', 'sk-or-x', messages);
+    expect(r.url).toBe('https://openrouter.ai/api/v1/chat/completions');
+    expect(r.headers.authorization).toBe('Bearer sk-or-x');
+    expect(r.body).toMatchObject({ model: 'openrouter/free' });
+  });
+
+  it('treats an empty OpenRouter allowance as a rate limit', async () => {
+    const respond = (async () => new Response('{}', { status: 402 })) as unknown as typeof fetch;
+    await expect(sendChat('openrouter', 'k', messages, respond)).rejects.toMatchObject({
+      reason: 'rate',
+    });
+  });
+
   it('builds OpenAI and Anthropic requests', () => {
     const o = buildRequest('openai', 'sk-x', messages);
     expect(o.headers.authorization).toBe('Bearer sk-x');

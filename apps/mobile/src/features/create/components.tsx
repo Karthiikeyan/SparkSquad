@@ -118,7 +118,7 @@ export function StartDateRow({
   );
 }
 
-function Stat({ value, label }: { value: number; label: string }) {
+export function PlanStat({ value, label }: { value: number; label: string }) {
   return (
     <View style={styles.stat} accessible accessibilityLabel={`${value} ${label}`}>
       <Text style={styles.statValue} tabular>
@@ -163,10 +163,10 @@ export function PlanPreviewCard({
         </View>
       </View>
       <View style={styles.stats}>
-        <Stat value={stats.days} label={t('planPreview.days')} />
-        <Stat value={stats.tasks} label={t('planPreview.tasks')} />
-        <Stat value={stats.restDays} label={t('planPreview.reviewDays')} />
-        <Stat value={stats.phases} label={t('planPreview.phases')} />
+        <PlanStat value={stats.days} label={t('planPreview.days')} />
+        <PlanStat value={stats.tasks} label={t('planPreview.tasks')} />
+        <PlanStat value={stats.restDays} label={t('planPreview.reviewDays')} />
+        <PlanStat value={stats.phases} label={t('planPreview.phases')} />
       </View>
       {fixes.length ? (
         <View style={styles.fixes}>

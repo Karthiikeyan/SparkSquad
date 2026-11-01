@@ -51,7 +51,7 @@ sparksquad/
   packages/
     shared/                 types, zod schemas, plan-format parser & validator, scoring/streak logic,
                             tier limits config, date helpers (local-date math), word filter, i18n keys
-  templates/                plan templates as SparkSquad plan JSON (dsa-30, aptitude-21, sql-30, steps-10k, ...)
+  templates/                plan templates as SparkSquad plan JSON (dsa-30, aptitude-21, sql-30, steps-10k, reading-30, ...)
   docs/                     this kit (keep it updated) + DECISIONS.md
   .github/workflows/ci.yml
   SETUP.md                  generated at the end (see master prompt)

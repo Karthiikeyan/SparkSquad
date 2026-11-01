@@ -1,3 +1,4 @@
+import { PaywallLegal } from './PaywallLegal';
 import { TIER_LIMITS } from '@sparksquad/shared';
 import { router } from 'expo-router';
 import { X } from 'lucide-react-native';
@@ -102,6 +103,7 @@ export function PlusPaywallScreen() {
       <Text variant="caption" color="label3" align="center">
         {t('paywall.cancelNote')}
       </Text>
+      <PaywallLegal />
     </View>
   );
 }

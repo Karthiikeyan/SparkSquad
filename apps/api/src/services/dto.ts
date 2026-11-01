@@ -150,6 +150,7 @@ export function toCheckin(
   opts: { reactedByMe: boolean; photoUrl: string | null },
 ): CheckinDTO {
   return {
+    ...(row.restart ? { restart: true } : {}),
     id: row.id,
     challengeId: row.challengeId,
     userId: row.userId,

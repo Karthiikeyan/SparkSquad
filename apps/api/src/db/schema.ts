@@ -234,6 +234,7 @@ export const checkins = sqliteTable(
     dayNumber: integer('day_number').notNull(),
     status: text('status', { enum: ['done', 'partial', 'honest_miss'] }).notNull(),
     countsDone: integer('counts_done', { mode: 'boolean' }).notNull().default(false),
+    restart: integer('restart', { mode: 'boolean' }).notNull().default(false),
     tasksDone: integer('tasks_done').notNull().default(0),
     values: text('values').notNull().default('[]'),
     note: text('note'),

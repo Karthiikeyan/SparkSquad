@@ -9,15 +9,15 @@ compatibility_flags = ["nodejs_compat"]
 APP_ENV = "production"
 PAYMENTS_ENABLED = "false"
 MIN_APP_VERSION = "1.0.0"
-PUBLIC_API_URL = "http://localhost:8787"
+PUBLIC_API_URL = "https://sparksquad-api.sparksquad-api.workers.dev"
 # Comma-separated list of admin emails (non-secret, but override per environment).
-ADMIN_EMAILS = ""
+ADMIN_EMAILS = "karthikinfovlogs@gmail.com"
 # Sender for OTP emails; must be a verified Resend domain in production.
-EMAIL_FROM = "SparkSquad <onboarding@resend.dev>"
+EMAIL_FROM = "SparkSquad <karthikeyan@sparktime.in>"
 ANDROID_STORE_URL = "https://play.google.com/store/apps/details?id=com.sparktribe.sparksquad"
 IOS_STORE_URL = "https://apps.apple.com/app/sparksquad"
 R2_BUCKET_NAME = "sparksquad"
-CONTACT_EMAIL = "support@sparktribe.example"
+CONTACT_EMAIL = "karthikeyan@sparktime.in"
 # Display prices for the pilot paywall while PAYMENTS_ENABLED=false (leave empty to hide).
 # Real prices always come from RevenueCat offerings when payments are on.
 PRICE_PLUS_MONTHLY = ""
@@ -34,7 +34,7 @@ PRICE_SQUAD_PRO_YEARLY = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "sparksquad"
-database_id = "00000000-0000-0000-0000-000000000000" # replace with the id from `wrangler d1 create sparksquad`
+database_id = "3c5e65e0-4628-4a08-b1f2-55c700d20698"
 migrations_dir = "src/db/migrations"
 
 [[r2_buckets]]

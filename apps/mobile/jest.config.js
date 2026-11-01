@@ -2,6 +2,7 @@
 module.exports = {
   preset: 'jest-expo',
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
+  setupFiles: ['react-native-gesture-handler/jestSetup'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   // Screen tests render whole trees; the 5 s default flakes on slower machines under load.
   testTimeout: 20000,

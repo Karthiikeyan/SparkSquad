@@ -248,3 +248,15 @@ Comments and grouped fires (inbox), streak at risk and challenge starting (local
 ### Quick check-in, squad streaks, invite prompt, free BYOK builder — done
 
 Long-press the centre button to mark everything done (confirm first); streak flame on squad cards; Invite friends on solo squads; AI builder open to Free with the user's key (tag "Your key").
+
+### Brand, ease-of-use and growth pass — done
+
+Logo, app icon, splash, loading screen and Welcome redesign; amber switches; animated tab bar that follows the phone's inset; swipe-down sheets; typed numbers; compact Discover filter; template list and detail redesign; minimal Connected accounts; email card in Help; settings import. Nudge everyone, Everyone showed up, Start the next challenge, app icon shortcuts, Groq and OpenRouter, 7 new templates, Android widget, weekly recap card, Add to calendar (DECISIONS E144–E155).
+
+**Still needs you:** a new development build (new native modules); `pnpm run deploy` (next-challenge API change) and `pnpm seed:templates -- --remote` (new templates); Google sign-in setup (SETUP 3.3).
+
+### Device feedback round — done
+
+Swipe to close on native gestures, comeback flow, rating prompt, real app icon on Android, widget with tickable tasks and free resizing, flame badges and secret moments, minimal squad share (E163–E169).
+
+**Not yet seen on a device:** all of the above. **Needs:** `pnpm run deploy` (migration 0003) and a new native build.

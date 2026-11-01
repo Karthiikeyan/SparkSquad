@@ -7,6 +7,8 @@ import {
   newBadges,
   replayStreak,
   type DayOutcome,
+  bridgedDates,
+  restartOffer,
 } from '../src/streaks';
 
 function days(outcomes: DayOutcome[], start = '2026-11-02') {
@@ -102,5 +104,79 @@ describe('badges', () => {
     expect(badgeProgress('streak_21', facts)).toBeCloseTo(14 / 21);
     expect(badgeProgress('challenge_complete', facts)).toBe(0);
     expect(badgeProgress('checkins_10', facts)).toBeCloseTo(0.3);
+  });
+});
+
+describe('comeback', () => {
+  const base = {
+    date: '2026-11-10',
+    startDate: '2026-11-01',
+    current: 0,
+    lastDoneDate: '2026-11-07',
+    isRest: () => false,
+    restartDates: [] as string[],
+  };
+
+  it('offers to save the streak after a short gap', () => {
+    expect(restartOffer(base)).toEqual({ missed: 2, restores: true });
+  });
+
+  it('skips rest days when counting what was missed', () => {
+    expect(restartOffer({ ...base, isRest: (d) => d === '2026-11-08' })?.missed).toBe(1);
+  });
+
+  it('still offers a small day after a long gap, without saving the streak', () => {
+    expect(restartOffer({ ...base, lastDoneDate: '2026-11-02' })).toEqual({
+      missed: 7,
+      restores: false,
+    });
+  });
+
+  it('offers nothing while the streak lives, to new joiners, or with nothing missed', () => {
+    expect(restartOffer({ ...base, current: 4 })).toBeNull();
+    expect(restartOffer({ ...base, lastDoneDate: null })).toBeNull();
+    expect(restartOffer({ ...base, lastDoneDate: '2026-11-09' })).toBeNull();
+  });
+
+  it('allows one restart a week', () => {
+    expect(restartOffer({ ...base, restartDates: ['2026-11-06'] })).toBeNull();
+    expect(restartOffer({ ...base, restartDates: ['2026-11-02'] })).not.toBeNull();
+  });
+
+  it('bridges a short gap only', () => {
+    const rows = [
+      { date: '2026-11-07', done: true, restart: false },
+      { date: '2026-11-10', done: true, restart: true },
+    ];
+    expect([...bridgedDates(rows, '2026-11-01', () => false)].sort()).toEqual([
+      '2026-11-08',
+      '2026-11-09',
+    ]);
+    const far = [
+      { date: '2026-11-02', done: true, restart: false },
+      { date: '2026-11-10', done: true, restart: true },
+    ];
+    expect(bridgedDates(far, '2026-11-01', () => false).size).toBe(0);
+  });
+
+  it('ignores a restart that did not count', () => {
+    const rows = [
+      { date: '2026-11-07', done: true, restart: false },
+      { date: '2026-11-10', done: false, restart: true },
+    ];
+    expect(bridgedDates(rows, '2026-11-01', () => false).size).toBe(0);
+  });
+});
+
+describe('moments', () => {
+  it('awards a moment once', () => {
+    const facts = {
+      totalCheckins: 0,
+      currentStreak: 0,
+      challengeCompleted: false,
+      moments: ['comeback'] as const,
+    };
+    expect(newBadges(facts, new Set())).toEqual(['comeback']);
+    expect(newBadges(facts, new Set(['comeback']))).toEqual([]);
   });
 });

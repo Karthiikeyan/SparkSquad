@@ -55,6 +55,11 @@ export function RootNavigator() {
             name="squad/[id]/share"
             options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }}
           />
+          <Stack.Screen
+            name="squad/[id]/recap"
+            options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }}
+          />
+          <Stack.Screen name="shortcut/invite" />
           <Stack.Screen name="squad/[id]/history/[challengeId]" />
           <Stack.Screen name="checkins/[id]" />
           <Stack.Screen name="user/[id]" />

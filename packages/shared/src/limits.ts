@@ -55,6 +55,10 @@ export const HARD_CAPS = {
   exportRetentionDays: 1,
   rawCheckinRetentionAfterEndDays: 60,
   freezeEarnEveryDays: 7,
+  /** A restart day saves the streak after at most this many missed days. */
+  restartMaxMissedDays: 3,
+  /** At most one restart day in this many days (also the window of check-ins kept on the phone). */
+  restartCooldownDays: 7,
   /** Sign-in code abuse limits, per email address (server-enforced before Better Auth). */
   otpSendsPerEmailPerHour: 5,
   otpSendsPerEmailPerDay: 10,

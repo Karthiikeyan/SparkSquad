@@ -1,3 +1,4 @@
+import { PaywallLegal } from './PaywallLegal';
 import { and, eq } from 'drizzle-orm';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Check, X } from 'lucide-react-native';
@@ -177,6 +178,7 @@ export function SquadProPaywallScreen() {
       <Text variant="caption" color="label3" align="center" style={styles.note}>
         {t('paywall.cancelNote')}
       </Text>
+      <PaywallLegal />
     </View>
   );
 }

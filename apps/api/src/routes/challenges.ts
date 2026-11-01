@@ -3,6 +3,7 @@ import {
   addDays,
   createChallengeSchema,
   editDaySchema,
+  endDate,
   exportPlan,
   leaderboardQuerySchema,
   localDateInZone,
@@ -58,7 +59,16 @@ export async function createChallenge(c: Parameters<typeof db>[0]) {
   const d = db(c);
   const me = c.get('user');
   const { squad } = await requireMember(d, c.req.param('id')!, me.id, ['owner', 'admin']);
-  if (await activeChallenge(d, squad.id)) {
+  const running = await activeChallenge(d, squad.id);
+  // The nightly job keeps a finished challenge open two extra days for late check-ins; an owner
+  // starting the next one closes it straight away.
+  const owner = running ? await d.select().from(user).where(eq(user.id, me.id)).get() : undefined;
+  const finished =
+    running &&
+    owner &&
+    endDate(running.startDate, running.durationDays) < localDateInZone(new Date(), owner.timezone);
+  if (running && finished) await finishChallenge(c.env, d, running);
+  else if (running) {
     throw errors.conflict(
       'CHALLENGE_ALREADY_ACTIVE',
       'This squad already has a challenge running. End it first.',

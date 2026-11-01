@@ -1,3 +1,4 @@
+import { getPref, setPref } from '../../lib/prefs';
 import type * as GoogleTypes from '@react-native-google-signin/google-signin';
 import type * as AppleTypes from 'expo-apple-authentication';
 import { randomUUID } from 'expo-crypto';
@@ -106,6 +107,7 @@ export async function signInWithApple(): Promise<SignInOutcome> {
       },
     });
     if (error) throw new SignInError(error.message);
+    setPref('appleSignIn', true);
     return 'ok';
   } catch (e) {
     if (e && typeof e === 'object' && 'code' in e && e.code === 'ERR_REQUEST_CANCELED') {
@@ -138,4 +140,15 @@ export async function verifyEmailCode(email: string, otp: string): Promise<void>
     otp,
   });
   if (error) throw new SignInError(error.code ?? error.message);
+}
+
+/** A fresh Apple code for revoking tokens on deletion; null if unavailable or cancelled. */
+export async function appleCodeForRevoke(): Promise<string | null> {
+  if (!getPref('appleSignIn')) return null;
+  try {
+    const cred = await apple().signInAsync({ requestedScopes: [] });
+    return cred.authorizationCode ?? null;
+  } catch {
+    return null;
+  }
 }

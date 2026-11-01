@@ -1,0 +1,818 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Exam revision 45",
+  "goal": "Cover the syllabus, practise hard and walk in ready in 45 days",
+  "category": "exams",
+  "duration_days": 45,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Cover the syllabus",
+      "from_day": 1,
+      "to_day": 20
+    },
+    {
+      "name": "Practise",
+      "from_day": 21,
+      "to_day": 35
+    },
+    {
+      "name": "Sharpen",
+      "from_day": 36,
+      "to_day": 45
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Cover: day 1",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Cover: day 2",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Cover: day 3",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Cover: day 4",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Cover: day 5",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Cover: day 6",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Cover: day 8",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Cover: day 9",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Cover: day 10",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Cover: day 11",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Cover: day 12",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Cover: day 13",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Cover: day 15",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Cover: day 16",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Cover: day 17",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Cover: day 18",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Cover: day 19",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Cover: day 20",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 90
+        },
+        {
+          "title": "Revise one chapter from your notes",
+          "type": "check"
+        },
+        {
+          "title": "Make a one-page summary",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Practise: day 22",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Practise: day 23",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Practise: day 24",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Practise: day 25",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Practise: day 26",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Practise: day 27",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 29,
+      "title": "Practise: day 29",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Practise: day 30",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 31,
+      "title": "Practise: day 31",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 32,
+      "title": "Practise: day 32",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 33,
+      "title": "Practise: day 33",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 34,
+      "title": "Practise: day 34",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Solve 20 practice questions",
+          "type": "check"
+        },
+        {
+          "title": "Fix every mistake you made",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 35,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 36,
+      "title": "Sharpen: day 36",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 37,
+      "title": "Sharpen: day 37",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 38,
+      "title": "Sharpen: day 38",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 39,
+      "title": "Sharpen: day 39",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 40,
+      "title": "Sharpen: day 40",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 41,
+      "title": "Sharpen: day 41",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 42,
+      "title": "Rest and review the week",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 43,
+      "title": "Sharpen: day 43",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 44,
+      "title": "Sharpen: day 44",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 45,
+      "title": "Sharpen: day 45",
+      "tasks": [
+        {
+          "title": "Focused study",
+          "type": "minutes",
+          "target": 120
+        },
+        {
+          "title": "Sit a timed past paper",
+          "type": "check"
+        },
+        {
+          "title": "Revise your weakest topic",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 20,
+      "title": "Syllabus covered"
+    },
+    {
+      "day": 35,
+      "title": "Practice phase done"
+    },
+    {
+      "day": 45,
+      "title": "Ready for the exam"
+    }
+  ]
+}

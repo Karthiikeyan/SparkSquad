@@ -79,6 +79,8 @@ export const updateMeSchema = z
   .partial();
 export type UpdateMeInput = z.infer<typeof updateMeSchema>;
 
+export const appleRevokeSchema = z.object({ code: z.string().min(1).max(2000) });
+
 export const consentSchema = z.object({
   ageConfirmed: z.literal(true),
   termsAccepted: z.literal(true),
@@ -161,6 +163,8 @@ export const upsertCheckinSchema = z.object({
   values: z.array(taskValueSchema).max(8),
   note: trimmed(TEXT_LIMITS.checkinNote).nullable().optional(),
   honestMiss: z.boolean().optional(),
+  /** A comeback day: one finished task counts as the whole day (server re-checks eligibility). */
+  restart: z.boolean().optional(),
   hasPhoto: z.boolean().optional(),
   photoKey: z.string().max(200).nullable().optional(),
   /** Indices of tasks verified on the phone (GitHub/LeetCode/Codeforces/steps). */
@@ -198,6 +202,7 @@ export const pushTokenSchema = z.object({
 
 export const reportTargetSchema = z.enum(['user', 'checkin', 'comment', 'squad']);
 export const reportReasonSchema = z.enum([
+  'child_safety',
   'spam',
   'harassment',
   'hate',

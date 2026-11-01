@@ -1,0 +1,611 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Spoken English 30",
+  "goal": "Speak English out loud every day and feel confident in 30 days",
+  "category": "languages",
+  "duration_days": 30,
+  "days_per_week": 6,
+  "phases": [
+    {
+      "name": "Get talking",
+      "from_day": 1,
+      "to_day": 10
+    },
+    {
+      "name": "Speak longer",
+      "from_day": 11,
+      "to_day": 20
+    },
+    {
+      "name": "Speak with others",
+      "from_day": 21,
+      "to_day": 30
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Introduce yourself",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: introduce yourself",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Describe your day",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: describe your day",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Talk about your family",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: talk about your family",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Explain your job or studies",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: explain your job or studies",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Describe your home town",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: describe your home town",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Tell a story from childhood",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: tell a story from childhood",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Rest, or watch something in English",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 8,
+      "title": "Explain how to cook a dish",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: explain how to cook a dish",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Plan a trip out loud",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: plan a trip out loud",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Practise a job interview answer",
+      "tasks": [
+        {
+          "title": "Speak for 5 minutes: practise a job interview answer",
+          "type": "minutes",
+          "target": 5
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Introduce yourself",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: introduce yourself",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Describe your day",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: describe your day",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Talk about your family",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: talk about your family",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Rest, or watch something in English",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 15,
+      "title": "Describe your home town",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: describe your home town",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Tell a story from childhood",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: tell a story from childhood",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Give your opinion on a film",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: give your opinion on a film",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Explain how to cook a dish",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: explain how to cook a dish",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Plan a trip out loud",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: plan a trip out loud",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Practise a job interview answer",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: practise a job interview answer",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Record yourself and listen back",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Rest, or watch something in English",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 22,
+      "title": "Describe your day",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: describe your day",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 23,
+      "title": "Talk about your family",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: talk about your family",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Explain your job or studies",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: explain your job or studies",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "title": "Describe your home town",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: describe your home town",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 26,
+      "title": "Tell a story from childhood",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: tell a story from childhood",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 27,
+      "title": "Give your opinion on a film",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: give your opinion on a film",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 28,
+      "title": "Rest, or watch something in English",
+      "rest": true,
+      "tasks": []
+    },
+    {
+      "day": 29,
+      "title": "Plan a trip out loud",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: plan a trip out loud",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 30,
+      "title": "Practise a job interview answer",
+      "tasks": [
+        {
+          "title": "Speak for 10 minutes: practise a job interview answer",
+          "type": "minutes",
+          "target": 10
+        },
+        {
+          "title": "Learn 5 new words and use them",
+          "type": "count",
+          "target": 5,
+          "unit": "words"
+        },
+        {
+          "title": "Talk with a squadmate in English",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 10,
+      "title": "Ten days of talking"
+    },
+    {
+      "day": 20,
+      "title": "Ten minutes without stopping"
+    },
+    {
+      "day": 30,
+      "title": "30 days of spoken English complete"
+    }
+  ]
+}

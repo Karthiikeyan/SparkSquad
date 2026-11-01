@@ -64,8 +64,12 @@ export const radius = {
 
 export const space = {
   screen: 16,
-  tabBar: 84,
 } as const;
+
+/** Bottom bar height on this phone: fixed content plus the phone's own bottom inset. */
+export function tabBarHeight(bottomInset: number): number {
+  return 58 + bottomInset;
+}
 
 export const sizes = {
   touch: 44,

@@ -13,7 +13,9 @@
     "decrease": "Decrease {{label}}",
     "increase": "Increase {{label}}",
     "characterCount": "{{count}} / {{max}}",
-    "pendingSync": "Waiting to sync"
+    "pendingSync": "Waiting to sync",
+    "stepperHint": "Tap the number to type it, or hold a sign to change it quickly",
+    "typeValue": "Type {{label}}"
   },
   "tabs": {
     "today": "Today",
@@ -162,18 +164,23 @@
     "share": "Share card"
   },
   "badges": {
-    "first_checkin": "First check-in",
-    "streak_3": "3-day streak",
-    "streak_7": "7-day streak",
-    "streak_14": "14-day streak",
-    "streak_21": "21-day streak",
-    "streak_30": "30-day streak",
-    "streak_60": "60-day streak",
-    "streak_100": "100-day streak",
-    "checkins_10": "10 check-ins",
-    "checkins_50": "50 check-ins",
-    "checkins_100": "100 check-ins",
-    "challenge_complete": "Challenge complete"
+    "first_checkin": "First Spark",
+    "streak_3": "Ember",
+    "streak_7": "Kindling",
+    "streak_14": "Steady Flame",
+    "streak_21": "Hearth",
+    "streak_30": "Forge",
+    "streak_60": "Furnace",
+    "streak_100": "Sunrise",
+    "checkins_10": "First Steps",
+    "checkins_50": "Trailblazer",
+    "checkins_100": "Summit",
+    "challenge_complete": "Finisher",
+    "early_bird": "Early Bird",
+    "truth_teller": "Truth Teller",
+    "full_house": "Full House",
+    "comeback": "Comeback",
+    "cheerleader": "Cheerleader"
   },
   "freeze": {
     "title": "Streak saved",
@@ -221,12 +228,12 @@
     "startTomorrowTitle": "{{title}} starts tomorrow",
     "startTomorrowBody": "Take a look at day 1 so you’re ready.",
     "startTodayTitle": "{{title}} starts today",
-    "startTodayBody": "Day 1 is open. Your squad is starting together."
+    "startTodayBody": "Day 1 is open. Your squad is starting together.",
+    "recapTitle": "Your squad’s week is ready",
+    "recapBody": "Open your recap card and share it with the group.",
+    "comebackBody": "Just one task today gets you back on track."
   },
   "welcome": {
-    "ringCount": "8",
-    "ringTotal": "/12",
-    "ringLabel": "checked in today",
     "title": "Show up daily, with your squad.",
     "body": "Join a small group, follow one plan, and check in every day. Your squad sees it, and you see theirs.",
     "google": "Continue with Google",
@@ -384,22 +391,12 @@
   },
   "legal": {
     "back": "Back",
-    "terms": {
-      "title": "Terms of Use",
-      "body": "Last updated October 2026.\n\nSparkSquad is a SparkTribe product that helps adults keep daily commitments with a small group. By using SparkSquad you agree to these terms.\n\nWho can use SparkSquad. You must be 18 or older. One account per person. Keep your sign-in secure; you are responsible for activity on your account.\n\nYour content. You own the notes, comments, plans and photos you add. You give us permission to store and show them to the members of your squads so the app can work. Remove content at any time; delete your account to remove everything.\n\nZero tolerance. Do not post harassment, hate, threats, sexual content, spam, or anything illegal, and do not impersonate others. Anyone can report content or block a person. We review reports within 24 hours and remove content and accounts that break these rules, without warning.\n\nSquads. Owners and admins manage their squads and can remove members. Squad chat links point to WhatsApp or Telegram, which have their own terms.\n\nAI and integrations. If you add your own AI key or public handles, requests go from your phone to that provider under its terms. We never receive your AI key.\n\nPaid plans. Plus and Squad Pro are billed by Apple or Google. Manage or cancel in your store account. Prices are shown before you buy.\n\nNo guarantees. SparkSquad is provided as is. We work hard to keep it running and your data safe, but we can’t promise it will always be available.\n\nChanges. We may update these terms and will tell you in the app when we do.\n\nContact. Questions or complaints: use Help & contact in Settings."
-    },
-    "privacy": {
-      "title": "Privacy Policy",
-      "body": "Last updated October 2026.\n\nWhat we collect. Your email, name, username, avatar colour, timezone, interests and reminder time; the squads you join; your check-ins, notes, reactions, comments and nudges; and push notification tokens. We do not collect phone numbers or contacts.\n\nWhat stays on your phone. Free photo proofs, your AI key, step counts and verification results stay on your phone. Plus photo proofs are uploaded so your squad can see them and are deleted after 30 days (90 for Squad Pro).\n\nHow we use it. To run your squads, show your progress to your squad, send reminders and nudges, keep the service safe, and improve the app with privacy-friendly, anonymous usage counts.\n\nWho sees it. Members of your squads see your name, avatar, check-ins and comments. Public squad listings show the squad name, description and member count. We do not sell your data.\n\nService providers. Cloudflare (hosting and storage), Resend (sign-in emails), Expo (push delivery) and, if you turn them on, PostHog (anonymous analytics) and Sentry (crash reports). Payments go through Apple or Google.\n\nRetention. Comments are deleted after 30 days (90 for paid squads), notifications after 30 days, exports after 1 day. Old check-ins are rolled up into summaries after a challenge ends.\n\nYour rights. Export your data or delete your account at any time from Settings. Deletion removes your rows, photos and tokens.\n\nGrievances. Contact us through Help & contact in Settings; we respond within 7 days."
-    },
     "licences": {
       "title": "Open-source licences",
-      "body": "SparkSquad is built with open-source software. Thank you to everyone who maintains it.\n\nReact Native, Expo, Expo Router and their modules: MIT License.\n\nTanStack Query, Drizzle ORM, Zod, Hono, Better Auth, Lucide icons, react-native-mmkv, react-native-svg, react-native-view-shot, react-native-qrcode-svg: MIT or ISC License.\n\nBricolage Grotesque and Inter typefaces: SIL Open Font License 1.1.\n\nFull licence texts are included with each package in the app’s source."
+      "body": "SparkSquad is built with open-source software. Thank you to everyone who maintains it.\n\nReact Native, Expo, Expo Router and their modules: MIT License.\n\nTanStack Query, Drizzle ORM, Zod, Hono, Better Auth, Lucide icons, react-native-mmkv, react-native-svg, react-native-view-shot, react-native-qrcode-svg: MIT or ISC License.\n\nBricolage Grotesque and Inter typefaces: SIL Open Font License 1.1.\n\nFull licence texts are included with each package in the app’s source.\n\nreact-native-android-widget, expo-quick-actions: MIT License."
     },
-    "guidelines": {
-      "title": "Community guidelines",
-      "body": "SparkSquad works because squads are kind and honest.\n\nCheer people on. Reactions, comments and nudges are for encouragement.\n\nBe honest about your check-ins. An honest miss beats a fake tick.\n\nNo harassment, hate, threats, sexual content, spam or impersonation. We remove it and the accounts behind it.\n\nRespect privacy. Don’t share other people’s details or photos without asking.\n\nReport anything that breaks these rules. We review every report within 24 hours."
-    }
+    "updated": "Last updated {{date}}.",
+    "helpFallback": "the address in Help & contact"
   },
   "errors": {
     "BAD_REQUEST": "Something about that request wasn’t right. Try again.",
@@ -466,7 +463,10 @@
     "invite": "Invite friends",
     "roleOwner": "Owner",
     "roleAdmin": "Admin",
-    "roleMember": "Member"
+    "roleMember": "Member",
+    "ended": "{{title}} has ended",
+    "nextChallenge": "Start the next challenge",
+    "nextWaiting": "An owner or admin can start the next challenge."
   },
   "squad": {
     "back": "Squads",
@@ -507,7 +507,14 @@
     "noChallengeBody": "When the owner sets up a plan, daily tasks show up here.",
     "notFound": "This squad isn’t on your phone yet. Pull to refresh or go back.",
     "you": "You",
-    "setupPlan": "Set up a plan"
+    "setupPlan": "Set up a plan",
+    "everyoneTitle": "Everyone showed up",
+    "everyoneBody": "All {{n}} of you checked in today. That’s a squad.",
+    "nudgeAll": "Nudge everyone",
+    "nudgeAllLabel": "Nudge all {{n}} people who haven’t checked in",
+    "nudgeAllSent": "Nudged {{n}} people.",
+    "shareTitle": "Share",
+    "shareToday": "Today’s board"
   },
   "leaderboard": {
     "challenge": "This challenge",
@@ -746,7 +753,8 @@
     "other": "Something else",
     "details": "Details (optional)",
     "submit": "Send report",
-    "sent": "Report sent. We review reports within 24 hours."
+    "sent": "Report sent. We review reports within 24 hours.",
+    "child_safety": "Child safety"
   },
   "create": {
     "cancel": "Cancel",
@@ -795,7 +803,33 @@
     "meta": "{{days}} days, {{tasks}} tasks a day",
     "metaOne": "{{days}} days, 1 task a day",
     "empty": "No templates yet.",
-    "use": "Use this plan"
+    "use": "Use this plan",
+    "days": "{{n}} days",
+    "perDay": "{{n}} tasks a day",
+    "perDayOne": "1 task a day",
+    "count": "{{n}} plans",
+    "countOne": "1 plan",
+    "intro": "Ready-made plans you can start with your squad, and change later.",
+    "howItGoes": "How it goes",
+    "dayRange": "Day {{from}} to {{to}}",
+    "dayLooksLike": "What day {{n}} looks like",
+    "milestones": "Milestones",
+    "everyDay": "Day by day",
+    "blurb": {
+      "aptitude-21": "Quant, logic and verbal practice for placement tests.",
+      "dsa-30": "The core patterns, with a problem or two every day.",
+      "dsa-60": "From arrays to graphs and DP, at interview level.",
+      "sql-30": "Joins to window functions, the way interviews ask them.",
+      "steps-10k": "Build up slowly to 10,000 steps a day.",
+      "system-design-30": "Learn the building blocks, then design real systems.",
+      "reading-30": "A daily reading habit, starting small.",
+      "meditation-21": "From a few quiet minutes to fifteen a day.",
+      "sleep-water-14": "Two weeks of better sleep and enough water.",
+      "exam-revision-45": "Revise, test yourself and fix weak spots before the exam.",
+      "spoken-english-30": "Speak every day until it stops feeling hard.",
+      "gym-starter-28": "Four weeks of simple full-body gym sessions.",
+      "no-spend-30": "Track every rupee and cut what you don’t need."
+    }
   },
   "importPlan": {
     "title": "Import a plan",
@@ -925,7 +959,9 @@
     "clearRecent": "Clear",
     "results": "Squads",
     "noResults": "Nothing matches “{{q}}”.",
-    "loadMore": "Show more"
+    "loadMore": "Show more",
+    "filter": "Filter",
+    "sortedBy": "Sorted by {{sort}}"
   },
   "aiSettings": {
     "title": "AI plan builder",
@@ -956,7 +992,12 @@
     "howToAnthropic": "console.anthropic.com → API keys",
     "remove": "Remove key",
     "removed": "Key removed.",
-    "onDeviceReady": "Ready on this phone"
+    "onDeviceReady": "Ready on this phone",
+    "groq": "Groq",
+    "openrouter": "OpenRouter",
+    "freeTier": "Has a free tier: no card needed.",
+    "howToGroq": "console.groq.com → API Keys → Create API Key",
+    "howToOpenrouter": "openrouter.ai → Keys → Create Key. Uses their free models."
   },
   "planPreview": {
     "goal": "Goal: {{goal}}",
@@ -1014,22 +1055,25 @@
     "prompt": "Rewrite this weekly summary for a habit app in at most 3 short, warm sentences. Never shame missed days. No emoji. Summary: {{summary}}"
   },
   "badgesScreen": {
-    "title": "Badges",
-    "earned": "Earned",
-    "locked": "Still to earn",
-    "earnedOn": "Earned {{date}}",
-    "progress": "{{n}} of {{target}} days",
-    "progressCount": "{{n}} of {{target}} check-ins",
-    "short": "{{n}} / {{target}}",
-    "first_checkin": "Check in once",
-    "challenge_complete": "Finish a challenge with 80% or more",
-    "summary": "{{n}} of {{total}} earned",
-    "next": "Up next",
-    "nextBody": "{{n}} to go",
-    "groupStreaks": "Streaks",
-    "groupCheckins": "Check-ins",
-    "groupMilestones": "Milestones",
-    "locked_label": "{{label}}, locked, {{detail}}"
+    "title": "Your journey",
+    "groupStreaks": "The Flame",
+    "groupCheckins": "The Path",
+    "groupMilestones": "Moments",
+    "flameEmpty": "No flame yet",
+    "flameEmptyBody": "Check in 3 days in a row to light your first flame.",
+    "flameNext": "{{n}} days to {{name}}",
+    "flameTop": "You’ve reached the final form.",
+    "groupStreaksBody": "Grows with your longest streak.",
+    "groupCheckinsBody": "Every check-in moves you along.",
+    "groupMilestonesBody": "Some stay a secret until they happen.",
+    "secret": "Secret",
+    "share": "Share this",
+    "shareMessage": "I just earned {{name}} on SparkSquad.",
+    "shareFailed": "We couldn’t share that. Try again.",
+    "stepRule": "Reach a {{n}}-day streak",
+    "countRule": "Reach {{n}} check-ins",
+    "streakDays": "{{n}} days",
+    "checkinCount": "{{n}} check-ins"
   },
   "historyScreen": {
     "title": "History",
@@ -1057,7 +1101,7 @@
     "plan": "Plan",
     "yourData": "Your data",
     "blocked": "Blocked people",
-    "export": "Export my data",
+    "export": "Export and import data",
     "delete": "Delete account",
     "help": "Help",
     "helpRow": "Help & contact",
@@ -1078,7 +1122,9 @@
     "themeRestartNow": "Restart now",
     "themeLater": "Later",
     "usageData": "Share anonymous usage data",
-    "usageDataBody": "Counts like “check-in saved” help us improve SparkSquad. Never your notes or AI key."
+    "usageDataBody": "Counts like “check-in saved” help us improve SparkSquad. Never your notes or AI key.",
+    "madeFor": "Show up daily, with your squad.",
+    "childSafety": "Child safety standards"
   },
   "editProfile": {
     "title": "Edit profile",
@@ -1087,7 +1133,7 @@
   },
   "integrations": {
     "title": "Connected accounts",
-    "body": "Add your public usernames so SparkSquad can tick off tasks for you. Checks run on this phone; we only store the username.",
+    "body": "Add your public usernames and tasks tick themselves off.",
     "github": "GitHub username",
     "leetcode": "LeetCode username",
     "codeforces": "Codeforces handle",
@@ -1100,7 +1146,7 @@
     "notFound": "We couldn’t find that public profile. Check the spelling.",
     "unreachable": "We couldn’t reach {{site}} right now. Saved anyway.",
     "steps": "Steps",
-    "stepsBody": "Let SparkSquad read your step count from {{source}} so step tasks fill in. Steps stay on this phone.",
+    "stepsBody": "Let SparkSquad read your step count from {{source}} so step tasks fill in. It only leaves this phone in a check-in you submit.",
     "verified": "Verified from your {{source}} activity",
     "couldNot": "Couldn’t verify, mark it yourself",
     "name_github": "GitHub",
@@ -1114,7 +1160,12 @@
     "stepsConnected": "Step tasks now fill in from {{source}}.",
     "stepsDenied": "No access to steps. Step tasks stay manual; you can allow it later.",
     "stepsInstall": "Install or update Health Connect from the Play Store to fill in step tasks.",
-    "stepsUnsupported": "Step counts aren’t available on this phone. Enter steps by hand."
+    "stepsUnsupported": "Step counts aren’t available on this phone. Enter steps by hand.",
+    "footer": "Checks run on this phone. We only store the username, never a password.",
+    "notConnected": "Not connected",
+    "stepsShort": "Fills in step tasks. Only shared in a check-in you submit.",
+    "stepsAskTitle": "Connect {{source}}?",
+    "stepsAskBody": "SparkSquad reads only your step count, on this phone, to fill in step tasks. When you submit a check-in, that number is saved with it and your squad can see it. It’s never sold or used for ads, and you can disconnect at any time."
   },
   "notificationsSettings": {
     "title": "Notifications",
@@ -1206,12 +1257,24 @@
     "since": "Blocked {{date}}"
   },
   "exportData": {
-    "title": "Export my data",
-    "body": "We make a JSON file with your profile, memberships, check-ins, comments, streaks, badges and connected accounts. The download link works for one day.",
+    "title": "Export and import",
+    "body": "A JSON file with your profile, memberships, check-ins, comments, streaks, badges and connected accounts. The download link works for one day.",
     "button": "Make my export",
     "ready": "Your export is ready.",
     "share": "Save or share the file",
-    "failed": "We couldn’t make the export. Try again."
+    "failed": "We couldn’t make the export. Try again.",
+    "exportTitle": "Export my data",
+    "importTitle": "Import settings",
+    "importBody": "Bring your profile, reminder, notification settings and connected accounts back from an export file. You’ll see what changes first.",
+    "importButton": "Choose an export file",
+    "importInvalid": "That isn’t a SparkSquad export file.",
+    "importNothing": "This account already matches that file.",
+    "importConfirm": "Apply these changes?",
+    "importSettings": "{{n}} profile and notification settings will change.",
+    "importAccounts": "Accounts to connect: {{names}}.",
+    "importKept": "Your check-ins, streaks and badges aren’t touched, so leaderboards stay fair.",
+    "importApply": "Apply",
+    "importDone": "Settings imported."
   },
   "deleteAccount": {
     "title": "Delete account",
@@ -1222,7 +1285,8 @@
     "confirmLabel": "Type DELETE to confirm",
     "confirmWord": "DELETE",
     "button": "Delete my account",
-    "deleted": "Your account was deleted."
+    "deleted": "Your account was deleted.",
+    "subscription": "If you pay for Plus or Squad Pro, cancel it first in your Apple or Google Play subscriptions. Deleting your account doesn’t stop the billing."
   },
   "help": {
     "title": "Help & contact",
@@ -1239,11 +1303,100 @@
     "a5": "No. It stays in your phone’s secure keystore and requests go straight to the provider.",
     "contact": "Contact us",
     "contactBody": "Write to us about anything, including complaints. We reply within 7 days.",
-    "email": "Email {{email}}",
-    "guidelines": "Community guidelines"
+    "guidelines": "Community guidelines",
+    "emailTitle": "Email us",
+    "emailTo": "To",
+    "emailSubjectLabel": "Subject",
+    "emailSubject": "Help with SparkSquad {{version}}",
+    "emailWrite": "Write email",
+    "emailCopy": "Copy",
+    "emailCopied": "Email address copied.",
+    "childSafety": "Child safety standards"
   },
   "crash": {
     "title": "Something went wrong",
     "body": "This screen hit a problem. Your check-ins are safe on your phone. Try again."
+  },
+  "brand": {
+    "name": "SparkSquad",
+    "logo": "SparkSquad logo",
+    "loading": "Getting things ready…"
+  },
+  "recapCard": {
+    "screenTitle": "This week’s recap",
+    "title": "This week in {{squad}}",
+    "range": "{{from}} to {{to}}",
+    "checkins": "check-ins",
+    "checkinsOne": "check-in",
+    "showedUp": "showed up",
+    "perfectDays": "full-squad days",
+    "top": "Most consistent: {{name}}, {{n}} days",
+    "streak": "Longest streak: {{name}}, {{n}} days",
+    "note": "Made on this phone. Nothing is uploaded.",
+    "ready": "This week’s card is ready"
+  },
+  "calendar": {
+    "add": "Add to calendar",
+    "eventTitle": "SparkSquad: {{title}}",
+    "eventNotes": "Check in with {{squad}}. Last day: {{end}}.",
+    "failed": "We couldn’t open your calendar."
+  },
+  "shortcuts": {
+    "checkIn": "Check in",
+    "today": "Today",
+    "invite": "Invite",
+    "inviteTitle": "Invite to which squad?"
+  },
+  "widget": {
+    "open": "Open SparkSquad to refresh",
+    "nothing": "Nothing due today",
+    "allDone": "All done today",
+    "left": "{{n}} left today",
+    "leftOne": "1 left today",
+    "checkIn": "Check in",
+    "checkedIn": "Done",
+    "squadCount": "{{checked}}/{{members}} in"
+  },
+  "aiConsent": {
+    "title": "Send this to {{company}}?",
+    "body": "To build your plan, SparkSquad sends your goal, your replies and your plan details from this phone to {{company}}, a third-party AI, using your own key. {{company}} handles them under its own privacy policy. We don’t see them. Nothing is sent unless you allow it.",
+    "allow": "Allow"
+  },
+  "badgeStories": {
+    "first_checkin": "You showed up. Everything starts here.",
+    "streak_3": "Three days in a row. There’s a glow now.",
+    "streak_7": "A whole week. It’s catching.",
+    "streak_14": "Two weeks. This is starting to feel normal.",
+    "streak_21": "Three weeks. People warm their hands on this.",
+    "streak_30": "A month. You’re not trying anymore, you’re doing.",
+    "streak_60": "Two months. Hard things get shaped in here.",
+    "streak_100": "A hundred days. You are the reason it’s light out.",
+    "checkins_10": "Ten check-ins on the path.",
+    "checkins_50": "Fifty check-ins. Others can follow your trail.",
+    "checkins_100": "A hundred check-ins. Look how far down it looks.",
+    "challenge_complete": "You saw a whole challenge through.",
+    "early_bird": "Done before 8 AM, while the world slept.",
+    "truth_teller": "You said “I couldn’t today”. Honesty counts.",
+    "full_house": "Everyone in your squad showed up on the same day.",
+    "comeback": "You missed days and came back anyway. That’s the hard part.",
+    "cheerleader": "You gave 10 fires. Squads run on people like you."
+  },
+  "badgeHints": {
+    "early_bird": "For those who get it done before most people wake up.",
+    "truth_teller": "Some days don’t go to plan. Saying so takes something.",
+    "full_house": "Happens on a day when nobody in your squad is missing.",
+    "comeback": "You can only earn this one by falling first.",
+    "cheerleader": "Be generous with the people around you."
+  },
+  "comeback": {
+    "title": "Welcome back",
+    "sheet": "Restart day: finish any one task and today counts in full.",
+    "bodyRestore": "You missed {{n}} days. Finish just one task today and your streak carries on.",
+    "bodyRestoreOne": "You missed yesterday. Finish just one task today and your streak carries on.",
+    "bodyFresh": "It’s been a while. Finish just one task today to start again.",
+    "action": "Start small",
+    "pickOne": "Tick at least one task for your restart day.",
+    "restored": "You’re back. Your streak is safe.",
+    "fresh": "You’re back. A new streak starts today."
   }
 }

@@ -21,7 +21,7 @@ describe('inbox copy', () => {
       'A squadmate asked to join Squad 7',
     );
     expect(notificationText(n({ kind: 'badge', payload: { badge: 'streak_7' } }))).toBe(
-      'You earned a badge: 7-day streak',
+      'You earned a badge: Kindling',
     );
     expect(
       notificationText(

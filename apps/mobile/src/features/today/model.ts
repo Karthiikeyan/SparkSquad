@@ -6,6 +6,8 @@ import {
   isWithinCheckinWindow,
   localDateInZone,
   rawDayNumber,
+  restartOffer,
+  type RestartOffer,
   type ChallengeDTO,
   type CheckinDTO,
   type LocalDate,
@@ -33,7 +35,7 @@ export interface TodaySource {
   users: Map<string, SourceUser>;
   plans: Map<string, Plan>;
   edits: Map<string, PlanDay[]>;
-  /** Recent check-ins (today and the two days before) for active challenges. */
+  /** Recent check-ins (the last week) for active challenges. */
   checkins: CheckinDTO[];
   pendingCheckinIds: Set<string>;
   streaks: StreakDTO[];
@@ -65,6 +67,8 @@ export interface TodayCard {
   kind: 'tasks' | 'steps';
   /** Yesterday can still be checked in (B7). */
   backfill: { date: LocalDate; dayNumber: number } | null;
+  /** Missed days and no freeze left: today can be a smaller restart day. */
+  comeback: RestartOffer | null;
 }
 
 export function timeZoneOf(me: Pick<MeDTO, 'timezone'>): string {
@@ -145,6 +149,19 @@ export function buildTodayCards(src: TodaySource, now: Date): TodayCard[] {
         : 'tasks';
 
     cards.push({
+      comeback:
+        phase === 'running' && !mine && !day?.rest
+          ? restartOffer({
+              date: today,
+              startDate: ch.startDate,
+              current: src.streaks.find((x) => x.scope === ch.id)?.current ?? 0,
+              lastDoneDate: src.streaks.find((x) => x.scope === ch.id)?.lastDoneDate ?? null,
+              isRest: (date) => !!dayFor(src, ch, rawDayNumber(date, ch.startDate))?.rest,
+              restartDates: src.checkins
+                .filter((c) => c.challengeId === ch.id && c.userId === src.me.id && c.restart)
+                .map((c) => c.localDate),
+            })
+          : null,
       challenge: ch,
       squad,
       state,

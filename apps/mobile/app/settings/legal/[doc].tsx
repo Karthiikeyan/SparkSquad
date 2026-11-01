@@ -1,20 +1,34 @@
+import { LEGAL_DOCS, LEGAL_UPDATED, legalParagraphs, type LegalDoc } from '@sparksquad/shared';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { NavHeader, Screen, Text } from '../../../src/components/ui';
+import { useConfig } from '../../../src/features/system/useConfig';
 import { t } from '../../../src/i18n';
+import { env } from '../../../src/lib/env';
 
-const DOCS = ['terms', 'privacy', 'licences', 'guidelines'] as const;
-type Doc = (typeof DOCS)[number];
+type Doc = LegalDoc | 'licences';
 
 function isDoc(value: string | undefined): value is Doc {
-  return !!value && (DOCS as readonly string[]).includes(value);
+  return !!value && (value === 'licences' || value in LEGAL_DOCS);
 }
 
-/** F16: in-app Terms and Privacy pages (reachable signed out from Welcome and consent). */
+/** F16: in-app legal pages (reachable signed out from Welcome and consent). Same text as the web. */
 export default function LegalDoc() {
   const { doc } = useLocalSearchParams<{ doc: string }>();
+  const config = useConfig();
   const which: Doc = isDoc(doc) ? doc : 'terms';
-  const paragraphs = t(`legal.${which}.body`).split('\n\n');
+  const licences = which === 'licences';
+  const title = licences ? t('legal.licences.title') : LEGAL_DOCS[which].title;
+  const paragraphs = licences
+    ? t('legal.licences.body').split('\n\n')
+    : [
+        t('legal.updated', { date: LEGAL_UPDATED }),
+        ...legalParagraphs(which, {
+          email: config.data?.contactEmail ?? t('legal.helpFallback'),
+          deleteUrl: `${env.apiUrl}/delete-account`,
+          childSafetyUrl: `${env.apiUrl}/child-safety`,
+        }),
+      ];
   return (
     <Screen
       header={
@@ -25,7 +39,7 @@ export default function LegalDoc() {
       }
     >
       <Text variant="title1" accessibilityRole="header" style={styles.title}>
-        {t(`legal.${which}.title`)}
+        {title}
       </Text>
       {paragraphs.map((p, i) => (
         <Text key={i} variant="body" color={i === 0 ? 'label3' : 'label'} style={styles.paragraph}>

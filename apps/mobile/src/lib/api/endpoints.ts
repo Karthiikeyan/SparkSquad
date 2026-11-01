@@ -160,6 +160,7 @@ export const endpoints = {
   unblock: (userId: string) => api.del<{ ok: true }>(`/v1/blocks/${enc(userId)}`),
   exportData: () => api.post<{ url: string; expiresAt: string }>('/v1/me/export'),
   deleteAccount: () => api.del<{ ok: true }>('/v1/me'),
+  revokeApple: (code: string) => api.post<{ revoked: boolean }>('/v1/me/apple-revoke', { code }),
   plusInterest: (product: 'plus' | 'squad_pro') =>
     api.post<{ ok: true }>('/v1/me/plus-interest', { product }),
   integrations: () =>

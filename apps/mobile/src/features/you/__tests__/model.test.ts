@@ -2,6 +2,7 @@ import type { CheckinDTO } from '@sparksquad/shared';
 import {
   badgeRows,
   badgeStrip,
+  flameState,
   dayLevel,
   heatmapLevels,
   heatmapStart,
@@ -129,14 +130,42 @@ describe('badgeRows', () => {
       ['checkins_50', false, 42],
       ['checkins_100', false, 92],
       ['challenge_complete', false, null],
+      ['early_bird', false, null],
+      ['truth_teller', false, null],
+      ['full_house', false, null],
+      ['comeback', false, null],
+      ['cheerleader', false, null],
     ]);
-    expect(rows.find((r) => r.badge === 'streak_21')?.glyph).toBe('21');
     expect(rows.find((r) => r.badge === 'checkins_10')).toMatchObject({
       group: 'checkins',
       current: 8,
-      tier: 1,
     });
-    expect(rows.find((r) => r.badge === 'streak_100')?.tier).toBe(3);
+  });
+
+  it('keeps moments a secret until they happen', () => {
+    const rows = badgeRows([{ badge: 'comeback', earnedAt: '2026-10-07T00:00:00Z' }], 0, 0);
+    expect(rows.find((r) => r.badge === 'comeback')?.secret).toBe(false);
+    expect(rows.find((r) => r.badge === 'full_house')?.secret).toBe(true);
+    expect(rows.find((r) => r.badge === 'challenge_complete')?.secret).toBe(false);
+    expect(badgeStrip(rows).some((r) => r.secret)).toBe(false);
+  });
+
+  it('knows the current flame form and the next one', () => {
+    const none = flameState(badgeRows([], 0, 0));
+    expect(none.current).toBeNull();
+    expect(none.next?.badge).toBe('streak_3');
+    const mid = flameState(
+      badgeRows(
+        [
+          { badge: 'streak_3', earnedAt: '2026-10-03T00:00:00Z' },
+          { badge: 'streak_7', earnedAt: '2026-10-07T00:00:00Z' },
+        ],
+        9,
+        9,
+      ),
+    );
+    expect(mid.current?.badge).toBe('streak_7');
+    expect(mid.next?.badge).toBe('streak_14');
   });
 
   it('picks the closest locked badge as up next', () => {

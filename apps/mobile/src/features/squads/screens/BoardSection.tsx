@@ -1,5 +1,13 @@
 import { router } from 'expo-router';
-import { CalendarDays, Clock, Flame, Image as ImageIcon, MessageCircle } from 'lucide-react-native';
+import {
+  BellRing,
+  CalendarDays,
+  Clock,
+  Flame,
+  Image as ImageIcon,
+  MessageCircle,
+  PartyPopper,
+} from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, AvatarRing, Button, EmptyState, Pressable, Text } from '../../../components/ui';
 import { t } from '../../../i18n';
@@ -10,6 +18,8 @@ import type { Board, FeedItem } from '../model';
 export interface BoardSectionProps {
   board: Board;
   onNudge: (member: { id: string; name: string }) => void;
+  /** Nudges everyone still waiting whom I haven't nudged today. */
+  onNudgeAll?: (members: readonly { id: string; name: string }[]) => void;
   onFire: (checkinId: string) => void;
   /** Owners/admins of a squad with no challenge can set one up. */
   onSetUpPlan?: () => void;
@@ -125,7 +135,13 @@ function FeedRow({
 }
 
 /** C2 board body: count + member grid, still to check in (nudge), today's feed. */
-export function BoardSection({ board, onNudge, onFire, onSetUpPlan }: BoardSectionProps) {
+export function BoardSection({
+  board,
+  onNudge,
+  onNudgeAll,
+  onFire,
+  onSetUpPlan,
+}: BoardSectionProps) {
   if (board.state === 'none') {
     return (
       <EmptyState
@@ -137,8 +153,23 @@ export function BoardSection({ board, onNudge, onFire, onSetUpPlan }: BoardSecti
     );
   }
   const total = board.grid.length;
+  const everyoneIn = board.state === 'running' && total >= 2 && board.checkedCount === total;
+  const nudgeable = board.stillToCheckIn.filter((m) => !m.nudged);
   return (
     <View>
+      {everyoneIn ? (
+        <View style={styles.win} accessible accessibilityLiveRegion="polite" testID="everyone-in">
+          <View style={styles.winIcon}>
+            <PartyPopper size={22} color={colors.onAccent} strokeWidth={iconStroke} />
+          </View>
+          <View style={styles.flex}>
+            <Text variant="headline">{t('squad.everyoneTitle')}</Text>
+            <Text variant="footnote" color="label2">
+              {t('squad.everyoneBody', { n: total })}
+            </Text>
+          </View>
+        </View>
+      ) : null}
       <View style={styles.card}>
         <View
           style={styles.countRow}
@@ -168,9 +199,22 @@ export function BoardSection({ board, onNudge, onFire, onSetUpPlan }: BoardSecti
 
       {board.stillToCheckIn.length > 0 ? (
         <>
-          <Text variant="bodySemibold" style={styles.heading} accessibilityRole="header">
-            {t('squad.stillToCheckIn')}
-          </Text>
+          <View style={styles.headingRow}>
+            <Text variant="bodySemibold" accessibilityRole="header" style={styles.flex}>
+              {t('squad.stillToCheckIn')}
+            </Text>
+            {onNudgeAll && nudgeable.length >= 2 ? (
+              <Button
+                label={t('squad.nudgeAll')}
+                variant="soft"
+                size="sm"
+                icon={<BellRing size={15} color={colors.accent} strokeWidth={iconStroke} />}
+                accessibilityLabel={t('squad.nudgeAllLabel', { n: nudgeable.length })}
+                onPress={() => onNudgeAll(nudgeable.map((m) => ({ id: m.id, name: m.name })))}
+                testID="nudge-all"
+              />
+            ) : null}
+          </View>
           <View style={styles.list}>
             {board.stillToCheckIn.map((m, i) => (
               <View key={m.id} style={[styles.listRow, i > 0 && styles.separator]}>
@@ -224,7 +268,33 @@ const styles = StyleSheet.create({
   card: { backgroundColor: colors.surface, borderRadius: radius.card, padding: 16, gap: 14 },
   countRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
   count: { fontFamily: fonts.display, fontSize: 44, lineHeight: 46, color: colors.accent },
+  win: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.list,
+    padding: 14,
+    marginBottom: 12,
+  },
+  winIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   heading: { marginTop: 20, marginBottom: 8, marginHorizontal: 4 },
+  headingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minHeight: 34,
+    marginTop: 20,
+    marginBottom: 8,
+    marginHorizontal: 4,
+  },
   list: { backgroundColor: colors.surface, borderRadius: radius.list, paddingHorizontal: 16 },
   listRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 56 },
   separator: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },

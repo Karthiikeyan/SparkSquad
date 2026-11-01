@@ -14,6 +14,7 @@ import { useReducedMotion } from '../../lib/hooks/useReducedMotion';
 import { qk } from '../../lib/query/keys';
 import { useLocalQuery } from '../../lib/query/useLocalQuery';
 import { colors, fonts, iconStroke } from '../../theme/tokens';
+import { askForReview, REVIEW_DELAY_MS, shouldAskForReview } from '../review/askForReview';
 import { useToday } from '../today/useToday';
 
 const SIZE = 200;
@@ -90,6 +91,7 @@ export function CheckinSuccessScreen() {
     streak: string;
     counts: string;
     since: string;
+    comeback?: string;
   }>();
   const insets = useSafeAreaInsets();
   const online = useOnline();
@@ -113,11 +115,22 @@ export function CheckinSuccessScreen() {
   const total = card?.members.length ?? 1;
   const checked = card ? card.checkedCount : 1;
 
+  useEffect(() => {
+    if (params.counts !== '1' || !shouldAskForReview(Number(params.streak) || 0)) return;
+    // After the celebration has landed, never over it.
+    const timer = setTimeout(() => void askForReview(), REVIEW_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [params.counts, params.streak]);
+
   const headline = honest
     ? t('success.honest')
-    : `${t(params.status === 'done' ? 'success.done' : 'success.partial', { n })}${
-        params.counts === '1' && streak > 0 ? ` ${t('success.streak', { n: streak })}` : ''
-      }`;
+    : params.comeback === 'restored'
+      ? t('comeback.restored')
+      : params.comeback === 'fresh'
+        ? t('comeback.fresh')
+        : `${t(params.status === 'done' ? 'success.done' : 'success.partial', { n })}${
+            params.counts === '1' && streak > 0 ? ` ${t('success.streak', { n: streak })}` : ''
+          }`;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 48, paddingBottom: insets.bottom + 16 }]}>

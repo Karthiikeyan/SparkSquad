@@ -7,6 +7,7 @@ import { useMe } from '../auth/SessionProvider';
 import { planReminders } from '../reminders/plan';
 import { applyReminders } from '../reminders/schedule';
 import { pendingCards } from '../today/model';
+import { syncWidget } from '../widget/sync';
 import { useToday } from '../today/useToday';
 
 type NotificationsModule = typeof NotificationTypes;
@@ -22,6 +23,7 @@ export function routeForNotification(data: Record<string, unknown> | undefined):
   const type = typeof data?.type === 'string' ? data.type : '';
   const squadId = typeof data?.squadId === 'string' ? data.squadId : '';
   if (type === 'inbox') return '/notifications';
+  if (type === 'recap' && squadId) return `/squad/${squadId}/recap`;
   if ((type === 'digest' || type === 'start') && squadId) return `/squad/${squadId}`;
   return '/today';
 }
@@ -71,7 +73,10 @@ export function AppBackground() {
           squadId: c.squad.id,
         })),
       notifyChallengeStart: me.notifyChallengeStart,
+      recapSquadId: me.notifySquadUpdates ? (active[0]?.squad.id ?? null) : null,
+      comeback: active.some((c) => c.comeback),
     });
+    syncWidget(today.data.cards, today.data.source);
     const timer = setTimeout(() => {
       applyReminders(planned).catch(() => undefined);
     }, 800);
@@ -82,6 +87,7 @@ export function AppBackground() {
     me.notifyMissedDay,
     me.notifyStreakRisk,
     me.notifyChallengeStart,
+    me.notifySquadUpdates,
   ]);
 
   useEffect(() => {

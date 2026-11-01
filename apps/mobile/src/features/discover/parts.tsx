@@ -6,7 +6,7 @@ import { Button, Pressable, Text } from '../../components/ui';
 import { t } from '../../i18n';
 import { CATEGORY_ICON } from '../../lib/categories';
 import { colors, fonts, iconStroke, radius } from '../../theme/tokens';
-import { TemplateTile, templateMeta } from '../create/screens/TemplatesScreen';
+import { TemplateTile, templateBlurb, templateMeta } from '../create/screens/TemplatesScreen';
 import { joinLabel, openSquadPreview, openTemplate, squadPlanLine, squadTimeline } from './model';
 
 function CategoryTag({ category }: { category: SquadPreviewDTO['category'] }) {
@@ -181,7 +181,12 @@ export function TemplateRail({ templates }: { templates: readonly TemplateSummar
             <Text style={styles.tplTitle} numberOfLines={2}>
               {tpl.title}
             </Text>
-            <Text variant="footnote" color="label2">
+            {templateBlurb(tpl.slug) ? (
+              <Text variant="caption" color="label2" numberOfLines={2}>
+                {templateBlurb(tpl.slug)}
+              </Text>
+            ) : null}
+            <Text variant="footnote" color="accent">
               {templateMeta(tpl)}
             </Text>
           </Pressable>
@@ -193,11 +198,9 @@ export function TemplateRail({ templates }: { templates: readonly TemplateSummar
 
 export function TemplateGrid({ templates }: { templates: readonly TemplateSummaryDTO[] }) {
   return (
-    <View style={styles.grid}>
+    <View style={styles.templateList}>
       {templates.map((tpl) => (
-        <View key={tpl.slug} style={styles.cell}>
-          <TemplateTile tpl={tpl} onPress={() => openTemplate(tpl.slug)} />
-        </View>
+        <TemplateTile key={tpl.slug} tpl={tpl} onPress={() => openTemplate(tpl.slug)} />
       ))}
     </View>
   );
@@ -277,7 +280,7 @@ const styles = StyleSheet.create({
   texts: { flex: 1, minWidth: 0, gap: 3 },
   name: { fontSize: 16 },
   tplCard: {
-    width: 160,
+    width: 196,
     backgroundColor: colors.surface,
     borderRadius: radius.list,
     padding: 14,
@@ -289,8 +292,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: colors.label,
   },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -5 },
-  cell: { width: '50%', padding: 5 },
+  templateList: { gap: 10 },
   cta: {
     flexDirection: 'row',
     alignItems: 'center',

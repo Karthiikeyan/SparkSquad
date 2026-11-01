@@ -2,7 +2,9 @@ import { addDays, HARD_CAPS, TIER_LIMITS } from '@sparksquad/shared';
 import { createExecutionContext, waitOnExecutionContext } from 'cloudflare:test';
 import { env } from 'cloudflare:workers';
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 import { createDb } from '../src/db/client';
+import { challenges } from '../src/db/schema';
 import { app } from '../src/index';
 import { sendPush } from '../src/services/notify';
 import { recomputeGlobalStreak } from '../src/services/streaks';
@@ -11,6 +13,7 @@ import {
   makeChallenge,
   makeSquad,
   newId,
+  plan,
   raw,
   signIn,
   today,
@@ -185,6 +188,30 @@ describe('challenges', () => {
     const second = await owner.req<ErrorBody>('POST', `/v1/squads/${sq.id}/challenges`, body);
     expect(second.status).toBe(409);
     expect(second.json.error.code).toBe('CHALLENGE_ALREADY_ACTIVE');
+  });
+
+  it('starting the next challenge closes one past its last day', async () => {
+    const owner = await signIn('next-owner@example.com');
+    const sq = await makeSquad(owner);
+    const first = await makeChallenge(owner, sq.id);
+    // Finished yesterday, still inside the two-day late check-in window.
+    await createDb(env.DB)
+      .update(challenges)
+      .set({ startDate: addDays(today(), -7) })
+      .where(eq(challenges.id, first.id))
+      .run();
+    const next = await owner.req<{ challenge: { id: string } }>(
+      'POST',
+      `/v1/squads/${sq.id}/challenges`,
+      { plan: plan(7), startDate: today() },
+    );
+    expect(next.status).toBe(201);
+    const old = await createDb(env.DB)
+      .select()
+      .from(challenges)
+      .where(eq(challenges.id, first.id))
+      .get();
+    expect(old?.status).toBe('ended');
   });
 
   it('only future days can be edited, by owners or admins', async () => {

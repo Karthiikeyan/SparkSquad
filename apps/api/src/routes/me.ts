@@ -2,6 +2,7 @@ import {
   consentSchema,
   plusInterestSchema,
   ulid,
+  appleRevokeSchema,
   updateMeSchema,
   usernameCheckSchema,
 } from '@sparksquad/shared';
@@ -23,6 +24,7 @@ import type { AppEnv, Bindings } from '../env';
 import { ApiError } from '../lib/errors';
 import { body, db, nowIso, query } from '../lib/http';
 import { assertClean, atOwnLimit, getUser } from '../services/access';
+import { revokeAppleTokens } from '../services/appleRevoke';
 import { toMe } from '../services/dto';
 import { signedUrl } from '../services/r2';
 import { recountMembers } from '../services/squads';
@@ -198,6 +200,12 @@ async function releaseOwnedSquads(env: Bindings, d: Db, userId: string): Promise
     }
   }
 }
+
+/** Called just before deletion on iPhones signed in with Apple; never blocks the deletion. */
+meRoutes.post('/apple-revoke', async (c) => {
+  const input = await body(c, appleRevokeSchema);
+  return c.json({ revoked: await revokeAppleTokens(c.env, input.code) });
+});
 
 meRoutes.delete('/', async (c) => {
   const d = db(c);

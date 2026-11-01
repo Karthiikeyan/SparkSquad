@@ -15,7 +15,7 @@ const W = 51;
 const H = 31;
 const THUMB = 27;
 
-/** iOS-style switch; on = success green (design system). */
+/** iOS-style switch; on = brand amber with a dark thumb (E144), so green keeps meaning "done". */
 export function Switch({
   value,
   onValueChange,
@@ -38,7 +38,8 @@ export function Switch({
     }).start();
   }, [value, x, reduceMotion]);
 
-  const bg = x.interpolate({ inputRange: [0, 1], outputRange: [colors.strong, colors.success] });
+  const bg = x.interpolate({ inputRange: [0, 1], outputRange: [colors.strong, colors.accent] });
+  const thumb = x.interpolate({ inputRange: [0, 1], outputRange: ['#FFFFFF', colors.onAccent] });
   const left = x.interpolate({ inputRange: [0, 1], outputRange: [2, W - THUMB - 2] });
 
   return (
@@ -53,7 +54,7 @@ export function Switch({
       style={{ opacity: disabled ? 0.4 : 1 }}
     >
       <Animated.View style={[styles.track, { backgroundColor: bg }]}>
-        <Animated.View style={[styles.thumb, { left }]} />
+        <Animated.View style={[styles.thumb, { left, backgroundColor: thumb }]} />
       </Animated.View>
     </Pressable>
   );
@@ -67,7 +68,6 @@ const styles = StyleSheet.create({
     width: THUMB,
     height: THUMB,
     borderRadius: THUMB / 2,
-    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 2,

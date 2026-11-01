@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, ErrorState } from '../src/components/ui';
+import { Button, ErrorState, LoadingScreen } from '../src/components/ui';
 import { resolveRoute } from '../src/features/auth/routing';
 import { useSession } from '../src/features/auth/SessionProvider';
 import { t } from '../src/i18n';
@@ -37,10 +37,9 @@ export default function Index() {
       </View>
     );
   }
-  return <View style={styles.blank} />;
+  return <LoadingScreen />;
 }
 
 const styles = StyleSheet.create({
-  blank: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', backgroundColor: colors.bg, padding: 16 },
 });

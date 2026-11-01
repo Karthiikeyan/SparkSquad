@@ -50,6 +50,7 @@ export function useQuickCheckin(): () => void {
             draft: allDoneDraft(tasks),
             note: null,
             honestMiss: false,
+            restart: !!card.comeback,
             hasPhoto: false,
             partialCounts: card.squad.partialCounts,
             existing: null,

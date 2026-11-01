@@ -4,7 +4,6 @@ import { ChevronRight, Settings } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import {
   Avatar,
-  Badge,
   Card,
   ErrorState,
   GroupedList,
@@ -33,8 +32,8 @@ import {
   shownUpPercent,
   weekStats,
 } from './model';
-import { BADGE_GROUP_ICON } from './BadgesScreen';
 import { RecapCard } from './RecapCard';
+import { BadgeTile } from './BadgeEmblem';
 import { useYou } from './useYou';
 
 const monthFmt = new Intl.DateTimeFormat('en-GB', { month: 'long' });
@@ -120,12 +119,10 @@ export function YouScreen() {
           </Pressable>
           <View style={styles.badges}>
             {strip.map((b) => (
-              <Badge
+              <BadgeTile
                 key={b.badge}
-                glyph={b.glyph}
+                badge={b.badge}
                 earned={b.earned}
-                tier={b.tier}
-                icon={BADGE_GROUP_ICON[b.group]}
                 label={
                   b.earned || b.toGo === null
                     ? b.label

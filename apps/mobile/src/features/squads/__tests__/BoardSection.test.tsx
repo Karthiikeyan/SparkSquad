@@ -61,6 +61,51 @@ describe('BoardSection (C2)', () => {
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/checkins/[id]', params: { id: 'K2' } });
   });
 
+  it('nudges everyone still waiting in one tap, skipping those already nudged', async () => {
+    const onNudgeAll = jest.fn();
+    const waiting = [
+      ...board.stillToCheckIn,
+      { id: 'U5', name: 'Arun', avatarColor: 4, checked: false, isMe: false, nudged: false },
+    ];
+    await render(
+      <BoardSection
+        board={{ ...board, stillToCheckIn: waiting }}
+        onNudge={jest.fn()}
+        onNudgeAll={onNudgeAll}
+        onFire={jest.fn()}
+      />,
+    );
+    await fireEvent.press(screen.getByTestId('nudge-all'));
+    expect(onNudgeAll).toHaveBeenCalledWith([
+      { id: 'U3', name: 'Kavya' },
+      { id: 'U5', name: 'Arun' },
+    ]);
+  });
+
+  it('hides Nudge everyone when one tap would only reach one person', async () => {
+    await render(
+      <BoardSection board={board} onNudge={jest.fn()} onNudgeAll={jest.fn()} onFire={jest.fn()} />,
+    );
+    expect(screen.queryByTestId('nudge-all')).toBeNull();
+  });
+
+  it('celebrates only when the whole squad is in', async () => {
+    const full = {
+      ...board,
+      state: 'running' as const,
+      checkedCount: board.grid.length,
+      stillToCheckIn: [],
+    };
+    const { rerender } = await render(
+      <BoardSection board={full} onNudge={jest.fn()} onFire={jest.fn()} />,
+    );
+    expect(screen.getByText('Everyone showed up')).toBeTruthy();
+    await rerender(
+      <BoardSection board={{ ...full, checkedCount: 1 }} onNudge={jest.fn()} onFire={jest.fn()} />,
+    );
+    expect(screen.queryByText('Everyone showed up')).toBeNull();
+  });
+
   it('explains when no challenge is running', async () => {
     await render(
       <BoardSection board={{ ...board, state: 'none' }} onNudge={jest.fn()} onFire={jest.fn()} />,

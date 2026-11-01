@@ -1,0 +1,1 @@
+ALTER TABLE `checkins` ADD `restart` integer DEFAULT false NOT NULL;

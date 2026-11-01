@@ -22,6 +22,7 @@ import {
   safetyRoutes,
   uploadRoutes,
 } from './routes/misc';
+import { legalPages } from './routes/legalPages';
 import { publicRoutes } from './routes/public';
 import { squadRoutes } from './routes/squads';
 import { syncRoutes } from './routes/sync';
@@ -92,6 +93,7 @@ const v1BodyLimit: MiddlewareHandler<AppEnv> = (c, next) =>
 app.use('/webhooks/*', bodyLimit({ maxSize: HARD_CAPS.requestBodyMaxBytes }));
 app.route('/webhooks', webhookRoutes);
 app.route('/', publicRoutes);
+app.route('/', legalPages);
 app.get('/admin', async (c) => {
   const asset = await c.env.ASSETS.fetch(new Request(new URL('/admin/index.html', c.req.url)));
   // Copy so middleware can set security headers (asset responses are immutable).

@@ -1,12 +1,11 @@
 import type { Category, DiscoverSort, SquadPreviewDTO } from '@sparksquad/shared';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { Compass, LayoutGrid, Search } from 'lucide-react-native';
+import { Compass, Search } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   Button,
-  ChipToggle,
   EmptyState,
   ErrorState,
   Pressable,
@@ -24,9 +23,8 @@ import { colors, iconStroke, radius } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { useRefresh } from '../system/useRefresh';
 import { todayFor } from '../today/model';
+import { CategoryFilter, type CategoryValue } from './CategoryFilter';
 import { SquadList, SquadRail, StartSquadCard, TemplateGrid, TemplateRail } from './parts';
-
-type Filter = Category | 'all';
 
 const SORTS: readonly { value: DiscoverSort; label: () => string }[] = [
   { value: 'popular', label: () => t('discover.sortPopular') },
@@ -53,11 +51,11 @@ function SectionHead({
   );
 }
 
-/** E1: search, category filter (All first), curated sections, then templates and Start a squad. */
+/** E1: search, a one-row category filter, curated sections, then templates and Start a squad. */
 export function DiscoverScreen() {
   const me = useMe();
   const today = todayFor(me, new Date());
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<CategoryValue>('all');
   const [sort, setSort] = useState<DiscoverSort>('popular');
   const { refreshing, onRefresh } = useRefresh();
   const chips = useMemo(() => categoriesFor(me.interests), [me.interests]);
@@ -77,38 +75,30 @@ export function DiscoverScreen() {
           {t('discover.search')}
         </Text>
       </Pressable>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.chipsScroll}
-        contentContainerStyle={styles.chips}
-        accessibilityRole="radiogroup"
-        accessibilityLabel={t('discover.categories')}
-      >
-        <ChipToggle
-          label={t('categories.all')}
-          icon={LayoutGrid}
-          role="radio"
-          selected={filter === 'all'}
-          onPress={() => setFilter('all')}
-          testID="discover-all"
-        />
-        {chips.map((c) => (
-          <ChipToggle
-            key={c}
-            label={t(`categories.${c}`)}
-            icon={CATEGORY_ICON[c]}
-            role="radio"
-            selected={filter === c}
-            onPress={() => setFilter(c)}
-            testID={`discover-cat-${c}`}
-          />
-        ))}
-      </ScrollView>
-      {filter === 'all' ? (
+      <CategoryFilter
+        categories={chips}
+        value={filter}
+        onChange={setFilter}
+        active={sort !== 'popular'}
+        extra={
+          <View style={styles.sortBlock}>
+            <Text variant="footnote" color="label2" style={styles.sortLabel}>
+              {t('discover.sort')}
+            </Text>
+            <SegmentedControl
+              options={SORTS.map((s) => ({ value: s.value, label: s.label() }))}
+              value={sort}
+              onChange={setSort}
+              role="radiogroup"
+              accessibilityLabel={t('discover.sort')}
+            />
+          </View>
+        }
+      />
+      {filter === 'all' && sort === 'popular' ? (
         <AllSections today={today} />
       ) : (
-        <CategoryView category={filter} sort={sort} onSort={setSort} today={today} />
+        <FilteredList category={filter === 'all' ? undefined : filter} sort={sort} today={today} />
       )}
       <StartSquadCard />
     </Screen>
@@ -185,20 +175,18 @@ function AllSections({ today }: { today: string }) {
   );
 }
 
-/** One category: sort control, the full paged list, then its templates. */
-function CategoryView({
+/** A category or a sort choice: the full paged list, then matching templates. */
+function FilteredList({
   category,
   sort,
-  onSort,
   today,
 }: {
-  category: Category;
+  category: Category | undefined;
   sort: DiscoverSort;
-  onSort: (s: DiscoverSort) => void;
   today: string;
 }) {
   const list = useInfiniteQuery({
-    queryKey: qk.discover(category, undefined, sort),
+    queryKey: [...qk.discover(category, undefined, sort), 'paged'],
     queryFn: ({ pageParam }) => endpoints.discover({ category, sort, cursor: pageParam }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -217,7 +205,10 @@ function CategoryView({
         {squads.length ? (
           <SquadList squads={squads} today={today} />
         ) : (
-          <EmptyState icon={CATEGORY_ICON[category]} message={t('discover.noSquads')} />
+          <EmptyState
+            icon={category ? CATEGORY_ICON[category] : Compass}
+            message={t('discover.noSquads')}
+          />
         )}
         {list.hasNextPage ? (
           <Button
@@ -239,14 +230,9 @@ function CategoryView({
 
   return (
     <>
-      <SegmentedControl
-        options={SORTS.map((s) => ({ value: s.value, label: s.label() }))}
-        value={sort}
-        onChange={onSort}
-        role="radiogroup"
-        accessibilityLabel={t('discover.sort')}
-        style={styles.sort}
-      />
+      <Text variant="footnote" color="label2" style={styles.sortedBy}>
+        {t('discover.sortedBy', { sort: SORTS.find((s) => s.value === sort)?.label() ?? '' })}
+      </Text>
       {body}
     </>
   );
@@ -263,9 +249,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 12,
   },
-  chipsScroll: { marginHorizontal: -16, marginBottom: 4 },
-  chips: { flexDirection: 'row', gap: 8, paddingHorizontal: 16 },
-  sort: { marginBottom: 12 },
+  sortBlock: { marginTop: 14 },
+  sortLabel: { marginBottom: 8 },
+  sortedBy: { marginTop: 14, marginBottom: 8, marginHorizontal: 4 },
   sectionHead: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,0 +1,272 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Meditation 21",
+  "goal": "Sit quietly every day and reach 15 minutes by week three",
+  "category": "mindfulness",
+  "duration_days": 21,
+  "days_per_week": 7,
+  "phases": [
+    {
+      "name": "Learn to sit",
+      "from_day": 1,
+      "to_day": 7
+    },
+    {
+      "name": "Go deeper",
+      "from_day": 8,
+      "to_day": 14
+    },
+    {
+      "name": "Hold it",
+      "from_day": 15,
+      "to_day": 21
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: follow your breath",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Body scan",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: body scan",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Notice your thoughts",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: notice your thoughts",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Gratitude sit",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: gratitude sit",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: follow your breath",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Body scan",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: body scan",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Notice your thoughts",
+      "tasks": [
+        {
+          "title": "Meditate 5 minutes: notice your thoughts",
+          "type": "minutes",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "title": "Gratitude sit",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: gratitude sit",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: follow your breath",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Body scan",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: body scan",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Notice your thoughts",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: notice your thoughts",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Gratitude sit",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: gratitude sit",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: follow your breath",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Body scan",
+      "tasks": [
+        {
+          "title": "Meditate 10 minutes: body scan",
+          "type": "minutes",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "title": "Notice your thoughts",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: notice your thoughts",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 16,
+      "title": "Gratitude sit",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: gratitude sit",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 17,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: follow your breath",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Body scan",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: body scan",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 19,
+      "title": "Notice your thoughts",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: notice your thoughts",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 20,
+      "title": "Gratitude sit",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: gratitude sit",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    },
+    {
+      "day": 21,
+      "title": "Follow your breath",
+      "tasks": [
+        {
+          "title": "Meditate 15 minutes: follow your breath",
+          "type": "minutes",
+          "target": 15
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "First week of stillness"
+    },
+    {
+      "day": 14,
+      "title": "Ten minutes feels normal"
+    },
+    {
+      "day": 21,
+      "title": "21 days of meditation complete"
+    }
+  ]
+}

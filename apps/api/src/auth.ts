@@ -12,6 +12,12 @@ import { sendOtpEmail } from './services/email';
 
 const DEV_OTP_OUTBOX_MAX = 500;
 
+/** The review account's fixed code, or undefined for every other address. */
+function reviewCode(env: Bindings, email: string): string | undefined {
+  const match = /^([^:]+):(\d{6})$/.exec(env.REVIEW_ACCOUNT ?? '');
+  return match && match[1]!.toLowerCase() === email.toLowerCase() ? match[2] : undefined;
+}
+
 /** Codes captured in tests so the sign-in flow can be exercised. Never populated outside APP_ENV=test. */
 export const devOtpOutbox = new Map<string, string>();
 
@@ -83,11 +89,14 @@ export function createAuth(env: Bindings, waitUntil?: (p: Promise<unknown>) => v
         expiresIn: 600,
         allowedAttempts: 5,
         storeOTP: 'hashed',
+        // Store reviewers can't read a real inbox, so one configured account has a fixed code.
+        generateOTP: ({ email }) => reviewCode(env, email),
         async sendVerificationOTP({ email, otp }) {
           if (env.APP_ENV === 'test') {
             if (devOtpOutbox.size >= DEV_OTP_OUTBOX_MAX) devOtpOutbox.clear();
             devOtpOutbox.set(email.toLowerCase(), otp);
           }
+          if (reviewCode(env, email)) return;
           const send = sendOtpEmail(env, email, otp);
           if (waitUntil) waitUntil(send);
           else await send;

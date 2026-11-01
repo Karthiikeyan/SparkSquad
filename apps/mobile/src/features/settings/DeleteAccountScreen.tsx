@@ -1,3 +1,4 @@
+import { appleCodeForRevoke } from '../auth/signIn';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -27,6 +28,9 @@ export function DeleteAccountScreen() {
     if (!deleteConfirmed(typed)) return;
     setBusy(true);
     try {
+      // Best effort: a failed revoke must not stop someone deleting their account.
+      const appleCode = await appleCodeForRevoke();
+      if (appleCode) await endpoints.revokeApple(appleCode).catch(() => undefined);
       await endpoints.deleteAccount();
       toast.show({ message: t('deleteAccount.deleted'), kind: 'success' });
       await signOut();
@@ -50,6 +54,9 @@ export function DeleteAccountScreen() {
             {owned === 1 ? t('deleteAccount.ownerOne') : t('deleteAccount.owner', { n: owned })}
           </Text>
         ) : null}
+        <Text variant="body" color="label2" style={styles.body}>
+          {t('deleteAccount.subscription')}
+        </Text>
       </Card>
       <Button
         label={t('deleteAccount.exportFirst')}

@@ -1,8 +1,10 @@
+import { useQuickActionRouting } from 'expo-quick-actions/router';
 import { router, Tabs, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TabBar, useToast, type TabName } from '../../src/components/ui';
 import { useQuickCheckin } from '../../src/features/checkin/quick';
+import { useRegisterShortcuts } from '../../src/features/shortcuts/useShortcuts';
 
 const TAB_NAMES: readonly TabName[] = ['today', 'squads', 'discover', 'you'];
 
@@ -14,6 +16,8 @@ export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const { setAboveTabBar } = useToast();
   const quickCheckin = useQuickCheckin();
+  useRegisterShortcuts();
+  useQuickActionRouting();
   useFocusEffect(
     useCallback(() => {
       setAboveTabBar(true);

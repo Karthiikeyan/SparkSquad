@@ -1,0 +1,312 @@
+{
+  "sparksquad_plan": 1,
+  "title": "Sleep and water 14",
+  "goal": "Sleep 7 hours and drink 8 glasses of water a day for two weeks",
+  "category": "health",
+  "duration_days": 14,
+  "days_per_week": 7,
+  "phases": [
+    {
+      "name": "Set the routine",
+      "from_day": 1,
+      "to_day": 7
+    },
+    {
+      "name": "Keep it steady",
+      "from_day": 8,
+      "to_day": 14
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Put your phone away 30 minutes before bed",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "No caffeine after 4 PM",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Go to bed at the same time as last night",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Get 10 minutes of morning sunlight",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Put your phone away 30 minutes before bed",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "No caffeine after 4 PM",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "title": "Set the routine",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Go to bed at the same time as last night",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Get 10 minutes of morning sunlight",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Put your phone away 30 minutes before bed",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "No caffeine after 4 PM",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 11,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Go to bed at the same time as last night",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Get 10 minutes of morning sunlight",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 13,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "Put your phone away 30 minutes before bed",
+          "type": "check"
+        }
+      ]
+    },
+    {
+      "day": 14,
+      "title": "Keep it steady",
+      "tasks": [
+        {
+          "title": "Sleep at least 7 hours",
+          "type": "check"
+        },
+        {
+          "title": "Drink 8 glasses of water",
+          "type": "count",
+          "target": 8,
+          "unit": "glasses"
+        },
+        {
+          "title": "No caffeine after 4 PM",
+          "type": "check"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "day": 7,
+      "title": "One rested week"
+    },
+    {
+      "day": 14,
+      "title": "Two weeks of better sleep complete"
+    }
+  ]
+}

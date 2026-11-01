@@ -19,6 +19,7 @@ import { authClient } from '../../lib/auth';
 import { getKv, parseJson } from '../../lib/db/helpers';
 import { registerPushToken, unregisterPushToken } from '../../lib/notifications';
 import { getPref, removePref, setPref } from '../../lib/prefs';
+import { clearWidget } from '../widget/sync';
 import { clearLocalData, getRuntime, refresh, setSignedIn } from '../../lib/runtime';
 import { KV_ME } from '../../lib/sync/applySync';
 import { clearReminders } from '../reminders/schedule';
@@ -191,6 +192,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       removePref('pendingInvite');
       removePref('integrations');
       removePref('stepsConnected');
+      clearWidget();
       setPendingInviteState(null);
       setPendingRoute(null);
       pushRegistered.current = null;

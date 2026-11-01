@@ -14,7 +14,7 @@ export interface Prefs {
   reminderTime: string;
   aiDailyLimit: number;
   aiUsage: { date: string; count: number };
-  aiProvider: 'gemini' | 'openai' | 'anthropic';
+  aiProvider: 'gemini' | 'groq' | 'openrouter' | 'openai' | 'anthropic';
   analyticsOptOut: boolean;
   recentSearches: string[];
   lastFreezeNoticeDate: string;
@@ -24,6 +24,34 @@ export interface Prefs {
   stepsConnected: boolean;
   /** Colour theme; dark is the default (Design System). Applied at launch. */
   theme: 'dark' | 'light' | 'system';
+  /** AI providers the user agreed to send data to (App Store 5.1.2). */
+  aiConsent: ('gemini' | 'groq' | 'openrouter' | 'openai' | 'anthropic')[];
+  /** This phone signed in with Apple, so deleting the account must revoke Apple's tokens. */
+  appleSignIn: boolean;
+  /** What the Android home-screen widget draws (written by the app, read in the background). */
+  widgetSnapshot: {
+    /** What's due, for today and the next two days so it's right after midnight. */
+    days: Record<
+      string,
+      {
+        challengeId: string;
+        squad: string;
+        title: string;
+        checkedIn: boolean;
+        checked: number;
+        members: number;
+        tasks: {
+          title: string;
+          type: 'check' | 'count' | 'minutes';
+          target?: number;
+          unit?: string;
+        }[];
+        values: Record<number, number | boolean>;
+      }[]
+    >;
+  };
+  /** When the store rating prompt last showed (ISO date). */
+  reviewAskedAt: string;
 }
 
 let store: MMKV | null = null;

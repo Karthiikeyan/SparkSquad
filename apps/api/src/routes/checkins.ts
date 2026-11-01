@@ -1,16 +1,22 @@
 import {
+  CHEERLEADER_FIRES,
+  EARLY_BIRD_HOUR,
   TEXT_LIMITS,
   commentRetentionDays,
   commentSchema,
   computeCheckinStatus,
   countsAsDone,
+  diffDays,
   isWithinCheckinWindow,
   localDateInZone,
   photoRetentionDays,
   rawDayNumber,
+  restartOffer,
   upsertCheckinSchema,
   ulid,
   HARD_CAPS,
+  type BadgeId,
+  type LocalDate,
   type PlanTask,
 } from '@sparksquad/shared';
 import { and, asc, eq, gt, isNull, sql } from 'drizzle-orm';
@@ -30,9 +36,69 @@ import {
 } from '../services/access';
 import { displayNameOf, isSquadPro, toCheckin, toComment, toStreak } from '../services/dto';
 import { addNotification, addNotificationIf, notifyFires } from '../services/notify';
-import { effectiveDay } from '../services/plans';
+import { effectiveDay, restDaysOf } from '../services/plans';
+import { activeMemberIds } from '../services/squads';
 import { signedUrl } from '../services/r2';
 import { awardBadges, recomputeChallengeStreak, recomputeGlobalStreak } from '../services/streaks';
+
+function localHourInZone(now: Date, timezone: string): number {
+  const hour = new Intl.DateTimeFormat('en-GB', {
+    hour: 'numeric',
+    hourCycle: 'h23',
+    timeZone: timezone,
+  }).format(now);
+  return Number(hour);
+}
+
+/** Whether today may be a comeback day for this person in this challenge. */
+async function canRestart(
+  d: Db,
+  ch: typeof challenges.$inferSelect,
+  userId: string,
+  today: LocalDate,
+): Promise<boolean> {
+  const { state } = await recomputeChallengeStreak(d, ch, userId, today);
+  const rows = await d
+    .select({ localDate: checkins.localDate })
+    .from(checkins)
+    .where(
+      and(eq(checkins.challengeId, ch.id), eq(checkins.userId, userId), eq(checkins.restart, true)),
+    )
+    .all();
+  const rest = restDaysOf(ch);
+  return (
+    restartOffer({
+      date: today,
+      startDate: ch.startDate,
+      current: state.current,
+      lastDoneDate: state.lastDoneDate,
+      isRest: (date) => rest.has(diffDays(ch.startDate, date) + 1),
+      restartDates: rows.map((r) => r.localDate),
+    }) !== null
+  );
+}
+
+/** When the whole squad has checked in for a day, everyone gets the moment. */
+async function awardFullHouse(
+  d: Db,
+  challengeId: string,
+  squadId: string,
+  date: LocalDate,
+): Promise<void> {
+  const ids = await activeMemberIds(d, squadId);
+  if (ids.length < 2) return;
+  const rows = await d
+    .select({ userId: checkins.userId })
+    .from(checkins)
+    .where(and(eq(checkins.challengeId, challengeId), eq(checkins.localDate, date)))
+    .all();
+  const inToday = new Set(rows.map((r) => r.userId));
+  if (!ids.every((id) => inToday.has(id))) return;
+  for (const id of ids) {
+    const earned = await awardBadges(d, id, { currentStreak: 0, moments: ['full_house'] });
+    for (const badge of earned) await addNotification(d, id, 'badge', { badge });
+  }
+}
 
 export const checkinRoutes = new Hono<AppEnv>();
 export const commentRoutes = new Hono<AppEnv>();
@@ -125,7 +191,17 @@ checkinRoutes.put('/:id', async (c) => {
     values,
     input.honestMiss === true,
   );
-  const done = countsAsDone(status, fraction, squad.partialCounts);
+  const clientToday = localDateInZone(new Date(), input.timezone);
+  // Comeback day: re-checked here, so the phone can only ask, never decide.
+  const finishedSome = !input.honestMiss && completed >= 1;
+  const restart =
+    finishedSome &&
+    (existing?.restart === true ||
+      (input.restart === true &&
+        input.localDate === clientToday &&
+        !day.rest &&
+        (await canRestart(d, ch, me.id, clientToday))));
+  const done = restart || countsAsDone(status, fraction, squad.partialCounts);
 
   let photoKey: string | null = existing?.photoKey ?? null;
   if (input.photoKey !== undefined) {
@@ -147,6 +223,7 @@ checkinRoutes.put('/:id', async (c) => {
     dayNumber,
     status,
     countsDone: done,
+    restart,
     tasksDone: completed,
     values: JSON.stringify(values),
     note: input.note ?? null,
@@ -194,8 +271,22 @@ checkinRoutes.put('/:id', async (c) => {
   const today = localDateInZone(new Date(), input.timezone);
   const challengeStreak = await recomputeChallengeStreak(d, ch, me.id, today);
   const globalStreak = await recomputeGlobalStreak(d, me.id, today);
-  const earned = await awardBadges(d, me.id, { currentStreak: globalStreak.state.current });
+  const moments: BadgeId[] = [];
+  if (status === 'honest_miss') moments.push('truth_teller');
+  if (restart) moments.push('comeback');
+  if (
+    done &&
+    input.localDate === today &&
+    localHourInZone(new Date(), input.timezone) < EARLY_BIRD_HOUR
+  ) {
+    moments.push('early_bird');
+  }
+  const earned = await awardBadges(d, me.id, {
+    currentStreak: globalStreak.state.current,
+    moments,
+  });
   for (const badge of earned) await addNotification(d, me.id, 'badge', { badge });
+  await awardFullHouse(d, ch.id, squad.id, input.localDate);
 
   const reacted = await d
     .select({ x: reactions.userId })
@@ -256,6 +347,15 @@ async function setReaction(c: Parameters<typeof db>[0], on: boolean) {
       .values({ checkinId: row.id, userId: me.id, kind: 'fire' })
       .onConflictDoNothing()
       .run();
+    const given = await d
+      .select({ n: sql<number>`count(*)` })
+      .from(reactions)
+      .where(and(eq(reactions.userId, me.id), eq(reactions.kind, 'fire')))
+      .get();
+    if ((given?.n ?? 0) >= CHEERLEADER_FIRES) {
+      const earned = await awardBadges(d, me.id, { currentStreak: 0, moments: ['cheerleader'] });
+      for (const badge of earned) await addNotification(d, me.id, 'badge', { badge });
+    }
   } else {
     await d
       .delete(reactions)

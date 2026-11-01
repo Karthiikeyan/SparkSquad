@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ViewShot, { captureRef, type ViewShotRef } from 'react-native-view-shot';
 import {
   Avatar,
+  BrandLockup,
   Button,
   ErrorState,
   Pressable,
@@ -181,7 +182,7 @@ export function ShareCardScreen() {
             </View>
           ) : null}
           <View style={styles.footerRow}>
-            <Text style={styles.wordmark}>{t('share.wordmark')}</Text>
+            <BrandLockup width={26} />
             {code ? (
               <Text variant="caption" color="label2">
                 {t('share.joinWith')}
@@ -307,7 +308,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  wordmark: { fontFamily: fonts.display, fontSize: 17, color: colors.label },
   code: { color: colors.label, fontFamily: fonts.sansSemibold },
   flex: { flex: 1 },
   row: { flexDirection: 'row', gap: 10, marginTop: 10 },

@@ -32,6 +32,8 @@ import { useConfig } from '../../system/useConfig';
 import { CreateHeader } from '../components';
 import { useCreateFlow } from '../flow';
 
+const MEMBER_PRESETS = [5, 10, 25, 50, HARD_CAPS.maxMembersPerSquad];
+
 /** D1: Step 1 of 3. Name, description, category, privacy, member limit, chat link. */
 export function BasicsScreen() {
   const me = useMe();
@@ -172,7 +174,23 @@ export function BasicsScreen() {
             label={t('create.memberLimit')}
             min={2}
             max={HARD_CAPS.maxMembersPerSquad}
+            testID="member-limit"
           />
+        </View>
+        <View
+          style={styles.presets}
+          accessibilityRole="radiogroup"
+          accessibilityLabel={t('create.memberLimit')}
+        >
+          {MEMBER_PRESETS.map((n) => (
+            <ChipToggle
+              key={n}
+              label={String(n)}
+              role="radio"
+              selected={limit === n}
+              onPress={() => setLimit(n)}
+            />
+          ))}
         </View>
         <TextField
           label={t('create.chatUrl')}
@@ -198,5 +216,6 @@ const styles = StyleSheet.create({
   help: { marginTop: 6 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 52 },
+  presets: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: -8 },
   flex: { flex: 1 },
 });

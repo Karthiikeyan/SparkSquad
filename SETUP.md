@@ -24,18 +24,18 @@ Contents
 
 Do these in order. Each step says how to check it worked. Steps 1-4 give you a working app on your phone with **no accounts at all**; steps 5-10 switch on the remaining features.
 
-| Step | What                                                                                                                       | Section       | Check                                                                              |
-| ---- | -------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| 1    | Install tools, clone, `pnpm install`, `pnpm typecheck && pnpm lint && pnpm test`                                           | 1             | All green                                                                          |
-| 2    | Local API: `.dev.vars` with `BETTER_AUTH_SECRET`, migrate, seed templates, `pnpm dev -- --ip 0.0.0.0`                      | 4             | `http://<LAN IP>:8787/v1/config` opens in the phone's browser                      |
-| 3    | Phone: USB debugging on, `apps/mobile/.env` with `EXPO_PUBLIC_API_URL=http://<LAN IP>:8787`, `pnpm android`                | 4.3           | App opens on the phone                                                             |
-| 4    | Sign in with email; the 6-digit code is printed in the API terminal (`[dev] OTP for ...`)                                  | 4.4           | You reach Today                                                                    |
-| 5    | **Resend**: real sign-in emails                                                                                            | 3.5           | Code arrives by email                                                              |
-| 6    | **Google sign-in** (free, no daily limit; recommended before launch)                                                       | 3.3           | "Continue with Google" shows on Welcome and works                                  |
-| 7    | **Cloudflare deploy**: D1, R2, secrets, `pnpm run deploy` (applies migrations, then deploys), `seed:templates -- --remote` | 3.1, 5        | `https://<worker>/v1/config` returns JSON                                          |
-| 8    | **Expo/EAS + push**: `eas init`, FCM v1 key (Android), APNs (iOS), preview build                                           | 3.6, 5        | A nudge from a second account arrives as a push                                    |
-| 9    | **Optional**: PostHog, Sentry, Apple sign-in, Health Connect declaration                                                   | 3.4, 3.8, 3.9 | Events / errors show in dashboards                                                 |
-| 10   | **Later**: RevenueCat payments                                                                                             | 3.7           | Sandbox purchase unlocks Plus (staging Worker, or `REVENUECAT_ALLOW_SANDBOX=true`) |
+| Step | What                                                                                                         | Section       | Check                                                         |
+| ---- | ------------------------------------------------------------------------------------------------------------ | ------------- | ------------------------------------------------------------- |
+| 1    | Install tools, clone, `pnpm install`, `pnpm typecheck && pnpm lint && pnpm test`                             | 1             | All green                                                     |
+| 2    | Local API: `.dev.vars` with `BETTER_AUTH_SECRET`, migrate, seed templates, `pnpm dev -- --ip 0.0.0.0`        | 4             | `http://<LAN IP>:8787/v1/config` opens in the phone's browser |
+| 3    | Phone: USB debugging on, `apps/mobile/.env` with `EXPO_PUBLIC_API_URL=http://<LAN IP>:8787`, `pnpm android`  | 4.3           | App opens on the phone                                        |
+| 4    | Sign in with email; the 6-digit code is printed in the API terminal (`[dev] OTP for ...`)                    | 4.4           | You reach Today                                               |
+| 5    | **Resend**: real sign-in emails                                                                              | 3.5           | Code arrives by email                                         |
+| 6    | **Google sign-in** (free, no daily limit; recommended before launch)                                         | 3.3           | "Continue with Google" shows on Welcome and works             |
+| 7    | **Cloudflare deploy**: D1, R2, secrets, `pnpm run deploy`, `db:migrate:remote`, `seed:templates -- --remote` | 3.1, 5        | `https://<worker>/v1/config` returns JSON                     |
+| 8    | **Expo/EAS + push**: `eas init`, FCM v1 key (Android), APNs (iOS), preview build                             | 3.6, 5        | A nudge from a second account arrives as a push               |
+| 9    | **Optional**: PostHog, Sentry, Apple sign-in, Health Connect declaration                                     | 3.4, 3.8, 3.9 | Events / errors show in dashboards                            |
+| 10   | **Later**: RevenueCat payments                                                                               | 3.7           | Sandbox purchase unlocks Plus                                 |
 
 Then run the **full test plan** in section 12.
 
@@ -96,39 +96,38 @@ App ids per variant: `com.sparktribe.sparksquad.dev`, `com.sparktribe.sparksquad
 
 ### API (`apps/api`): non-secret `[vars]` in `wrangler.toml`
 
-| Name                                                                                           | Required          | What it does                                                                                                                                         | Example                                  |
-| ---------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `APP_ENV`                                                                                      | Yes               | Defaults to `production` in `wrangler.toml`. Set `development` only in local `.dev.vars` (logs OTP codes, allows `exp://` origins); tests use `test` | `production`                             |
-| `PAYMENTS_ENABLED`                                                                             | Yes               | `true` turns on RevenueCat purchases; `false` shows "coming soon" paywalls                                                                           | `false`                                  |
-| `MIN_APP_VERSION`                                                                              | Yes               | Older app versions see the force-update screen                                                                                                       | `1.0.0`                                  |
-| `PUBLIC_API_URL`                                                                               | Yes               | Public base URL of this Worker (auth callbacks, file URLs, invite links)                                                                             | `https://sparksquad-api.you.workers.dev` |
-| `ADMIN_EMAILS`                                                                                 | Yes in production | Comma-separated emails allowed into `/admin`                                                                                                         | `you@example.com`                        |
-| `EMAIL_FROM`                                                                                   | Yes               | Sender of sign-in codes; must be on a verified Resend domain in production                                                                           | `SparkSquad <hello@yourdomain.com>`      |
-| `ANDROID_STORE_URL` / `IOS_STORE_URL`                                                          | Yes               | Store buttons on invite landing pages and force update                                                                                               | Play / App Store links                   |
-| `CONTACT_EMAIL`                                                                                | Yes               | Help & contact and grievance address shown in the app                                                                                                | `support@yourdomain.com`                 |
-| `R2_BUCKET_NAME`                                                                               | Yes               | R2 bucket for plans, photos and exports (must match `[[r2_buckets]]`)                                                                                | `sparksquad`                             |
-| `PRICE_PLUS_MONTHLY`, `PRICE_PLUS_YEARLY`, `PRICE_SQUAD_PRO_MONTHLY`, `PRICE_SQUAD_PRO_YEARLY` | No                | Display prices on the pilot paywall while payments are off; empty shows "Price at launch"                                                            | `₹99`, `₹799`                            |
+| Name                                                                                           | Required          | What it does                                                                                     | Example                                  |
+| ---------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| `APP_ENV`                                                                                      | Yes               | `development` logs OTP codes locally and allows `exp://` origins; use `production` when deployed | `production`                             |
+| `PAYMENTS_ENABLED`                                                                             | Yes               | `true` turns on RevenueCat purchases; `false` shows "coming soon" paywalls                       | `false`                                  |
+| `MIN_APP_VERSION`                                                                              | Yes               | Older app versions see the force-update screen                                                   | `1.0.0`                                  |
+| `PUBLIC_API_URL`                                                                               | Yes               | Public base URL of this Worker (auth callbacks, file URLs, invite links)                         | `https://sparksquad-api.you.workers.dev` |
+| `ADMIN_EMAILS`                                                                                 | Yes in production | Comma-separated emails allowed into `/admin`                                                     | `you@example.com`                        |
+| `EMAIL_FROM`                                                                                   | Yes               | Sender of sign-in codes; must be on a verified Resend domain in production                       | `SparkSquad <hello@yourdomain.com>`      |
+| `ANDROID_STORE_URL` / `IOS_STORE_URL`                                                          | Yes               | Store buttons on invite landing pages and force update                                           | Play / App Store links                   |
+| `CONTACT_EMAIL`                                                                                | Yes               | Help & contact and grievance address shown in the app                                            | `support@yourdomain.com`                 |
+| `R2_BUCKET_NAME`                                                                               | Yes               | R2 bucket for plans, photos and exports (must match `[[r2_buckets]]`)                            | `sparksquad`                             |
+| `PRICE_PLUS_MONTHLY`, `PRICE_PLUS_YEARLY`, `PRICE_SQUAD_PRO_MONTHLY`, `PRICE_SQUAD_PRO_YEARLY` | No                | Display prices on the pilot paywall while payments are off; empty shows "Price at launch"        | `₹99`, `₹799`                            |
 
 Bindings (also in `wrangler.toml`, names must not change): `DB` (D1), `BUCKET` (R2), `ASSETS` (admin page), `USER_LIMITER` and `IP_LIMITER` (rate limiting), hourly cron `0 * * * *`.
 
 ### API secrets (`.dev.vars` locally, `wrangler secret put` in production)
 
-| Name                                        | Required              | What it does                                                                                                                          | Where to get it                                                                                                        | Example                               |
-| ------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `BETTER_AUTH_SECRET`                        | **Yes**               | Signs sessions; a separate key derived from it signs file URLs                                                                        | Generate: `openssl rand -base64 32` (or `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`) | 44 random characters                  |
-| `GOOGLE_CLIENT_ID`                          | For Google            | Web OAuth client id (same as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`)                                                                      | Google Cloud > Credentials                                                                                             | `1234-abc.apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET`                      | For Google            | Web client secret                                                                                                                     | Same OAuth client > Client secret                                                                                      | `GOCSPX-...`                          |
-| `GOOGLE_IOS_CLIENT_ID`                      | For Google on iOS     | Accepts tokens from the iOS client                                                                                                    | Google Cloud > Credentials (iOS client)                                                                                | `1234-ios.apps...`                    |
-| `GOOGLE_ANDROID_CLIENT_ID`                  | For Google on Android | Accepts tokens from the Android client                                                                                                | Google Cloud > Credentials (Android client)                                                                            | `1234-and.apps...`                    |
-| `APPLE_CLIENT_ID`                           | For Apple             | Services ID (identifier)                                                                                                              | Apple Developer > Identifiers > Services IDs                                                                           | `com.sparktribe.sparksquad.signin`    |
-| `APPLE_CLIENT_SECRET`                       | For Apple             | JWT signed with your Sign in with Apple key (expires after at most 6 months; see 3.4)                                                 | Generated by you                                                                                                       | `eyJhbGciOiJFUzI1NiIs...`             |
-| `APPLE_APP_BUNDLE_IDENTIFIER`               | For Apple             | Bundle id the native iOS tokens are issued for                                                                                        | Your app id                                                                                                            | `com.sparktribe.sparksquad`           |
-| `RESEND_API_KEY`                            | Yes in production     | Sends email sign-in codes. Without it, codes only appear in the local log (`APP_ENV=development`)                                     | resend.com > API Keys                                                                                                  | `re_...`                              |
-| `REVENUECAT_WEBHOOK_SECRET`                 | Only with payments    | Must equal the Authorization header RevenueCat sends                                                                                  | You choose a long random string                                                                                        | `openssl rand -hex 32`                |
-| `REVENUECAT_ALLOW_SANDBOX`                  | No (staging only)     | `true` lets RevenueCat SANDBOX events grant entitlements while `APP_ENV=production`. Leave unset in real production                   | You choose                                                                                                             | `true`                                |
-| `EXPO_ACCESS_TOKEN`                         | Optional              | Needed only if you turn on "Enhanced push security" in Expo                                                                           | expo.dev > Account settings > Access tokens                                                                            | `...`                                 |
-| `R2_ACCOUNT_ID`                             | Recommended           | Presigned R2 download URLs (photo/export reads go straight to R2; uploads always go through the Worker so type and size are enforced) | Cloudflare dashboard > R2 > Account ID (right column)                                                                  | 32 hex chars                          |
-| `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | Recommended           | R2 S3 API token for presigning                                                                                                        | R2 > Manage R2 API Tokens > Create token (Object Read & Write, this bucket only)                                       | `...`                                 |
+| Name                                        | Required              | What it does                                                                                      | Where to get it                                                                                                        | Example                               |
+| ------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `BETTER_AUTH_SECRET`                        | **Yes**               | Signs sessions                                                                                    | Generate: `openssl rand -base64 32` (or `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`) | 44 random characters                  |
+| `GOOGLE_CLIENT_ID`                          | For Google            | Web OAuth client id (same as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`)                                  | Google Cloud > Credentials                                                                                             | `1234-abc.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET`                      | For Google            | Web client secret                                                                                 | Same OAuth client > Client secret                                                                                      | `GOCSPX-...`                          |
+| `GOOGLE_IOS_CLIENT_ID`                      | For Google on iOS     | Accepts tokens from the iOS client                                                                | Google Cloud > Credentials (iOS client)                                                                                | `1234-ios.apps...`                    |
+| `GOOGLE_ANDROID_CLIENT_ID`                  | For Google on Android | Accepts tokens from the Android client                                                            | Google Cloud > Credentials (Android client)                                                                            | `1234-and.apps...`                    |
+| `APPLE_CLIENT_ID`                           | For Apple             | Services ID (identifier)                                                                          | Apple Developer > Identifiers > Services IDs                                                                           | `com.sparktribe.sparksquad.signin`    |
+| `APPLE_CLIENT_SECRET`                       | For Apple             | JWT signed with your Sign in with Apple key (expires after at most 6 months; see 3.4)             | Generated by you                                                                                                       | `eyJhbGciOiJFUzI1NiIs...`             |
+| `APPLE_APP_BUNDLE_IDENTIFIER`               | For Apple             | Bundle id the native iOS tokens are issued for                                                    | Your app id                                                                                                            | `com.sparktribe.sparksquad`           |
+| `RESEND_API_KEY`                            | Yes in production     | Sends email sign-in codes. Without it, codes only appear in the local log (`APP_ENV=development`) | resend.com > API Keys                                                                                                  | `re_...`                              |
+| `REVENUECAT_WEBHOOK_SECRET`                 | Only with payments    | Must equal the Authorization header RevenueCat sends                                              | You choose a long random string                                                                                        | `openssl rand -hex 32`                |
+| `EXPO_ACCESS_TOKEN`                         | Optional              | Needed only if you turn on "Enhanced push security" in Expo                                       | expo.dev > Account settings > Access tokens                                                                            | `...`                                 |
+| `R2_ACCOUNT_ID`                             | Recommended           | Presigned R2 URLs (uploads go straight to R2)                                                     | Cloudflare dashboard > R2 > Account ID (right column)                                                                  | 32 hex chars                          |
+| `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | Recommended           | R2 S3 API token for presigning                                                                    | R2 > Manage R2 API Tokens > Create token (Object Read & Write, this bucket only)                                       | `...`                                 |
 
 Without the three R2 credentials the API falls back to HMAC-signed URLs served by the Worker (`/files/...`). That works, but every photo byte passes through the Worker and counts against your request quota.
 
@@ -162,7 +161,7 @@ Without the three R2 credentials the API falls back to HMAC-signed URLs served b
 7. **Rate limiting** is the `[[ratelimits]]` binding in `wrangler.toml` (120 requests/min per user, 300/min per IP). Nothing to click; it deploys with the Worker.
 8. **Cron**: `[triggers] crons = ["0 * * * *"]` deploys with the Worker (hourly digests, streak settling, challenge roll-ups, expiry). Check it under Workers > sparksquad-api > Settings > Triggers.
 9. **Secrets**: for every secret in section 2 run `pnpm exec wrangler secret put NAME` and paste the value.
-10. **Deploy**: `pnpm run deploy` (from `apps/api`; plain `pnpm deploy` is a different, built-in pnpm command). It applies pending D1 migrations to the remote database first, then deploys. Note the `https://sparksquad-api.<you>.workers.dev` URL and set it as `PUBLIC_API_URL` (wrangler.toml) and `EXPO_PUBLIC_API_URL` (mobile), then deploy again.
+10. **Deploy**: `pnpm run deploy` (from `apps/api`; plain `pnpm deploy` is a different, built-in pnpm command). Note the `https://sparksquad-api.<you>.workers.dev` URL and set it as `PUBLIC_API_URL` (wrangler.toml) and `EXPO_PUBLIC_API_URL` (mobile), then deploy again.
 11. **Custom domain (optional, Later)**: Workers > sparksquad-api > Settings > Domains & Routes > Add custom domain. Update `PUBLIC_API_URL` and `EXPO_PUBLIC_API_URL`. With a domain you can add iOS universal links and Android App Links for `https://<domain>/join/CODE` (DECISIONS D5); until then invite links open a landing page that hands off to `sparksquad://join/CODE`.
 
 ### 3.2 Better Auth
@@ -224,9 +223,8 @@ No account needed. Generate `BETTER_AUTH_SECRET` (section 2) and set it in `.dev
 4. **Offerings**: `plus` (packages _Annual_ `$rc_annual` and _Monthly_ `$rc_monthly` with the Plus products) and `squad_pro` (same with Squad Pro products). Make `plus` the current offering.
 5. **Webhook**: Project > Integrations > Webhooks > URL `<PUBLIC_API_URL>/webhooks/revenuecat`, Authorization header value = your `REVENUECAT_WEBHOOK_SECRET` (with or without `Bearer `). Send a test event; the API answers 200.
 6. API keys: Project > API keys → `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`.
-7. Squad Pro purchases set the subscriber attribute `squad_id`; nothing to configure. The API binds Squad Pro to that squad on the first event of each subscription (later attribute changes are ignored) and only for a squad the buyer owns.
-8. **Sandbox events**: with `APP_ENV=production` the API records but ignores `SANDBOX` events (test purchases never unlock production features). For a staging Worker that should accept them, set `REVENUECAT_ALLOW_SANDBOX=true`.
-9. Switch on: `PAYMENTS_ENABLED = "true"` in `wrangler.toml` (deploy) **and** `EXPO_PUBLIC_PAYMENTS_ENABLED=true` in EAS env (new build). Payments only go live when both are on and the key is present.
+7. Squad Pro purchases set the subscriber attribute `squad_id`; nothing to configure.
+8. Switch on: `PAYMENTS_ENABLED = "true"` in `wrangler.toml` (deploy) **and** `EXPO_PUBLIC_PAYMENTS_ENABLED=true` in EAS env (new build). Payments only go live when both are on and the key is present.
 
 ### 3.8 PostHog and Sentry (optional)
 
@@ -311,11 +309,10 @@ pnpm exec wrangler d1 execute sparksquad --local --command "select kind, payload
 
 ```bash
 cd apps/api
-pnpm run deploy                   # applies pending D1 migrations (remote), then deploys the Worker
+pnpm db:migrate:remote        # every time a new migration is added
+pnpm run deploy
 pnpm seed:templates -- --remote   # first deploy, and whenever templates change
 ```
-
-`pnpm run deploy` runs `scripts/deploy.mjs`: it applies any new files in `src/db/migrations` to the remote database first (non-interactive) and stops without deploying if a migration fails, so new code never runs against an old schema. Keep migrations additive (new tables/columns with defaults) so the currently running Worker keeps working while they apply. `pnpm db:migrate:remote` still exists for applying migrations on their own. If you deploy from CI or Cloudflare Workers Builds, set the deploy command to `pnpm --filter @sparksquad/api run deploy` (not plain `wrangler deploy`), with a `CLOUDFLARE_API_TOKEN` that has D1 edit and Workers deploy permissions.
 
 **Mobile (EAS Build, internal testing)**
 
@@ -340,26 +337,29 @@ Updates reach builds with the same app version (`runtimeVersion` policy `appVers
 
 ## 6. Store submission checklist
 
+Every form answer, URL, review note and listing text is ready to paste in [docs/STORE_SUBMISSION.md](docs/STORE_SUBMISSION.md).
+
 ### Google Play Console
 
 - [ ] Developer account (US$25 one-time). **New personal accounts must run a closed test with at least 12 testers for 14 days** before production access.
-- [ ] App content > **Data safety**: collects email, name, user IDs, app interactions, user-generated content (check-ins, comments, photos for Plus), optional crash logs and analytics; encrypted in transit; users can request deletion (in app and by email). Steps: collected on device, not shared.
+- [ ] App content > **Data safety**: collects email, name, user IDs, app interactions, user-generated content (check-ins, comments, photos for Plus), optional crash logs and analytics; encrypted in transit; users can request deletion (in app and by email). Steps: read on the phone, collected only inside check-ins the user submits.
 - [ ] App content > **Health apps** declaration for READ_STEPS (3.9).
 - [ ] App content > **Target audience**: 18+ only. Content rating questionnaire (user-generated content, users interact).
-- [ ] App content > Privacy policy URL (host the in-app policy text, e.g. on your domain).
-- [ ] Account deletion URL / instructions (Settings > Delete account; also by email to `CONTACT_EMAIL`).
+- [ ] App content > Privacy policy URL: `<API>/privacy`.
+- [ ] Account deletion URL: `<API>/delete-account`.
 - [ ] App signing SHA-1 added to Google OAuth (3.3).
-- [ ] Store listing: icon (replace the placeholder spark), feature graphic, screenshots.
+- [ ] App content > **Child safety standards**: `<API>/child-safety`, in-app reporting, named contact.
+- [ ] Store listing: icon and feature graphic in `apps/mobile/assets/store`, screenshots.
 
 ### App Store Connect
 
-- [ ] **Privacy nutrition labels**: Contact info (email), User content, Identifiers (user ID), Usage data and Diagnostics (only if PostHog/Sentry are on); Health & Fitness used on device only.
+- [ ] **Privacy nutrition labels**: Contact info (email), User content, Identifiers (user ID), Usage data and Diagnostics (only if PostHog/Sentry are on); Health & Fitness (steps in check-ins the user submits).
 - [ ] **Sign in with Apple** is offered (required because Google sign-in exists).
 - [ ] **Account deletion** in app (Settings > Delete account) - required.
 - [ ] **UGC guideline 1.2**: terms acceptance at sign-up (18+ and Terms consent), report content and report users, block users, `/admin` moderation queue, contact email in Help.
 - [ ] Age rating 17+/18+ (unrestricted user-generated content).
 - [ ] HealthKit usage explained in review notes.
-- [ ] **Review notes**: a demo account (create it on production, put the email in notes; since sign-in uses email codes, either give the reviewer access to that inbox or temporarily allow an extra sign-in method), how to join a squad (invite code), and that payments are off ("Plus is coming soon") if `PAYMENTS_ENABLED=false`.
+- [ ] **Review notes**: a demo account (create it on production, put the email in notes; set the `REVIEW_ACCOUNT` secret to give that account a fixed code), how to join a squad (invite code), and that payments are off ("Plus is coming soon") if `PAYMENTS_ENABLED=false`.
 - [ ] Subscriptions submitted with the first build if payments are on.
 
 ---
@@ -367,8 +367,8 @@ Updates reach builds with the same app version (`runtimeVersion` policy `appVers
 ## 7. Templates, admins and moderation
 
 - **Templates** live in `templates/*.sparksquad.json` (same format as user plans, `docs/05_PLAN_FORMAT.md`). Edit or add a file, run `pnpm templates:build` (validates and formats), then `pnpm seed:templates` (local) or `pnpm seed:templates -- --remote`. If your database or bucket isn't called `sparksquad`, set `D1_DATABASE_NAME` and `R2_BUCKET_NAME` in the shell first (for example `D1_DATABASE_NAME=mydb pnpm seed:templates -- --remote`).
-- **First admin**: put your email in `ADMIN_EMAILS` (`wrangler.toml` `[vars]`, comma-separated) and deploy. Open `<PUBLIC_API_URL>/admin`, sign in with an email code. Admin access requires a verified email (email codes always verify; Google/Apple accounts count only if the provider marks the email verified).
-- **Moderating reports**: the admin page lists open reports (check-ins, comments, users, squads), 100 at a time (oldest first; the API returns `nextCursor` for the next page). Actions: _Hide_ (removes the content), _Suspend_ (blocks the user's account and signs them out everywhere), _Dismiss_. Each user can file at most 20 reports a day and repeat reports of the same target are merged. Respond to user complaints sent to `CONTACT_EMAIL` within 7 days (the privacy policy promises this).
+- **First admin**: put your email in `ADMIN_EMAILS` (`wrangler.toml` `[vars]`, comma-separated) and deploy. Open `<PUBLIC_API_URL>/admin`, sign in with an email code.
+- **Moderating reports**: the admin page lists open reports (check-ins, comments, users, squads). Actions: _Hide_ (removes the content), _Suspend_ (blocks the user's account), _Dismiss_. Respond to user complaints sent to `CONTACT_EMAIL` within 7 days (the privacy policy promises this).
 
 ---
 
@@ -406,7 +406,7 @@ Free users are designed to cost about nothing: no sockets, delta sync, local rem
 12. **"We couldn't sign you in" / no email arrives.** Without `RESEND_API_KEY` no email is sent: copy the code from the API terminal. With Resend's test sender, mail only goes to your own Resend account address. Over 100 codes in a day on the free plan, sending stops until tomorrow.
 13. **"This squad isn't on your phone yet" right after editing code.** Fast Refresh restarted the local store mid-session (development only). Close the app fully and open it again.
 14. **Started Metro from the wrong folder and a `tsconfig.json` appeared at the repo root.** Delete it and start Metro from `apps/mobile` (or `pnpm --dir apps/mobile exec expo start --dev-client -c`).
-15. **New columns missing (`no such column: notify_comments`).** A migration hasn't been applied: `pnpm db:migrate:local` locally. Remotely `pnpm run deploy` applies pending migrations; if you deployed with plain `wrangler deploy`, run `pnpm db:migrate:remote`.
+15. **New columns missing (`no such column: notify_comments`).** A migration hasn't been applied: `pnpm db:migrate:local` (and `db:migrate:remote` before deploying).
 
 ---
 

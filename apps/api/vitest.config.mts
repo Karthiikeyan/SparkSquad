@@ -17,6 +17,7 @@ export default defineConfig(async () => {
             REVENUECAT_WEBHOOK_SECRET: 'test-rc-secret',
             ADMIN_EMAILS: 'admin@example.com',
             PUBLIC_API_URL: 'http://localhost',
+            REVIEW_ACCOUNT: 'review@example.com:246810',
             TEST_MIGRATIONS: migrations,
           },
         },
@@ -24,6 +25,10 @@ export default defineConfig(async () => {
     ],
     test: {
       include: ['test/**/*.test.ts'],
+      // Each test signs in several users through a local Worker and D1. In a parallel run that can
+      // pass the default 5 s, which failed tests at random (rules.test.ts most often).
+      testTimeout: 30_000,
+      hookTimeout: 30_000,
       setupFiles: ['./test/setup.ts'],
     },
   };

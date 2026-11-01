@@ -4,12 +4,13 @@ import {
   rawDayNumber,
   TEXT_LIMITS,
   type PlanTask,
+  type RestartOffer,
 } from '@sparksquad/shared';
 import { getCalendars } from 'expo-localization';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
-import { BadgeCheck, ImagePlus, X } from 'lucide-react-native';
+import { BadgeCheck, ImagePlus, RotateCcw, X } from 'lucide-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Alert } from '../../components/ui/Dialog';
@@ -24,6 +25,7 @@ import {
   Switch,
   Text,
   TextField,
+  SheetScrollView,
   useToast,
 } from '../../components/ui';
 import { t } from '../../i18n';
@@ -45,7 +47,7 @@ import { useToday } from '../today/useToday';
 import { prefillFromVerification, verifiedIndices, type Prefill } from '../verify/prefill';
 import { clearDraft, readDraft, writeDraft } from './drafts';
 import { localProofUri, removeLocalProof, saveLocalProof } from './localProof';
-import { submitCheckin, type DraftValues } from './submit';
+import { draftDoneCount, submitCheckin, type DraftValues } from './submit';
 
 function stepFor(task: PlanTask): { step: number; max: number } {
   if (task.verify === 'steps' || /step/i.test(task.unit ?? '')) return { step: 500, max: 100_000 };
@@ -63,6 +65,8 @@ interface FormProps {
   source: TodaySource;
   date: string;
   onDone: (go: () => void) => void;
+  /** Comeback day: one finished task is enough. */
+  restart: RestartOffer | null;
 }
 
 function TaskInput({
@@ -113,7 +117,7 @@ function TaskInput({
   );
 }
 
-function CheckinForm({ card, source, date, onDone }: FormProps) {
+function CheckinForm({ card, source, date, onDone, restart }: FormProps) {
   const me = useMe();
   const toast = useToast();
   const ch = card.challenge;
@@ -209,6 +213,10 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
 
   const submit = async (honestMiss: boolean) => {
     if (!day) return;
+    if (restart && !honestMiss && draftDoneCount(day.tasks, draft) === 0) {
+      toast.show({ message: t('comeback.pickOne'), kind: 'error' });
+      return;
+    }
     setSaving(true);
     try {
       const { db, outbox } = getRuntime();
@@ -225,6 +233,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
         draft,
         note,
         honestMiss,
+        restart: !!restart,
         hasPhoto: !honestMiss && !!photo,
         sharePhotoUri: canShare ? photo : null,
         partialCounts: card.squad.partialCounts,
@@ -246,6 +255,7 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
         streak: String(predictedStreak(before, date, countsDone)),
         counts: countsDone ? '1' : '0',
         since: checkin.updatedAt,
+        ...(restart && countsDone ? { comeback: restart.restores ? 'restored' : 'fresh' } : {}),
       };
       onDone(() => router.replace({ pathname: '/checkin/success', params }));
     } catch {
@@ -278,6 +288,14 @@ function CheckinForm({ card, source, date, onDone }: FormProps) {
   return (
     <>
       {!online ? <OfflineBanner /> : null}
+      {restart ? (
+        <View style={styles.restart} accessibilityLiveRegion="polite" testID="restart-banner">
+          <RotateCcw size={18} color={colors.accent} strokeWidth={iconStroke} />
+          <Text variant="footnote" style={styles.restartText}>
+            {t('comeback.sheet')}
+          </Text>
+        </View>
+      ) : null}
       <View>
         {day.tasks.map((task, i) => (
           <TaskInput
@@ -413,7 +431,7 @@ export function CheckinSheetScreen() {
           <Button label={t('common.close')} variant="secondary" onPress={() => close()} />
         </View>
       ) : (
-        <ScrollView
+        <SheetScrollView
           style={styles.scroll}
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
@@ -460,13 +478,14 @@ export function CheckinSheetScreen() {
             card={card}
             source={today.data.source}
             date={localDate}
+            restart={isToday ? card.comeback : null}
             onDone={(go) => {
               // Keep this challenge on screen while the sheet animates away.
               setSelected(card.challenge.id);
               close(go);
             }}
           />
-        </ScrollView>
+        </SheetScrollView>
       )}
     </BottomSheet>
   );
@@ -494,6 +513,17 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.separator,
   },
   taskRowFirst: {},
+  restart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.input,
+    padding: 12,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  restartText: { flex: 1, color: colors.label },
   taskTexts: { flex: 1, gap: 4, minWidth: 0 },
   hint: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   note: { marginTop: 18 },

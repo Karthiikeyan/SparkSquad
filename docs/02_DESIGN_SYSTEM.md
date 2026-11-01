@@ -34,7 +34,7 @@ Inspiration: openGym's discipline (neutral surface ramp, hairlines instead of bo
 | `accentPressed` | `#FFC75C` | `#CC8700` | pressed/hover |
 | `onAccent` | `#1A1200` | `#1A1200` | text/icons on accent |
 | `accentSoft` | `rgba(255,178,36,0.14)` | `rgba(232,154,0,0.12)` | secondary buttons, chips, icon tiles |
-| `success` | `#3DDC97` | `#1F9D66` | done ticks, verified, switches on |
+| `success` | `#3DDC97` | `#1F9D66` | done ticks, verified |
 | `successSoft` | `rgba(61,220,151,0.12)` | `rgba(31,157,102,0.12)` | success chips |
 | `onSuccess` | `#04140C` | `#FFFFFF` | tick on success circle |
 | `missed` | `#5A5A60` | `#B5B5BA` | missed day dots, empty task circle outline |
@@ -62,13 +62,13 @@ Inspiration: openGym's discipline (neutral surface ramp, hairlines instead of bo
 
 ## Spacing, radius, sizes
 - 4 px grid. Screen side padding **16**. Gaps: 2/4/6/8/10/12/14/16/18/20/24.
-- Top safe area: content starts below the status bar (designs use 52–60 px; use `useSafeAreaInsets`). Bottom: tab bar 84 px incl. home indicator.
+- Top safe area: content starts below the status bar (designs use 52–60 px; use `useSafeAreaInsets`). Bottom: tab bar 58 px plus the phone's bottom inset.
 - Radius: cards **22**, grouped lists **16–18**, inputs/primary buttons **14**, small buttons **12**, segmented **10/8**, chips/pills = height/2, avatars round, sheets top **22**.
 - Touch targets ≥ 44×44. Primary button height **52**, secondary 44–48, chips 30–36, list rows 52–56.
 - Avatars: 28 (compact rows), 32 (lists), 40 (share card/welcome), 56 (profile). Ring = `2px gap in surface colour + 2px accent`.
 
 ## Components (build in `apps/mobile/src/components/ui`)
-Button (primary/secondary/soft/ghost/destructive), IconButton (circular 36/44), Card, GroupedList + ListRow (title, subtitle, value, chevron, switch), SectionLabel, SegmentedControl (3 options, track `control`, pill `controlSelected`), ChipToggle (selected = label bg + black text), Stepper (− value +, `surface2` track), Switch (iOS style, on = success), TextField / TextArea with counter, SearchField, Avatar (initials, colour by hash, `checked` ring, `dimmed`), AvatarRing (row/overlap and grid variants), TaskRow (circle tick 26 px inside 44 px target, done = success fill + dark tick), DayStrip (7 days: done dot success, missed dot grey, today = accent fill, review day = dashed outline, future dimmed), PhaseBar (segments), ProgressBar (6 px, track `surface3`), StatTile, Heatmap (18 weeks × 7, 4 levels of accent opacity 0/.35/.65/1), Badge, BottomSheet (grabber 36×5), TabBar (5 slots: Today, Squads, centre 56 px accent Check-in button raised −14 px with soft amber shadow, Discover, You), NavHeader (back chevron + label in accent), Toast, EmptyState (icon tile, one sentence, one CTA), Skeleton, OfflineBanner, ShareCard (rendered offscreen and captured with react-native-view-shot).
+Button (primary/secondary/soft/ghost/destructive), IconButton (circular 36/44), Card, GroupedList + ListRow (title, subtitle, value, chevron, switch), SectionLabel, SegmentedControl (3 options, track `control`, pill `controlSelected`), ChipToggle (selected = label bg + black text), Stepper (− value +, `surface2` track; tap the number to type, hold a sign to speed up), Switch (iOS style, on = accent with a dark thumb), TextField / TextArea with counter, SearchField, Avatar (initials, colour by hash, `checked` ring, `dimmed`), AvatarRing (row/overlap and grid variants), TaskRow (circle tick 26 px inside 44 px target, done = success fill + dark tick), DayStrip (7 days: done dot success, missed dot grey, today = accent fill, review day = dashed outline, future dimmed), PhaseBar (segments), ProgressBar (6 px, track `surface3`), StatTile, Heatmap (18 weeks × 7, 4 levels of accent opacity 0/.35/.65/1), Badge, BottomSheet (grabber 36×5, swipe down to close), TabBar (5 slots: Today, Squads, centre 56 px accent Check-in button raised −20 px with soft amber shadow, Discover, You; an `accentSoft` pill glides to the active tab), NavHeader (back chevron + label in accent), Toast, EmptyState (icon tile, one sentence, one CTA), Skeleton, OfflineBanner, ShareCard (rendered offscreen and captured with react-native-view-shot).
 
 ## Icons
 Stroke icons, 1.8 stroke, round caps (lucide-react-native matches: calendar, users, check, compass, user, flame, bell, share, image, copy, file-up, message-circle, lock, search, plus, chevron-left/right, x, settings, flag, clock). No emoji in UI.

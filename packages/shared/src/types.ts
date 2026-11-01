@@ -117,6 +117,8 @@ export interface AnnouncementDTO {
 }
 
 export interface CheckinDTO {
+  /** This was a comeback day. */
+  restart?: boolean;
   id: string;
   challengeId: string;
   userId: string;

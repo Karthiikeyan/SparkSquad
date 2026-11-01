@@ -13,6 +13,13 @@ const expected: Record<string, { days: number; category: string }> = {
   'sql-30': { days: 30, category: 'career' },
   'steps-10k': { days: 30, category: 'fitness' },
   'system-design-30': { days: 30, category: 'career' },
+  'reading-30': { days: 30, category: 'reading' },
+  'meditation-21': { days: 21, category: 'mindfulness' },
+  'sleep-water-14': { days: 14, category: 'health' },
+  'exam-revision-45': { days: 45, category: 'exams' },
+  'spoken-english-30': { days: 30, category: 'languages' },
+  'gym-starter-28': { days: 28, category: 'fitness' },
+  'no-spend-30': { days: 30, category: 'finance' },
 };
 
 describe('templates', () => {

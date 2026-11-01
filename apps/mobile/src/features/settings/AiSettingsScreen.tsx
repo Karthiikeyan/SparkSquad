@@ -6,13 +6,13 @@ import { StyleSheet, View } from 'react-native';
 import { Alert } from '../../components/ui/Dialog';
 import {
   Button,
+  ChipToggle,
   GroupedList,
   GroupFooter,
   ListRow,
   NavHeader,
   Screen,
   SectionLabel,
-  SegmentedControl,
   Stepper,
   Text,
   TextField,
@@ -25,20 +25,16 @@ import { getPref, setPref } from '../../lib/prefs';
 import { colors, iconStroke } from '../../theme/tokens';
 import { useMe } from '../auth/SessionProvider';
 import { onDeviceAvailable } from '../ai/onDevice';
-import { sendChat } from '../ai/providers';
+import { AI_FREE_PROVIDERS, AI_PROVIDER_LABEL, sendChat } from '../ai/providers';
 import { dailyLimit, takeRequest } from '../ai/session';
 import { todayFor } from '../today/model';
 
 type Status = 'untested' | 'testing' | 'working' | 'failed';
 
-const PROVIDER_LABEL: Record<AiProvider, TKey> = {
-  gemini: 'aiSettings.gemini',
-  openai: 'aiSettings.openai',
-  anthropic: 'aiSettings.anthropic',
-};
-
 const HOW_TO: Record<AiProvider, TKey> = {
   gemini: 'aiSettings.howToGemini',
+  groq: 'aiSettings.howToGroq',
+  openrouter: 'aiSettings.howToOpenrouter',
   openai: 'aiSettings.howToOpenai',
   anthropic: 'aiSettings.howToAnthropic',
 };
@@ -127,14 +123,27 @@ export function AiSettingsScreen() {
       </Text>
       <View style={styles.group}>
         <View style={styles.segment}>
-          <SegmentedControl
-            role="radiogroup"
-            tone="surface"
+          <View
+            style={styles.providers}
+            accessibilityRole="radiogroup"
             accessibilityLabel={t('aiSettings.provider')}
-            value={provider}
-            onChange={chooseProvider}
-            options={AI_PROVIDERS.map((p) => ({ value: p, label: t(PROVIDER_LABEL[p]) }))}
-          />
+          >
+            {AI_PROVIDERS.map((p) => (
+              <ChipToggle
+                key={p}
+                role="radio"
+                label={t(AI_PROVIDER_LABEL[p])}
+                selected={provider === p}
+                onPress={() => chooseProvider(p)}
+                testID={`ai-provider-${p}`}
+              />
+            ))}
+          </View>
+          {AI_FREE_PROVIDERS.includes(provider) ? (
+            <Text variant="caption" color="success" style={styles.freeNote}>
+              {t('aiSettings.freeTier')}
+            </Text>
+          ) : null}
         </View>
         {editing ? (
           <View style={styles.edit}>
@@ -234,6 +243,8 @@ const styles = StyleSheet.create({
   title: { marginTop: 4, marginBottom: 16 },
   group: { backgroundColor: colors.surface, borderRadius: 16, overflow: 'hidden' },
   segment: { padding: 12 },
+  providers: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  freeNote: { marginTop: 8, marginHorizontal: 4 },
   edit: { paddingHorizontal: 16, paddingBottom: 12, gap: 10 },
   inner: {
     borderRadius: 0,

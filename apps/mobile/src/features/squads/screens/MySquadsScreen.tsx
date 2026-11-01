@@ -1,4 +1,9 @@
-import { limitsFor, type Category, type SquadPreviewDTO } from '@sparksquad/shared';
+import {
+  limitsFor,
+  type Category,
+  type ChallengeDTO,
+  type SquadPreviewDTO,
+} from '@sparksquad/shared';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import {
@@ -8,6 +13,7 @@ import {
   Compass,
   Flame,
   Moon,
+  RotateCw,
   UserPlus,
   Users,
 } from 'lucide-react-native';
@@ -32,8 +38,9 @@ import { formatLocalDate } from '../../../lib/format';
 import { useOnline } from '../../../lib/hooks/useOnline';
 import { qk } from '../../../lib/query/keys';
 import { useLocalQuery } from '../../../lib/query/useLocalQuery';
-import { streaks } from '../../../lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { parseJson } from '../../../lib/db/helpers';
+import { challenges, streaks } from '../../../lib/db/schema';
+import { and, eq } from 'drizzle-orm';
 import { colors, fonts, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
 import { SquadList } from '../../discover/parts';
@@ -51,6 +58,8 @@ interface Row {
   line: string;
   challengeId: string | null;
   running: boolean;
+  /** The last challenge is over and nothing new has started. */
+  ended: boolean;
   dayNumber: number;
   duration: number;
   checked: number;
@@ -78,11 +87,25 @@ export function MySquadsScreen() {
       const board = buildBoard(src, now);
       const ch = src.challenge;
       const running = board.state === 'running';
-      const line = !ch
-        ? t('squads.noChallenge')
-        : board.state === 'upcoming'
-          ? t('squads.startsOn', { title: ch.title, date: formatLocalDate(ch.startDate) })
-          : t('squads.dayOf', { title: ch.title, n: board.dayNumber, total: ch.durationDays });
+      const endedRows = ch
+        ? []
+        : await db
+            .select()
+            .from(challenges)
+            .where(and(eq(challenges.squadId, id), eq(challenges.status, 'ended')))
+            .all();
+      const lastEnded = endedRows
+        .map((r) => parseJson<ChallengeDTO | null>(r.data, null))
+        .filter((c): c is ChallengeDTO => c !== null)
+        .sort((a, b) => b.startDate.localeCompare(a.startDate))[0];
+      const endedTitle = board.state === 'finished' ? ch?.title : lastEnded?.title;
+      const line = endedTitle
+        ? t('squads.ended', { title: endedTitle })
+        : !ch
+          ? t('squads.noChallenge')
+          : board.state === 'upcoming'
+            ? t('squads.startsOn', { title: ch.title, date: formatLocalDate(ch.startDate) })
+            : t('squads.dayOf', { title: ch.title, n: board.dayNumber, total: ch.durationDays });
       const myCheckin = src.checkins.find((c) => c.userId === me.id && c.localDate === board.today);
       const mine: MyState = !running
         ? null
@@ -103,6 +126,7 @@ export function MySquadsScreen() {
         line,
         challengeId: ch?.id ?? null,
         running,
+        ended: !!endedTitle,
         dayNumber: board.dayNumber,
         duration: ch?.durationDays ?? 0,
         checked: board.checkedCount,
@@ -324,6 +348,26 @@ function SquadCard({ r }: { r: Row }) {
             <StatusPill r={r} />
           </View>
         </>
+      ) : null}
+
+      {r.ended ? (
+        <View style={styles.solo}>
+          {r.manages ? (
+            <Button
+              label={t('squads.nextChallenge')}
+              size="md"
+              icon={<RotateCw size={16} color={colors.onAccent} strokeWidth={iconStroke} />}
+              accessibilityLabel={`${t('squads.nextChallenge')}, ${r.name}`}
+              onPress={() => router.push({ pathname: '/create/plan', params: { squadId: r.id } })}
+              style={styles.flex}
+              testID={`next-challenge-${r.id}`}
+            />
+          ) : (
+            <Text variant="footnote" color="label2" style={styles.flex}>
+              {t('squads.nextWaiting')}
+            </Text>
+          )}
+        </View>
       ) : null}
 
       {r.total === 1 && r.manages ? (

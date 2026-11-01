@@ -1,11 +1,21 @@
 import { addDays } from '@sparksquad/shared';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronRight, MessageCircle, Pin, Settings, Share2 } from 'lucide-react-native';
+import {
+  CalendarPlus,
+  ChevronRight,
+  MessageCircle,
+  Pin,
+  Settings,
+  Share2,
+} from 'lucide-react-native';
 import { useState } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
 import {
+  BottomSheet,
   ErrorState,
+  GroupedList,
   IconButton,
+  ListRow,
   NavHeader,
   Pressable,
   Screen,
@@ -18,9 +28,11 @@ import { t } from '../../../i18n';
 import { getRuntime } from '../../../lib/runtime';
 import { colors, iconStroke, radius } from '../../../theme/tokens';
 import { useMe } from '../../auth/SessionProvider';
+import { addToCalendar } from '../../calendar/addToCalendar';
 import { useRefresh } from '../../system/useRefresh';
 import { sendNudge, toggleFire } from '../actions';
 import { buildBoard, canManage } from '../model';
+import { isRecapDay } from '../recap';
 import { useSquad } from '../useSquad';
 import { BoardSection } from './BoardSection';
 import { LeaderboardSection } from './LeaderboardSection';
@@ -42,6 +54,7 @@ export function SquadScreen() {
   const squad = useSquad(id ?? '');
   const { refreshing, onRefresh } = useRefresh();
   const [section, setSection] = useState<Tab>(isTab(tab) ? tab : 'board');
+  const [shareOpen, setShareOpen] = useState(false);
 
   const back = () => (router.canGoBack() ? router.back() : router.replace('/squads'));
   const header = (right?: React.ReactNode) => (
@@ -90,9 +103,44 @@ export function SquadScreen() {
       .then(() => toast.show({ message: t('squad.nudgeSent', { name: m.name }), kind: 'success' }))
       .catch(() => toast.show({ message: t('errors.UNKNOWN'), kind: 'error' }));
   };
+  const nudgeAll = (list: readonly { id: string; name: string }[]) => {
+    if (!ch) return;
+    const { db, outbox } = getRuntime();
+    Promise.all(
+      list.map((m) =>
+        sendNudge(db, outbox, {
+          challengeId: ch.id,
+          fromUserId: me.id,
+          toUserId: m.id,
+          localDate: board.today,
+        }),
+      ),
+    )
+      .then(() =>
+        toast.show({ message: t('squad.nudgeAllSent', { n: list.length }), kind: 'success' }),
+      )
+      .catch(() => toast.show({ message: t('errors.UNKNOWN'), kind: 'error' }));
+  };
+  const calendar = () => {
+    if (!ch) return;
+    addToCalendar({
+      title: ch.title,
+      squadName: src.squad.name,
+      startDate: ch.startDate,
+      durationDays: ch.durationDays,
+      today: board.today,
+      reminderTime: me.reminderTime,
+    }).catch(() => toast.show({ message: t('calendar.failed'), kind: 'error' }));
+  };
   const fire = (checkinId: string) => {
     const { db, outbox } = getRuntime();
     toggleFire(db, outbox, checkinId).catch(() => undefined);
+  };
+
+  const recapReady = board.state === 'running' && isRecapDay(board.today);
+  const openShare = (pathname: '/squad/[id]/share' | '/squad/[id]/recap') => {
+    setShareOpen(false);
+    router.push({ pathname, params: { id: src.squad.id } });
   };
 
   const chatUrl = src.squad.chatUrl;
@@ -116,15 +164,26 @@ export function SquadScreen() {
     <Screen
       header={header(
         <View style={styles.headerRight}>
-          {ch ? (
+          {ch && board.state !== 'finished' ? (
             <IconButton
-              icon={Share2}
+              icon={CalendarPlus}
               background="transparent"
-              accessibilityLabel={t('squad.share')}
-              onPress={() =>
-                router.push({ pathname: '/squad/[id]/share', params: { id: src.squad.id } })
-              }
+              accessibilityLabel={t('calendar.add')}
+              onPress={calendar}
+              testID="add-to-calendar"
             />
+          ) : null}
+          {ch ? (
+            <View>
+              <IconButton
+                icon={Share2}
+                background="transparent"
+                accessibilityLabel={t('squad.share')}
+                onPress={() => setShareOpen(true)}
+                testID="squad-share"
+              />
+              {recapReady ? <View style={styles.dot} /> : null}
+            </View>
           ) : null}
           <IconButton
             icon={Settings}
@@ -188,6 +247,7 @@ export function SquadScreen() {
         <BoardSection
           board={board}
           onNudge={nudge}
+          onNudgeAll={nudgeAll}
           onFire={fire}
           onSetUpPlan={
             canManage(src.myRole)
@@ -200,6 +260,28 @@ export function SquadScreen() {
       ) : (
         <PlanSection src={src} today={board.today} syncedFrom={addDays(board.today, -7)} />
       )}
+      <BottomSheet
+        visible={shareOpen}
+        onClose={() => setShareOpen(false)}
+        accessibilityLabel={t('squad.share')}
+      >
+        <Text variant="title2" accessibilityRole="header" style={styles.shareTitle}>
+          {t('squad.shareTitle')}
+        </Text>
+        <GroupedList>
+          <ListRow
+            title={t('squad.shareToday')}
+            chevron
+            onPress={() => openShare('/squad/[id]/share')}
+          />
+          <ListRow
+            title={t('recapCard.screenTitle')}
+            subtitle={recapReady ? t('recapCard.ready') : undefined}
+            chevron
+            onPress={() => openShare('/squad/[id]/recap')}
+          />
+        </GroupedList>
+      </BottomSheet>
     </Screen>
   );
 }
@@ -219,6 +301,16 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   segments: { marginBottom: 16 },
+  shareTitle: { marginBottom: 12 },
+  dot: {
+    position: 'absolute',
+    top: 9,
+    right: 9,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.accent,
+  },
   chat: {
     height: 48,
     borderRadius: radius.input,
